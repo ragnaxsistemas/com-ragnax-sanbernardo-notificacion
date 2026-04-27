@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Configuración de tamaño CARTA (Letter) para PDF */
+        @page {
+            size: letter;
+            margin: 0.8cm;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 10pt;
+            line-height: 1.15;
+            padding: 0 30px;
+            color: #000;
+            width: 100%;
+            position: relative; /* Necesario para el posicionamiento del correlativo */
+        }
+
+        /* Estilo para el Correlativo Superior Derecho */
+        .correlativo {
+            position: absolute;
+            top: 0;
+            right: 30px;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        /* Correlativo centrado encima del título, con letra normal */
+        .correlativo-container {
+            text-align: left;
+            font-size: 11pt;
+            font-weight: normal; /* Menos negro */
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        /* Contenedor unificado para ancho idéntico en todos los cuadros */
+        .full-width-box, .cuadro-unificado {
+            width: 100%;
+            border: 1.5pt solid black;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+            table-layout: fixed;
+            box-sizing: border-box;
+        }
+
+        /* Bloque 1: Datos y Ley (Sin línea divisoria interna) */
+        .cuadro-unificado {
+            padding: 8px;
+            display: block; /* Para permitir que actúe como contenedor de flujo */
+        }
+
+        .tabla-datos {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+        }
+
+        .tabla-datos td {
+            padding: 2px 5px;
+            font-size: 11pt;
+            vertical-align: top;
+        }
+
+        .negrita-label {
+            font-weight: bold;
+            width: 85px;
+        }
+
+        .texto-ley {
+            font-size: 8.5pt;
+            text-align: justify;
+            font-weight: bold;
+            line-height: 1.2;
+            padding: 5px;
+            margin: 0;
+        }
+
+        /* Estilos de Texto */
+        .centered { text-align: center; }
+        .bold { font-weight: bold; }
+        .underline { text-decoration: underline; }
+
+        /* Títulos superiores */
+        .main-title { font-size: 14pt; margin-bottom: 2px; }
+        .sub-title { font-size: 10.5pt; margin-bottom: 20px; }
+
+        /* Bloque 2: Disposición Infringida */
+        .disposicion-table td {
+            border: 1.5pt solid black;
+            padding: 5px 10px;
+        }
+
+        /* Bloque 3: Detalle de Infracciones */
+        .detail-table th, .detail-table td {
+            border: 1.5pt solid black;
+            padding: 4px;
+            text-align: center;
+            font-size: 9pt;
+        }
+        .header-row { font-weight: bold; background-color: #f2f2f2; }
+
+        /* Secciones de texto y firma */
+        .resolution-body { margin: 15px 0; text-align: justify; }
+        .resolution-body p { margin: 5px 0; }
+
+        .signature-container {
+            text-align: right;
+            margin: 5px 0;
+        }
+
+        .signature-img {
+            width: 190px; /* Tamaño reducido para asegurar que el cupón no salte de página */
+            height: auto;
+        }
+
+        /* Sección Final: Formas de Pago */
+        .payment-section { margin-top: 20px; font-size: 9pt; }
+        .payment-title { font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
+        .payment-item { margin-bottom: 6px; text-align: justify; }
+
+        /* Espacio para Barcode */
+        .barcode-area { height: 60px; width: 100%; }
+    </style>
+</head>
+<body>
+
+<div class="centered bold underline main-title">NOTIFICACIÓN DE SENTENCIA</div>
+<div class="centered bold sub-title">{{JUZGADO}} DE SAN BERNARDO<br /><span style="font-weight: normal; font-size: 9.5pt;">Direcci&oacute;n: O'Higgins 840 {{PISO}}. Atenci&oacute;n {{HORARIO_ATENCION}}</span></div>
+
+<div class="cuadro-unificado">
+    <table class="tabla-datos">
+        <tbody>
+        <tr>
+            <td class="negrita-label">Sr.(a)</td>
+            <td>: {{NOMBRES}}</td>
+        </tr>
+        <tr>
+            <td class="negrita-label">Direcci&oacute;n</td>
+            <td>: {{DIRECCION}}</td>
+        </tr>
+        <tr>
+            <td class="negrita-label">Comuna</td>
+            <td>: {{COMUNA}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="texto-ley">CONFORME A LA LEY N 19.841, ESTA CARTA DEBER&Aacute; SER ENTREGADA A CUALQUIER PERSONA ADULTA DEL DOMICILIO, O DEJADA EN UN LUGAR VISIBLE DEL DOMICILIO, ESTA CARTA NO PUEDE SER DEVUELTA.</div>
+</div>
+<p class="bold" style="margin-left: 5px; font-size: 11pt;">PLACA PATENTE: {{PLACA_PATENTE}}</p>
+<table class="full-width-box disposicion-table">
+    <tbody>
+    <tr>
+        <td class="bold" style="width: 38%;">Disposici&oacute;n Infringida</td>
+        <td>Articulo 114 de la Ley 18.290 de Tr&aacute;nsito</td>
+    </tr>
+    <tr>
+        <td class="bold">Lugar de la(s) Infracci&oacute;n(es)</td>
+        <td>Autopista Central</td>
+    </tr>
+    <tr>
+        <td class="bold">P&oacute;rticos de Cobro</td>
+        <td>De la comuna de San Bernardo</td>
+    </tr>
+    <tr>
+        <td class="bold">Denunciante</td>
+        <td>Direcci&oacute;n de Administraci&oacute;n y Finanzas de Municipalidad de San Bernardo</td>
+    </tr>
+    <tr>
+        <td class="bold">Rut del Infractor</td>
+        <td>{{RUT}}</td>
+    </tr>
+    </tbody>
+</table>
+<div class="resolution-body">
+    <p>NOTIFICO A UD., que con fecha {{FECHA_CITACION}} se ha dictado la siguiente Resoluci&oacute;n:</p>
+    <p class="bold" style="font-style: italic;">COND&Eacute;NESE al pago de una multa de 1 (una) U.T.M. por cada una de las infracciones a que se refieren los roles comprendidos en esta notificaci&oacute;n, dentro del plazo de 5 d&iacute;as. Si no pagare dentro del plazo legal, of&iacute;ciese al Registro de Multas de Tr&aacute;nsito No Pagadas.</p>
+</div>
+<p class="bold">Detalle Infracciones:</p>
+<table class="full-width-box detail-table">
+    <tbody>
+    <tr class="header-row">
+        <td style="width: 5%;">N&deg;</td>
+        <td style="width: 20%;">MAC</td>
+        <td style="width: 20%;">ROL CAUSA</td>
+        <td style="width: 10%;">A&Ntilde;O</td>
+        <td style="width: 15%;">HORA INF.</td>
+        <td style="width: 15%;">FECHA INF.</td>
+        <td style="width: 15%;">MONTO U.T.M.</td>
+    </tr>
+    {{TABLA_INFRACCIONES}}
+    </tbody>
+</table>
+<p style="font-size: 8.5pt;"><span class="bold">Nota:</span> Si al recibo de esta carta Ud. ya ha pagado la multa impuesta, solicitamos no considerar esta notificaci&oacute;n.</p>
+<!--<div class="sign-area">SECRETARIO</div>-->
+<div class="signature-container">
+    {{LOGO_2}}
+</div>
+
+<div class="payment-section">
+    <div class="payment-item">CORR INT: N&deg; {{CORRELATIVO}}</div>
+</div>
+
+<div class="payment-section">
+    <div class="payment-title">Formas de pago:</div>
+    <div class="payment-item">1. Ingresando en la p&aacute;gina web de la ILUSTRE MUNICIPALIDAD DE SAN BERNARDO: <span class="bold">www.sanbernardo.cl</span> Pagos Online - Multas Juzgados.</div>
+    <div class="payment-item">2. Mediante Vale Vista a nombre de: <span class="bold">Tesorer&iacute;a Municipal de San Bernardo, RUT N&deg; 69.072.700-5</span>.</div>
+    <div class="payment-item">3. Directamente en la caja de Tesorer&iacute;a ubicada en el {{JUZGADO}} DE SAN BERNARDO.</div>
+    <div style="margin-top: 10px; font-size: 8.5pt;">Revise sus multas impagas en el Registro de multas en <span class="bold">www.registrocivil.cl/certificados</span></div>
+</div>
+
+<div class="barcode-area"></div>

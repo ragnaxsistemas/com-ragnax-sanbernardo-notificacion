@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificación Juzgado</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0.7cm 0.8cm 0.8cm 0.8cm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 28.5px 10% 30px 10%;
+            /* CAMBIO: Fondo exterior ahora es blanco */
+            background-color: #fff;
+            color: #000;
+            /* CAMBIO: Aumentado de 10px a 11px (+10%) */
+            font-size: 12px;
+        }
+        .carta-container {
+            /* CAMBIO: Aumentado de 500px a 550px (+10%) */
+            max-width: 570px;
+            margin: 0 auto;
+            background: #fff;
+            /* CAMBIO: Ajuste ligero de padding (+10%) */
+            padding: 20px;
+            /***border: 1px solid #000;***/
+            page-break-inside: avoid;
+        }
+
+        .header { text-align: center; margin-bottom: 10px; }
+        /* CAMBIO: Aumentado proporcionalmente */
+        .header h1 { font-size: 15px; text-decoration: underline; margin-bottom: 2px; }
+        .header p { margin: 0; line-height: 1.1; }
+
+        .contenedor-destinatario {
+            border: 1px solid #000;
+            /* CAMBIO: Ajuste ligero (+10%) */
+            padding: 10px;
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+        }
+
+        .datos-personales {
+            width: 100%;
+            margin-bottom: 6px;
+            /* CAMBIO: Aumentado de 11px a 12px */
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+        /* CAMBIO: Ancho de etiqueta aumentado proporcionalmente */
+        .label { font-weight: bold; width: 83px; }
+
+        .advertencia-legal {
+            /* CAMBIO: Aumentado proporcionalmente */
+            font-size: 8.5px;
+            font-weight: bold;
+            text-align: justify;
+            padding-top: 5px;
+            /***border-top: 0.5px solid #000;***/
+            line-height: 1.05;
+        }
+
+        /* ESTILOS TABLAS */
+        .tabla-infraccion, .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            /* CAMBIO: Aumentado de 9px a 10px */
+            font-size: 10px;
+        }
+        .tabla-infraccion td, .detail-table td {
+            border: 1px solid #000;
+            padding: 4px;
+        }
+
+        .header-row td {
+            background-color: #eee;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            /* CAMBIO: Aumentado proporcionalmente */
+            font-size: 9px;
+        }
+        .detail-table td { text-align: center; }
+
+        .bold { font-weight: bold; }
+        .negrita { font-weight: bold; width: 40%; }
+
+        p { margin: 6px 0; line-height: 1.2; }
+
+        .signature-container {
+            text-align: right;
+            margin: 1px 0;
+            page-break-inside: avoid;
+        }
+
+        /* Sección Final: Formas de Pago */
+        .payment-section {
+            margin-top: 10px;
+            /* CAMBIO: Aumentado proporcionalmente */
+            font-size: 7pt;
+            padding-top: 4px;
+        }
+        .payment-title {
+            font-weight: bold;
+            /* CAMBIO: Aumentado proporcionalmente */
+            font-size: 8pt;
+            margin-bottom: 2.5px;
+        }
+        .payment-item { margin-bottom: 4px; text-align: justify; line-height: 1.1; }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .carta-container { border: 1px solid #000; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="carta-container">
+
+    <div class="header">
+        <h1>NOTIFICACIÓN DE SENTENCIA</h1>
+        <p><strong>{{JUZGADO}}</strong><br>
+            O'Higgins 840 {{PISO}}. Atenci&oacute;n {{HORARIO_ATENCION}}</p>
+    </div>
+
+    <div class="contenedor-destinatario">
+        <table class="datos-personales">
+            <tr><td class="label">Sr.(a)</td><td>: {{NOMBRES}}</td></tr>
+            <tr><td class="label">Dirección</td><td>: {{DIRECCION}}</td></tr>
+            <tr><td class="label">Comuna</td><td>: {{COMUNA}}</td></tr>
+        </table>
+        <div class="advertencia-legal">
+            CONFORME A LA LEY N 19.841, ESTA CARTA DEBERÁ SER ENTREGADA A CUALQUIER PERSONA ADULTA DEL DOMICILIO, O DEJADA EN UN LUGAR VISIBLE DEL DOMICILIO. ESTA CARTA NO PUEDE SER DEVUELTA.
+        </div>
+    </div>
+
+    <p style="font-size: 14.5px; margin-top: 8px;"><strong>PLACA PATENTE:</strong> {{PLACA_PATENTE}}</p>
+
+    <table class="tabla-infraccion">
+        <tr><td class="negrita">Disposición Infringida</td><td>Artículo 114 de la Ley 18.290 de Tránsito</td></tr>
+        <tr><td class="negrita">Lugar de la(s) Infracción (es)</td><td>Autopista Central</td></tr>
+        <tr><td class="negrita">Pórticos de Cobro</td><td>De la comuna de San Bernardo</td></tr>
+        <tr><td class="negrita">Denunciante</td><td>Dirección de Administración y Finanzas de Municipalidad de San Bernardo</td></tr>
+        <tr><td class="negrita">Rut del Infractor</td><td>{{RUT}}</td></tr>
+    </table>
+
+    <p style="margin-top: 12px;">NOTIFICO A UD., que con fecha {{FECHA_CITACION}} se ha dictado la siguiente Resolución:</p>
+    <p style="text-align: justify;">
+        <em><strong>CONDÉNESE al pago de una multa de 1 (una) U.T.M. por cada una de las infracciones</strong>
+            a que se refieren los roles comprendidos en esta notificación,
+            <strong>dentro del plazo de 5 días.</strong>
+            Si no pagare dentro del plazo legal, ofíciese al Registro de Multas de Tránsito No Pagadas.</em>
+    </p>
+    <p class="bold" style="font-size: 12px; margin-top: 12px;">Detalle Infracciones:</p>
+    <table class="detail-table">
+        <tr class="header-row">
+            <td style="width: 5%;">N°</td>
+            <td style="width: 20%;">MAC</td>
+            <td style="width: 20%;">ROL CAUSA</td>
+            <td style="width: 10%;">AÑO</td>
+            <td style="width: 15%;">HORA INF.</td>
+            <td style="width: 15%;">FECHA INF.</td>
+            <td style="width: 15%;">MONTO U.T.M.</td>
+        </tr>
+        {{TABLA_INFRACCIONES}}
+    </table>
+
+    <p style="font-size: 10px; margin-top: 8px;">
+        <span class="bold">Nota:</span> Si al recibo de esta carta Ud. ya ha pagado la multa impuesta, solicitamos no considerar esta notificación.
+    </p>
+
+    <div class="signature-container">
+        {{LOGO_2}}
+    </div>
+
+    <div class="payment-section">
+        <div class="payment-item"><strong>CORR INT: N&deg; {{CORRELATIVO}}</strong></div>
+        <br>
+        <div class="payment-title">Formas de pago:</div>
+        <div class="payment-item">1. Ingresando en la página web de la MUNICIPALIDAD DE SAN BERNARDO: www.sanbernardo.cl Pagos Online – Multas Juzgados.</div>
+        <div class="payment-item">2. Mediante Vale Vista, por el valor de (una) 1 U.T.M., calculado al valor de la U.T.M. al momento del
+            pago, a nombre de: Tesorería Municipal de San Bernardo, RUT Nº 69.072.700-5, remitiendo este
+            documento y copia de la citación respectiva, por correo certificado a nombre del {{JUZGADO_MAY_MIN}}.</div>
+        <div class="payment-item">3. Directamente en la caja del {{JUZGADO_MAY_MIN}}, ubicada en O’Higgins Nº840 {{PISO}} San Bernardo.</div>
+        <div style="margin-top: 4px; font-size: 8.0pt;">Revise sus multas impagas en <span class="bold">www.registrocivil.cl/certificados</span></div>
+    </div>
+</div>
+</body>
+</html>

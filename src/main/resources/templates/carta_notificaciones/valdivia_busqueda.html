@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta OC | CCM Valdivia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --dark-bg: #2d2d2d;
+            --top-bar: #232323;
+            --ocre: #e8a643;
+            --fucsia: #d63384;
+            --cian: #4db8cc;
+            --text-light: #f4f4f4;
+            --gray-border: #444;
+            --white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        header { background-color: var(--dark-bg); color: white; }
+        .top-bar { background-color: var(--top-bar); padding: 8px 40px; display: flex; justify-content: flex-end; font-size: 12px; gap: 20px; color: #888; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 40px; border-bottom: 4px solid; border-image: linear-gradient(to right, var(--ocre), var(--fucsia), var(--cian)) 1; }
+        .logo-text { font-weight: bold; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .u-info { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+
+        /* --- LAYOUT --- */
+        .app-wrapper { display: flex; flex: 1; overflow: hidden; }
+
+        /* --- NAV IZQUIERDA --- */
+        .left-nav { width: 250px; background-color: var(--white); border-right: 1px solid #ddd; padding: 20px 0; overflow-y: auto; }
+        .left-nav-header { padding: 0 20px 15px; font-size: 11px; font-weight: bold; color: #999; text-transform: uppercase; }
+        .left-link { padding: 12px 20px; text-decoration: none; color: #555; font-size: 14px; display: flex; align-items: center; gap: 10px; border-left: 3px solid transparent; transition: 0.2s; }
+        .left-link:hover { background-color: #f8f9fa; color: var(--cian); }
+        .left-link.active { background-color: #eef9fb; color: var(--cian); border-left-color: var(--cian); font-weight: 600; }
+
+        /* --- CONTENIDO CENTRAL --- */
+        main { flex: 1; padding: 25px; overflow-y: auto; }
+        .card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* --- PANEL DE FILTROS ACTUALIZADO --- */
+        .filter-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            background: #fcfcfc;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            margin-bottom: 25px;
+        }
+
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-group label { font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; }
+
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; outline: none; font-size: 13px; background: white; }
+        input:focus { border-color: var(--cian); box-shadow: 0 0 5px rgba(77, 184, 204, 0.2); }
+
+        .range-container { display: flex; align-items: center; gap: 5px; }
+        .range-container input { width: 100%; }
+
+        .btn-search {
+            background-color: var(--cian);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            align-self: flex-end;
+            transition: all 0.3s;
+            grid-column: span 1;
+        }
+        .btn-search:hover { background-color: #3ca3b7; transform: translateY(-1px); }
+
+        /* --- TABLA --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th { background: #f4f4f4; padding: 12px; text-align: left; color: #666; border-bottom: 2px solid #ddd; }
+        td { padding: 12px; border-bottom: 1px solid #eee; color: #444; }
+        tr:hover { background-color: #f9f9f9; }
+
+        .status-dot { font-size: 10px; vertical-align: middle; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="top-bar">
+        <span><i class="fa-solid fa-phone"></i> +56 63 2 236906</span>
+        <span><i class="fa-solid fa-envelope"></i> contacto@ccm-valdivia.cl</span>
+    </div>
+    <div class="main-header">
+        <div class="logo-text">
+            <span style="color:var(--ocre)">C</span><span style="color:var(--fucsia)">C</span><span style="color:var(--cian)">M</span>
+            <span style="color:white; font-size: 12px; line-height: 1;">Sistema de Gestión <br> Ordenes de Compra</span>
+        </div>
+        <div class="u-info">
+            <span>Sesión: <strong>Operador_id</strong></span>
+            <i class="fa-solid fa-circle-user fa-xl" style="color: var(--cian);"></i>
+        </div>
+    </div>
+</header>
+
+<div class="app-wrapper">
+    <nav class="left-nav">
+        <div class="left-nav-header">Módulos de Sistema</div>
+        <a href="#" class="left-link active"><i class="fa-solid fa-magnifying-glass"></i> Búsqueda y Gestión</a>
+        <a href="#" class="left-link"><i class="fa-solid fa-file-circle-plus"></i> Creación de OC</a>
+        <a href="#" class="left-link"><i class="fa-solid fa-file-circle-check"></i> Autorización</a>
+        <a href="#" class="left-link"><i class="fa-solid fa-file-circle-xmark"></i> Anulación</a>
+        <a href="#" class="left-link"><i class="fa-solid fa-address-book"></i> Gestión Proveedores</a>
+        <a href="#" class="left-link"><i class="fa-solid fa-chart-bar"></i> Reportes</a>
+        <a href="#" class="left-link"><i class="fa-solid fa-gears"></i> Administración</a>
+        <a href="#" class="left-link"><i class="fa-solid fa-graduation-cap"></i> Capacitación</a>
+    </nav>
+
+    <main>
+        <div class="card">
+            <h3 style="margin-top:0; color:#333; border-bottom: 1px solid #eee; padding-bottom: 10px;">Búsqueda y Gestión de Órdenes</h3>
+
+            <div class="filter-panel">
+                <div class="filter-group">
+                    <label>RUT Proveedor</label>
+                    <input type="text" placeholder="12.345.678-k">
+                </div>
+
+                <div class="filter-group">
+                    <label>Unidad Compradora</label>
+                    <select>
+                        <option value="">Seleccione Unidad...</option>
+                        <option>Departamento de Finanzas</option>
+                        <option>Unidad de Adquisiciones</option>
+                        <option>Gestión Cultural</option>
+                        <option>Administración Central</option>
+                    </select>
+                </div>
+                <br>
+                <div class="filter-group">
+                    <label>Rango de Folios</label>
+                    <div class="range-container">
+                        <input type="number" placeholder="Min">
+                        <input type="number" placeholder="Max">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Fechas (Desde/Hasta)</label>
+                    <div class="range-container">
+                        <input type="date">
+                        <input type="date">
+                    </div>
+                </div>
+                <br>
+                <div class="filter-group">
+                    <label>Estado</label>
+                    <select>
+                        <option>Todos</option>
+                        <option>Borrador</option>
+                        <option>Autorizada</option>
+                        <option>Emitida</option>
+                        <option>Anulada</option>
+                    </select>
+                </div>
+
+                <button class="btn-search">
+                    <i class="fa-solid fa-filter"></i> Buscar
+                </button>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Folio</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Unidad Solicitante</th>
+                    <th>Monto Total</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><strong>#8821</strong></td>
+                    <td>07/03/2026</td>
+                    <td>Suministros del Sur Ltda.</td>
+                    <td>Departamento de Cultura</td>
+                    <td>$120.500</td>
+                    <td><span style="color:var(--cian)"><i class="fa-solid fa-circle status-dot"></i>Emitida</span></td>
+                </tr>
+                <tr>
+                    <td><strong>#8820</strong></td>
+                    <td>05/03/2026</td>
+                    <td>Imprenta Valdivia</td>
+                    <td>Comunicaciones</td>
+                    <td>$45.000</td>
+                    <td><span style="color:var(--fucsia)"><i class="fa-solid fa-circle status-dot"></i>Anulada</span></td>
+                </tr>
+                <tr>
+                    <td><strong>#8819</strong></td>
+                    <td>04/03/2026</td>
+                    <td>Eventos Chile SpA</td>
+                    <td>Teatro Municipal</td>
+                    <td>$1.200.000</td>
+                    <td><span style="color:var(--ocre)"><i class="fa-solid fa-circle status-dot"></i>Borrador</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

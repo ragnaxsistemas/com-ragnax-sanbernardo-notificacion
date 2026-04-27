@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <style>
+
+        @page {
+            size: letter;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        p {
+            margin: 5px 0;
+            text-align: justify;
+        }
+
+        .table-info {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .table-info td {
+            padding: 2px 0;
+        }
+
+        .table-multa {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .table-multa th, .table-multa td {
+            border: 1px solid #000;
+            padding: 4px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- LOGO -->
+<p>{{LOGO}}</p>
+
+<p class="right">Fecha, {{fecha}}</p>
+<p>Folio carta {{folio}}</p>
+
+<h1>Carta de notificación</h1>
+
+<p>A</p>
+
+<table class="table-info">
+    <tr>
+        <td><strong>{{nombre}}</strong></td>
+    </tr>
+    <tr>
+        <td>{{rut}} - {{rutdv}}</td>
+    </tr>
+    <tr>
+        <td>{{direccion}}, {{comuna}}</td>
+    </tr>
+</table>
+
+<p>Presente</p>
+
+<p>
+    Por medio de la presente, se informa que mantiene las siguientes infracciones vigentes asociadas a su vehículo
+    {{marca}}, {{placa}}, {{anio}}:
+</p>
+
+<table class="table-multa">
+    <tr>
+        <th>Nº</th>
+        <th>Infracción</th>
+        <th>Fecha infracción</th>
+        <th>Hora infracción</th>
+        <th>Lugar infracción</th>
+        <th>Monto multa</th>
+    </tr>
+    {{fila_tabla_multas}}
+</table>
+
+<p>
+    Realice el pago de forma electrónica en la web Portal de pagos Partes y TAG, enlace:
+</p>
+
+<p class="center">
+    https://portal2.insico.cl/SanBernardo/Partes/BuscarPartes2
+</p>
+
+<p>{{campo16}} {{campo17}}</p>
+<p>{{campo18}} {{campo19}}</p>
+<p>{{campo20}}</p>
+
+<p>
+    Si no pagare dentro del quinto día de notificado, infórmese al registro de multas no pagadas del
+    Registro Civil e Identificación.
+</p>
+
+<p>Sin otro particular.</p>
+
+<div class="footer">
+    <p><strong>Ilustre Municipalidad de San Bernardo</strong></p>
+</div>
+
+</body>
+</html>

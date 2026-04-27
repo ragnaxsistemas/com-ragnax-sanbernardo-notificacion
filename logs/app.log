@@ -1,0 +1,105 @@
+2026-04-01 00:18:17 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01 00:18:17 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-01 00:18:17 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-04-01 00:18:21 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - Starting ComRagnaxSanbernardoNotificacionApplication using Java 17.0.14 with PID 6461 (/Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/target/classes started by mac in /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion)
+2026-04-01 00:18:21 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - The following 1 profile is active: "dev"
+2026-04-01 00:18:21 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-01 00:18:22 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 35 ms. Found 4 JPA repository interfaces.
+2026-04-01 00:18:22 INFO  org.springframework.cloud.context.scope.GenericScope - BeanFactory id=b216a9b9-7760-3a87-90db-bf3e1888c902
+2026-04-01 00:18:23 INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 9999 (http)
+2026-04-01 00:18:23 INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9999"]
+2026-04-01 00:18:23 INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-01 00:18:23 INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.25]
+2026-04-01 00:18:23 INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-01 00:18:23 INFO  org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1812 ms
+2026-04-01 00:18:23 INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-01 00:18:23 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-04-01 00:18:23 INFO  org.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-01 00:18:23 INFO  org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-01 00:18:23 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-04-01 00:18:24 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2634d000
+2026-04-01 00:18:24 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-04-01 00:18:24 WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-01 00:18:24 INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-01 00:18:24 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01 00:18:25 WARN  org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-01 00:18:25 INFO  org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator/com-ragnax-sanbernardo-notificacion'
+2026-04-01 00:18:26 INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9999"]
+2026-04-01 00:18:26 INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 9999 (http) with context path '/'
+2026-04-01 00:18:26 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - Started ComRagnaxSanbernardoNotificacionApplication in 5.079 seconds (process running for 5.868)
+2026-04-01 00:18:26 INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-01 00:18:26 INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-01 00:18:26 INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-04-01 01:00:16 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01 01:00:16 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-01 01:00:16 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-04-01 01:00:21 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - Starting ComRagnaxSanbernardoNotificacionApplication using Java 17.0.14 with PID 8212 (/Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/target/classes started by mac in /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion)
+2026-04-01 01:00:21 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - The following 1 profile is active: "dev"
+2026-04-01 01:00:22 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-01 01:00:22 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 31 ms. Found 4 JPA repository interfaces.
+2026-04-01 01:00:22 INFO  org.springframework.cloud.context.scope.GenericScope - BeanFactory id=b216a9b9-7760-3a87-90db-bf3e1888c902
+2026-04-01 01:00:23 INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 9999 (http)
+2026-04-01 01:00:23 INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9999"]
+2026-04-01 01:00:23 INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-01 01:00:23 INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.25]
+2026-04-01 01:00:23 INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-01 01:00:23 INFO  org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1346 ms
+2026-04-01 01:00:23 INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-01 01:00:23 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-04-01 01:00:23 INFO  org.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-01 01:00:23 INFO  org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-01 01:00:23 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-04-01 01:00:23 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@279e8bc0
+2026-04-01 01:00:23 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-04-01 01:00:23 WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-01 01:00:24 INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-01 01:00:24 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01 01:00:25 WARN  org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-01 01:00:25 INFO  org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator/com-ragnax-sanbernardo-notificacion'
+2026-04-01 01:00:25 INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9999"]
+2026-04-01 01:00:25 INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 9999 (http) with context path '/'
+2026-04-01 01:00:25 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - Started ComRagnaxSanbernardoNotificacionApplication in 4.504 seconds (process running for 5.618)
+2026-04-01 01:00:26 INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-01 01:00:26 INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-01 01:00:26 INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-04-01 01:06:52 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01 01:06:52 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-01 01:06:52 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-04-01 01:06:56 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - Starting ComRagnaxSanbernardoNotificacionApplication using Java 17.0.14 with PID 8363 (/Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/target/classes started by mac in /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion)
+2026-04-01 01:06:56 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - The following 1 profile is active: "dev"
+2026-04-01 01:06:57 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-01 01:06:57 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 27 ms. Found 4 JPA repository interfaces.
+2026-04-01 01:06:57 INFO  org.springframework.cloud.context.scope.GenericScope - BeanFactory id=b216a9b9-7760-3a87-90db-bf3e1888c902
+2026-04-01 01:06:58 INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 9999 (http)
+2026-04-01 01:06:58 INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-9999"]
+2026-04-01 01:06:58 INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-01 01:06:58 INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.25]
+2026-04-01 01:06:58 INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-01 01:06:58 INFO  org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1274 ms
+2026-04-01 01:06:58 INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-01 01:06:58 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-04-01 01:06:58 INFO  org.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-01 01:06:58 INFO  org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-01 01:06:58 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-04-01 01:06:59 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@25c16cf7
+2026-04-01 01:06:59 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-04-01 01:06:59 WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-01 01:06:59 INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-01 01:06:59 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01 01:07:00 WARN  org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-01 01:07:01 INFO  org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator/com-ragnax-sanbernardo-notificacion'
+2026-04-01 01:07:01 INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-9999"]
+2026-04-01 01:07:01 INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer - Tomcat started on port 9999 (http) with context path '/'
+2026-04-01 01:07:01 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernardoNotificacionApplication - Started ComRagnaxSanbernardoNotificacionApplication in 4.707 seconds (process running for 5.355)
+2026-04-01 01:07:01 INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-01 01:07:01 INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-01 01:07:01 INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-04-01 01:08:43 INFO  com.ragnax.sanbernardo.notificacion.application.service.BUploadToDesnormalizadoService - processRequest dev usuario jcornejo@sanbernardo unidad tesoreria archivo 2026_03_29_00_23_27/20032026_BP_IMPRENTA DIGITAL.xlsx
+2026-04-01 01:08:53 INFO  com.ragnax.sanbernardo.notificacion.application.service.BUploadToDesnormalizadoService - pathOrigen /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/target/classes/public_sftp/1_upload/cobranza/tesoreria/2026_03_29_00_23_27/20032026_BP_IMPRENTA DIGITAL.xlsx
+2026-04-01 01:08:53 INFO  com.ragnax.sanbernardo.notificacion.application.service.BUploadToDesnormalizadoService - pathDestino /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/2_adjuntado/cobranza/tesoreria/2026_04_01_01_08_43/20032026_BP_IMPRENTA DIGITAL.xlsx
+2026-04-01 01:08:54 INFO  com.ragnax.sanbernardo.notificacion.application.service.BUploadToDesnormalizadoService - ToNormalize. /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/3_desnormalizado/cobranza/tesoreria/2026_04_01_01_08_43/2026_04_01_01_08_43_Resultado_Cobranza_Final.xlsx
+2026-04-01 01:08:54 INFO  com.ragnax.sanbernardo.notificacion.application.service.BUploadToDesnormalizadoService - Archivo Excel generado con éxito. /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/3_desnormalizado/cobranza/tesoreria/2026_04_01_01_08_43/2026_04_01_01_08_43_Resultado_Cobranza_Final.xlsx
+2026-04-01 01:08:54 INFO  com.ragnax.sanbernardo.notificacion.application.service.BUploadToDesnormalizadoService - To Correos. Csv /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/3_desnormalizado/cobranza/tesoreria/2026_04_01_01_08_43/2026_04_01_01_08_43_CobranzaToNormalize.csv
+2026-04-01 01:09:44 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-01 01:09:44 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-01 01:09:44 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

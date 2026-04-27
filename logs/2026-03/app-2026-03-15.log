@@ -1,0 +1,21 @@
+2026-03-15 19:21:34 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernadoNotificacionApplicationTests - Starting ComRagnaxSanbernadoNotificacionApplicationTests using Java 21.0.6 with PID 38883 (started by mac in /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion)
+2026-03-15 19:21:34 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernadoNotificacionApplicationTests - The following 1 profile is active: "dev"
+2026-03-15 19:21:35 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-15 19:21:35 INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 41 ms. Found 5 JPA repository interfaces.
+2026-03-15 19:21:35 INFO  org.springframework.cloud.context.scope.GenericScope - BeanFactory id=ce7f9f10-166a-3712-b811-4205eafb07fc
+2026-03-15 19:21:36 INFO  org.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-15 19:21:36 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-03-15 19:21:36 INFO  org.hibernate.cache.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-15 19:21:37 INFO  org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-15 19:21:37 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-15 19:21:37 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@30cdb46
+2026-03-15 19:21:37 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-15 19:21:37 WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-15 19:21:39 INFO  org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-15 19:21:39 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-15 19:21:40 WARN  org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-15 19:21:41 INFO  org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver - Exposing 2 endpoints beneath base path '/actuator/com-ragnax-sanbernardo-notificacion'
+2026-03-15 19:21:41 INFO  com.ragnax.sanbernardo.notificacion.ComRagnaxSanbernadoNotificacionApplicationTests - Started ComRagnaxSanbernadoNotificacionApplicationTests in 7.787 seconds (process running for 10.033)
+2026-03-15 19:21:42 INFO  org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-15 19:21:42 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-15 19:21:42 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

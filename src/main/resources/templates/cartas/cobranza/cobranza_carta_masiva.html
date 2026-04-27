@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cobranza Administrativa - Cupón de Pago</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            color: #000;
+            width: 215.9mm;
+            height: 279.4mm;
+            margin: 0 auto;
+            padding: 25px 35px;
+            box-sizing: border-box;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .header-info {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .bold { font-weight: bold; }
+
+        /* Contenedor del Logo Superior mejorado */
+        .logo-section {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            width: 300px;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 6px;
+            line-height: 1.2;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 15px;
+            clear: both; /* Crucial: evita que el logo se meta en el título */
+            display: block;
+        }
+
+        /* Nuevo contenedor para alinear elementos en la misma línea */
+        .flex-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Estilo para empujar el folio hacia el centro de la página */
+        .center-folio {
+            flex-grow: 1;
+            text-align: left; /* Cambiamos a left para que el punto de origen sea el inicio */
+
+            /* Ajusta este valor en píxeles o mm para moverlo a la izquierda o derecha */
+            /* Mientras menor sea el número, más a la izquierda estará */
+            padding-left: 190px;
+
+            display: flex;
+            align-items: center;
+        }
+
+        /* Aseguramos que el label-fixed no tenga un ancho que rompa el centrado */
+        .center-folio .label-fixed {
+            width: auto;
+            font-weight: bold;
+        }
+
+        .section-text {
+            text-align: justify;
+            margin-bottom: 10px;
+        }
+
+        .important-note {
+            text-align: center;
+            font-weight: bold;
+            margin: 8px 0;
+            text-transform: uppercase;
+            font-size: 11px;
+
+        }
+
+        .infractor-data {
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        table {
+            width: 95%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+            margin-bottom: 10px;
+        }
+
+        thead th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+            padding: 7px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 8px;
+        }
+
+        tbody td {
+            padding: 7px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 8px;
+        }
+
+        .payment-options { margin: 10px 0; font-size: 10px; }
+        .payment-options ul { list-style: none; padding: 0; margin: 5px 0; }
+
+        .citacion-box {
+            border: 1px solid black;
+            padding: 8px 10px; /* Un poco más de aire interno */
+            margin-top: 5px;
+            font-weight: bold;
+            font-size: 10px; /* Tamaño similar al de la imagen */
+            display: flex;
+            align-items: flex-start; /* Alinea al tope si el texto de la derecha baja a segunda línea */
+            line-height: 1.2;
+        }
+
+        .citacion-texto {
+            text-align: justify;
+            flex-grow: 1;
+        }
+
+
+
+        .signature-container {
+
+            text-align: center;
+
+            margin: 5px 0;
+
+        }
+
+        /* Contenedor de Firma corregido */
+        .footer-signature {
+            margin-top: 30px;
+            text-align: center;
+            width: 100%;
+            clear: both;
+        }
+
+        .footer-address {
+            text-align: center;
+            font-size: 9px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-info" style="font-size: 10px;">
+    <style>
+        .header-row { margin-bottom: 2px; }
+        .label-fixed { display: inline-block; width: 80px; } /* Ajusta el ancho según necesites */
+    </style>
+
+    <div class="header-row">
+        <span class="label-fixed">SEÑOR</span>:
+        <span class="bold">{{NOMBRES}} {{APELLIDO_PATERNO}} {{APELLIDO_MATERNO}}</span>
+    </div>
+
+    <div class="header-row">
+        <span class="label-fixed">DIRECCIÓN</span>:
+        <span class="bold">{{DIRECCION}}</span>
+    </div>
+
+    <div class="header-row flex-container">
+        <div>
+            <span class="label-fixed">COMUNA</span>:
+            <span class="bold">{{COMUNA}}</span>
+        </div>
+        <div class="center-folio">
+            <span class="label-fixed">Corr: {{FOLIO_IMPRESION}}</span>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 7px; width: 250px;">
+    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;{{LOGO_1}}
+    <div style="font-size: 6px; line-height: 1.2; color: #333;">
+
+        ILUSTRE MUNICIPALIDAD DE SAN BERNARDO<br />
+
+        DIRECCIÓN DE ADMINISTRACIÓN Y FINANZAS<br />
+
+        TESORERÍA MUNICIPAL
+    </div>
+</div>
+
+<div class="title">COBRANZA ADMINISTRATIVA</div>
+
+<div class="section-text">
+
+    El Director de Administración y Finanzas de la <span class="bold">I. Municipalidad de San Bernardo</span>, quien suscribe, informa que esta Cobranza corresponde a lo dispuesto en el Artículo 43 Ley Nº 18.287 de Tránsito, que faculta a esta entidad a cobrar una U.T.M. con el descuento de un 30% en el plazo señalado en esta carta.
+
+</div>
+
+<div class="infraction-cause">
+
+    <span class="bold">CAUSA DE LA INFRACCIÓN:</span><br>
+
+    1.- Transitar en Autopista Central por NO ADQUIRIR su Pase Diario en www.pasastesintag.cl desde el día 11 al 30 posterior a la circulación, o<br>
+
+    2.- Transitar sin dispositivo o Dispositivo TAG inhabilitado por deuda en la concesionaria.<br>
+
+    Disposición Infringida: Art. 114 ley 18.290 del Tránsito y artículo 1º del DS MOP Nº850.
+
+</div>
+
+<div class="important-note">
+    TENER PRESENTE QUE EL PAGAR LA BOLETA DE LA AUTOPISTA NO DEJA EXENTO DE PAGO ESTA COBRANZA SEGÚN LEY MENCIONADA.
+</div>
+
+<div class="infractor-data">
+    <span class="bold">Datos del Infractor:</span><br/>
+
+    <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 8px;">
+        <div style="width: 50%;">
+            <span class="bold">RUN Infractor:</span> {{RUT}}-{{DV}}
+        </div>
+        <div style="width: 50%;">
+            <span class="bold">Tipo de Vehículo:</span> {{TIPO_VEHICULO}}
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <div style="width: 50%;">
+            <span class="bold">Placa Patente:</span> {{PATENTE}}
+        </div>
+    </div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Folio Proceso</th>
+        <th>Fecha Infraccion</th>
+        <th>Hora Infraccion</th>
+        <th>Rol MOP</th>
+        <th>Lugar Infraccion</th>
+        <th>Fecha Venc.</th>
+        <th>Monto $</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{TABLA_INFRACCIONES}}
+    </tbody>
+</table>
+
+<div class="payment-options">
+    <span class="bold">OPCIONES DE PAGO:</span>
+    <ul style="list-style: none; padding: 0; margin: 5px 0;">
+        <li>- Portal: <span class="bold">www.sanbernardo.cl (Trámites online, Cobranza Administrativa) con tarjetas bancarias.</span></li>
+        <li>- Cajas de la Tesorería Municipal de San Bernardo, en horario de 8:30 a 14:00 horas</li>
+        <li style="padding-left: 10px;">tesoreria@sanbernardo.cl (consultas).</li>
+        <li>- El valor de este cupón varía según la U.T.M. del mes de vencimiento.</li>
+    </ul>
+</div>
+
+<div class="payment-options">
+    <ul>
+        <span style="float: left;">CORR INT: N&deg; {{CORRELATIVO}}</span>
+    </ul>
+</div>
+<br>
+<div class="citacion-box">
+    <div class="citacion-texto">
+        EN CASO DE NO CANCELAR EN DICHO PLAZO, QUEDA CITADO A LA AUDIENCIA DEL DÍA
+        <span style="text-decoration: underline;">{{FECHA_CITACION}}</span>
+        AL <span class="bold" style="text-decoration: underline;">{{N_JUZGADO}}</span> DE
+        POLICÍA LOCAL DE SAN BERNARDO, UBICADO EN CALLE O’HIGGINS N° 840 {{PISO}}.
+    </div>
+</div>
+
+<div class="signature-container">
+    {{LOGO_2}}
+    <div style="font-size: 8px; margin-top: 5px;">
+        Eyzaguirre 450, San Bernardo, Fonos: 2 2927 0834 - 2 2927 0776. Horario de atención de lunes a viernes de 8:30 a 14: 00 hrs.
+    </div>
+</div>
+
+</body>
+</html>

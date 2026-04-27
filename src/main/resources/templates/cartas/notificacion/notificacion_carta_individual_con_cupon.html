@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Configuración de tamaño CARTA (Letter) para PDF */
+        @page {
+            size: letter;
+            margin: 0.8cm;
+        }
+
+        body {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 10pt;
+            line-height: 1.15;
+            padding: 0 30px;
+            color: #000;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Estilo para el Correlativo Superior Derecho */
+        .correlativo-container {
+            text-align: left;
+            font-size: 11pt;
+            font-weight: normal;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        /* Contenedor unificado */
+        .full-width-box, .cuadro-unificado {
+            width: 100%;
+            border: 1.5pt solid black;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            table-layout: fixed;
+            box-sizing: border-box;
+        }
+
+        .cuadro-unificado {
+            padding: 8px;
+            display: block;
+        }
+
+        .tabla-datos {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+        }
+
+        .tabla-datos td {
+            padding: 2px 5px;
+            font-size: 11pt;
+            vertical-align: top;
+        }
+
+        .negrita-label {
+            font-weight: bold;
+            width: 85px;
+        }
+
+        .texto-ley {
+            font-size: 8.5pt;
+            text-align: justify;
+            font-weight: bold;
+            line-height: 1.1;
+            padding: 5px;
+            margin: 0;
+        }
+
+        /* Estilos de Texto */
+        .centered { text-align: center; }
+        .bold { font-weight: bold; }
+        .underline { text-decoration: underline; }
+
+        .main-title { font-size: 14pt; margin-bottom: 2px; }
+        .sub-title { font-size: 10.5pt; margin-bottom: 15px; }
+
+        .disposicion-table td {
+            border: 1.5pt solid black;
+            padding: 4px 10px;
+        }
+
+        .detail-table th, .detail-table td {
+            border: 1.5pt solid black;
+            padding: 3px;
+            text-align: center;
+            font-size: 9pt;
+        }
+        .header-row { font-weight: bold; background-color: #f2f2f2; }
+
+        .resolution-body { margin: 10px 0; text-align: justify; }
+        .resolution-body p { margin: 3px 0; }
+
+        .signature-container {
+            text-align: right;
+            margin: 5px 0;
+        }
+
+        .signature-img {
+            width: 170px;
+            height: auto;
+        }
+
+        /* SECCIÓN DE PAGO (Reducida un 10%) */
+        .payment-section {
+            margin-top: 10px;
+            font-size: 8.1pt; /* 9pt - 10% */
+        }
+        .payment-title { font-weight: bold; text-decoration: underline; margin-bottom: 3px; }
+        .payment-item { margin-bottom: 4px; text-align: justify; }
+
+        /* SECCIÓN CUPONES INFERIORES */
+        .coupons-wrapper {
+            width: 100%;
+            border-top: 1px dashed #000;
+            padding-top: 8px;
+            margin-top: 5px;
+            page-break-inside: avoid;
+        }
+
+        .coupon {
+            width: 47.5%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .coupon-separator {
+            width: 1%;
+            display: inline-block;
+            border-left: 1px dashed #000;
+            height: 160px; /* Altura ajustada para convivir con el código de barras */
+            margin: 0 4px;
+            vertical-align: top;
+        }
+
+        .coupon-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 3px;
+        }
+
+        .coupon-table td {
+            border: 1px solid black;
+            padding: 2px;
+            font-size: 7.5px;
+            text-align: center;
+        }
+
+        .bg-gray { background-color: #f2f2f2; font-weight: bold; font-size: 6.5px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Fundamental para que los bordes no se vean dobles */
+            font-family: Arial, sans-serif;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="centered bold underline main-title">NOTIFICACIÓN DE SENTENCIA</div>
+<div class="centered bold sub-title">{{JUZGADO}} DE SAN BERNARDO<br /><span style="font-weight: normal; font-size: 9.5pt;">Direcci&oacute;n: O'Higgins 840 {{PISO}}. Atenci&oacute;n {{HORARIO_ATENCION}}</span></div>
+
+<div class="cuadro-unificado">
+    <table class="tabla-datos">
+        <tbody>
+        <tr>
+            <td class="negrita-label">Sr.(a)</td>
+            <td>: {{NOMBRES}}</td>
+        </tr>
+        <tr>
+            <td class="negrita-label">Direcci&oacute;n</td>
+            <td>: {{DIRECCION}}</td>
+        </tr>
+        <tr>
+            <td class="negrita-label">Comuna</td>
+            <td>: {{COMUNA}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="texto-ley">CONFORME A LA LEY N 19.841, ESTA CARTA DEBER&Aacute; SER ENTREGADA A CUALQUIER PERSONA ADULTA DEL DOMICILIO, O DEJADA EN UN LUGAR VISIBLE DEL DOMICILIO, ESTA CARTA NO PUEDE SER DEVUELTA.</div>
+</div>
+
+<p class="bold" style="margin-left: 5px; font-size: 10.5pt; margin-top: 5px;">PLACA PATENTE: {{PLACA_PATENTE}}</p>
+
+<table class="full-width-box disposicion-table">
+    <tbody>
+    <tr>
+        <td class="bold" style="width: 38%;">Disposici&oacute;n Infringida</td>
+        <td>Articulo 114 de la Ley 18.290 de Tr&aacute;nsito</td>
+    </tr>
+    <tr>
+        <td class="bold">Lugar de la(s) Infracci&oacute;n(es)</td>
+        <td>Autopista Central</td>
+    </tr>
+    <tr>
+        <td class="bold">P&oacute;rticos de Cobro</td>
+        <td>De la comuna de San Bernardo</td>
+    </tr>
+    <tr>
+        <td class="bold">Denunciante</td>
+        <td>Direcci&oacute;n de Administraci&oacute;n y Finanzas de Municipalidad de San Bernardo</td>
+    </tr>
+    <tr>
+        <td class="bold">Rut del Infractor</td>
+        <td>{{RUT}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="resolution-body">
+    <p>NOTIFICO A UD., que con fecha {{FECHA_CITACION}} se ha dictado la siguiente Resoluci&oacute;n:</p>
+    <p class="bold" style="font-style: italic;">COND&Eacute;NESE al pago de una multa de 1 (una) U.T.M. por cada una de las infracciones a que se refieren los roles comprendidos en esta notificaci&oacute;n, dentro del plazo de 5 d&iacute;as. Si no pagare dentro del plazo legal, of&iacute;ciese al Registro de Multas de Tr&aacute;nsito No Pagadas.</p>
+</div>
+
+<p class="bold" style="margin-bottom: 5px;">Detalle Infracciones:</p>
+<table class="full-width-box detail-table">
+    <tbody>
+    <tr class="header-row">
+        <td style="width: 5%;">N&deg;</td>
+        <td style="width: 20%;">MAC</td>
+        <td style="width: 20%;">ROL CAUSA</td>
+        <td style="width: 10%;">A&Ntilde;O</td>
+        <td style="width: 15%;">HORA INF.</td>
+        <td style="width: 15%;">FECHA INF.</td>
+        <td style="width: 15%;">MONTO U.T.M.</td>
+    </tr>
+    {{TABLA_INFRACCIONES}}
+    </tbody>
+</table>
+
+<div class="signature-container">
+    {{LOGO_2}}
+</div>
+
+<div class="payment-section">
+    <div class="payment-title">Formas de pago:</div>
+    <div class="payment-item">1. Ingresando en la p&aacute;gina web de la ILUSTRE MUNICIPALIDAD DE SAN BERNARDO: <b>www.sanbernardo.cl</b>.</div>
+    <div class="payment-item">2. Mediante Vale Vista a nombre de: <b>Tesorer&iacute;a Municipal de San Bernardo, RUT N&deg; 69.072.700-5</b>.</div>
+    <div class="payment-item">3. Directamente en la caja de Tesorer&iacute;a ubicada en el {{JUZGADO}} DE SAN BERNARDO.</div>
+</div>
+
+<div class="payment-section">
+    <div class="payment-item">CORR INT: N&deg; {{CORRELATIVO}}</div>
+</div>
+
+
+<div class="coupons-wrapper">
+    <div class="coupon">
+        <div style="overflow: auto;">
+            <span style="font-size: 8px; font-weight: bold;">CAUSA TAG</span>
+            {{LOGO_3}}
+        </div>
+        <div style="font-size: 7px; margin-bottom: 5px;">CUPON RECAUDACION POR CAJA</div>
+        <div style="font-size: 5px; margin-bottom: 5px;">{{JUZGADO}}</div>
+
+        <table class="coupon-table">
+            <tr>
+                <td class="bg-gray">N° Conv. BCI<br />120600</td>
+                <td class="bg-gray">N° Conv. Servipag<br />97520</td>
+                <td class="bg-gray">RUT<br />{{RUT}}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: left;"><span class="bg-gray">Nombre:</span><br />{{NOMBRES}}</td>
+                <td><span class="bg-gray">FOLIO</span><br />{{FOLIO}}</td>
+            </tr>
+        </table>
+
+        <table class="coupon-table" style="margin-top: 2px;">
+            <tr>
+                <td class="bg-gray" style="width: 60%;">Detalle</td>
+                <td class="bg-gray">Total</td>
+                <td class="bg-gray">Moneda</td>
+            </tr>
+            <tr>
+                <td style="text-align: left;">INFRACCION MULTA TAG</td>
+                <td>{{VALOR_MULTA}}</td>
+                <td>U.T.M.</td>
+            </tr>
+            <tr>
+                <td class="bg-gray" style="text-align: left;">Valor de la Cuota</td>
+                <td>{{VALOR_MULTA}}</td>
+                <td class="bg-gray">Vencimiento</td>
+            </tr>
+            <tr>
+                <td class="bg-gray" style="text-align: left;">Total Pagado $</td>
+                <td></td>
+                <td rowspan="2">{{FECHA_VENCIMIENTO}}</td>
+            </tr>
+        </table>
+        <div class="barcode-area">
+            <div style="font-size: 7px;"></div>
+        </div>
+    </div>
+
+    <div class="coupon-separator"></div>
+
+    <div class="coupon">
+        <div style="overflow: auto;">
+            <span style="font-size: 8px; font-weight: bold;">CAUSA TAG</span>
+            {{LOGO_3}}
+        </div>
+        <div style="font-size: 7px; margin-bottom: 5px;">CUPON RECAUDACION POR CAJA</div>
+        <div style="font-size: 5px; margin-bottom: 5px;">{{JUZGADO}}</div>
+
+        <table class="coupon-table">
+            <tr>
+                <td class="bg-gray">N° Conv. BCI<br />120600</td>
+                <td class="bg-gray">N° Conv. Servipag<br />97520</td>
+                <td class="bg-gray">RUT<br />{{RUT}}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: left;"><span class="bg-gray">Nombre:</span><br />{{NOMBRES}}</td>
+                <td><span class="bg-gray">FOLIO</span><br />{{FOLIO}}</td>
+            </tr>
+        </table>
+
+        <table class="coupon-table" style="margin-top: 2px;">
+            <tr>
+                <td class="bg-gray" style="width: 60%;">Detalle</td>
+                <td class="bg-gray">Total</td>
+                <td class="bg-gray">Moneda</td>
+            </tr>
+            <tr>
+                <td style="text-align: left;">INFRACCION MULTA TAG</td>
+                <td>{{VALOR_MULTA}}</td>
+                <td>U.T.M.</td>
+            </tr>
+            <tr>
+                <td class="bg-gray" style="text-align: left;">Valor de la Cuota</td>
+                <td>{{VALOR_MULTA}}</td>
+                <td class="bg-gray">Vencimiento</td>
+            </tr>
+            <tr>
+                <td class="bg-gray" style="text-align: left;">Total Pagado $</td>
+                <td></td>
+                <td rowspan="2">{{FECHA_VENCIMIENTO}}</td>
+            </tr>
+        </table>
+        <div class="barcode-area">
+
+            <div style="font-size: 7px;"></div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | CCM Valdivia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --dark-bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --ocre: #e8a643;
+            --fucsia: #d63384;
+            --cian: #4db8cc;
+            --text-light: #ffffff;
+            --input-bg: #3d3d3d;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at center, #333 0%, #1a1a1a 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border-top: 5px solid var(--cian); /* Detalle de color institucional */
+        }
+
+        .login-header {
+            padding: 40px 30px 20px;
+            text-align: center;
+        }
+
+        .logo-box {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .logo-box span:nth-child(1) { color: var(--ocre); }
+        .logo-box span:nth-child(2) { color: var(--fucsia); }
+        .logo-box span:nth-child(3) { color: var(--cian); }
+
+        .login-header h2 {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 18px;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-body {
+            padding: 20px 40px 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            color: #888;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background-color: var(--input-bg);
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--cian);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, var(--cian), #3aa7bc);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 13px;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--ocre);
+        }
+
+        /* Línea decorativa inferior con los 3 colores */
+        .color-strip {
+            display: flex;
+            height: 4px;
+            width: 100%;
+        }
+        .strip-1 { background-color: var(--ocre); flex: 1; }
+        .strip-2 { background-color: var(--fucsia); flex: 1; }
+        .strip-3 { background-color: var(--cian); flex: 1; }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="login-header">
+        <div class="logo-box">
+            <span>C</span><span>C</span><span>M</span>
+        </div>
+        <h2>Sistema de Gestión <br> Ordenes de Compra</h2>
+        <p style="color: #888; font-size: 12px; margin-top: 5px;">Corporación Cultural Municipal Valdivia</p>
+    </div>
+
+    <div class="login-body">
+        <form>
+            <div class="form-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" placeholder="RUT Usuario (Ej: 12.345.678-9)" required>
+            </div>
+
+            <div class="form-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" placeholder="Contraseña" required>
+            </div>
+
+            <button type="submit" class="btn-login">INGRESAR</button>
+        </form>
+
+        <div class="footer-links">
+            <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+    </div>
+
+    <div class="color-strip">
+        <div class="strip-1"></div>
+        <div class="strip-2"></div>
+        <div class="strip-3"></div>
+    </div>
+</div>
+
+</body>
+</html>

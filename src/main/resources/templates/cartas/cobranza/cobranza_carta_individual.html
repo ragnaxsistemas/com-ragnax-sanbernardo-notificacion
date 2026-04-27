@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8"/>
+
+    <title>Cobranza Administrativa - Cupón de Pago</title>
+
+    <style>
+
+        /* Configuración de tamaño Carta para la impresión */
+
+        @page {
+
+            size: letter;
+
+            margin: 0;
+
+        }
+
+
+
+        body {
+
+            font-family: "Times New Roman", Times, serif;
+
+            color: #000;
+
+            width: 215.9mm;
+
+            height: 279.4mm;
+
+            margin: 0 auto;
+
+            padding: 25px 35px; /* Ajuste de márgenes internos */
+
+            box-sizing: border-box;
+
+            font-size: 11px; /* Subimos de 10.5 a 11 */
+
+            line-height: 1.3;
+
+        }
+
+
+
+        .header-info { margin-bottom: 10px; }
+
+        .bold { font-weight: bold; }
+
+        .title {
+
+            text-align: center;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            text-decoration: underline;
+
+            margin: 8px 0;
+
+        }
+
+        /* Nuevo contenedor para alinear elementos en la misma línea */
+        .flex-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Estilo para empujar el folio hacia el centro de la página */
+        .center-folio {
+            flex-grow: 1;
+            text-align: left; /* Cambiamos a left para que el punto de origen sea el inicio */
+
+            /* Ajusta este valor en píxeles o mm para moverlo a la izquierda o derecha */
+            /* Mientras menor sea el número, más a la izquierda estará */
+            padding-left: 190px;
+
+            display: flex;
+            align-items: center;
+        }
+
+        /* Aseguramos que el label-fixed no tenga un ancho que rompa el centrado */
+        .center-folio .label-fixed {
+            width: auto;
+            font-weight: bold;
+        }
+
+        .section-text { text-align: justify; margin-bottom: 8px; }
+
+
+
+        .important-note {
+
+            text-align: center;
+
+            font-weight: bold;
+
+            margin: 8px 0;
+
+            text-transform: uppercase;
+
+            font-size: 11px;
+
+        }
+
+        .infractor-data-row { width: 100%; margin-bottom: 9px; }
+
+        .payment-options { margin: 8px 0; font-size: 10px; }
+
+        .payment-options ul { list-style: none; padding: 0; margin: 3px 0; }
+
+        .payment-options li { margin-bottom: 2px; }
+
+        .citacion-box {
+
+            border: 1px solid black;
+
+            padding: 6px;
+
+            margin: 8px 0;
+
+            font-weight: bold;
+
+            text-align: left;
+
+            font-size: 9px;
+
+        }
+
+
+
+        .signature-container {
+
+            text-align: center;
+
+            margin: 5px 0;
+
+        }
+
+
+
+        .signature-img {
+
+            width: 190px; /* Tamaño reducido para asegurar que el cupón no salte de página */
+
+            height: auto;
+
+        }
+
+
+
+        /* SECCIÓN CUPONES INFERIORES */
+
+        .coupons-wrapper {
+
+            width: 100%;
+
+            border-top: 1px dashed #000;
+
+            padding-top: 8px;
+
+            margin-top: 5px;
+
+            page-break-inside: avoid;
+
+        }
+
+
+
+        .coupon {
+
+            width: 47.5%;
+
+            display: inline-block;
+
+            vertical-align: top;
+
+        }
+
+
+
+        .coupon-separator {
+
+            width: 1%;
+
+            display: inline-block;
+
+            border-left: 1px dashed #000;
+
+            height: 160px; /* Altura ajustada para convivir con el código de barras */
+
+            margin: 0 4px;
+
+            vertical-align: top;
+
+        }
+
+
+
+        .coupon-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 3px;
+
+        }
+
+
+
+        .coupon-table td {
+
+            border: 1px solid black;
+
+            padding: 2px;
+
+            font-size: 7.5px;
+
+            text-align: center;
+
+        }
+
+
+
+        .bg-gray { background-color: #f2f2f2; font-weight: bold; font-size: 6.5px; }
+
+
+
+        .barcode-area {
+
+            text-align: center;
+
+            margin-top: 5px;
+
+            width: 100%;
+
+        }
+
+
+
+        .barcode-placeholder {
+
+            height: 35px; /* Altura fija para el código de barras generado por PDF */
+
+            overflow: hidden;
+
+            margin-bottom: 2px;
+
+        }
+
+
+
+        .barcode-text {
+
+            font-size: 7px;
+
+            font-family: monospace;
+
+        }
+
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse; /* Fundamental para que los bordes no se vean dobles */
+
+            font-family: Arial, sans-serif;
+
+            margin-bottom: 20px;
+
+        }
+
+
+
+        /* 2. Estilo para los Títulos (Encabezados) */
+
+        thead th {
+
+            background-color: #f2f2f2; /* Fondo levemente oscurecido */
+
+            color: #333;               /* Texto en gris oscuro para contraste */
+
+            font-weight: bold;
+
+            padding: 12px 8px;
+
+            border: 1px solid #ccc;    /* Borde gris que encierra el título */
+
+            text-align: left;
+
+        }
+
+
+
+        /* 3. Estilo para las Celdas de datos */
+
+        tbody td {
+
+            padding: 10px 8px;
+
+            border: 1px solid #ddd;    /* Borde un poco más claro que el del header */
+
+        }
+
+
+
+        /* 4. Opcional: Efecto cebra para mejor lectura */
+
+        tbody tr:nth-child(even) {
+
+            background-color: #fafafa;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+<div class="header-info" style="font-size: 10px;">
+    <style>
+        .header-row { margin-bottom: 2px; }
+        .label-fixed { display: inline-block; width: 80px; } /* Ajusta el ancho según necesites */
+    </style>
+
+    <div class="header-row">
+        <span class="label-fixed">SEÑOR</span>:
+        <span class="bold">{{NOMBRES}} {{APELLIDO_PATERNO}} {{APELLIDO_MATERNO}}</span>
+    </div>
+
+    <div class="header-row">
+        <span class="label-fixed">DIRECCIÓN</span>:
+        <span class="bold">{{DIRECCION}}</span>
+    </div>
+
+    <div class="header-row flex-container">
+        <div>
+            <span class="label-fixed">COMUNA</span>:
+            <span class="bold">{{COMUNA}}</span>
+        </div>
+        <div class="center-folio">
+            <span class="label-fixed">Corr: {{FOLIO_IMPRESION}}</span>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 7px; width: 250px;">
+
+    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;{{LOGO_1}}
+
+    <div style="font-size: 6px; line-height: 1.2; color: #333;">
+
+        ILUSTRE MUNICIPALIDAD DE SAN BERNARDO<br />
+
+        DIRECCIÓN DE ADMINISTRACIÓN Y FINANZAS<br />
+
+        TESORERÍA MUNICIPAL
+
+    </div>
+
+</div>
+
+
+
+
+<div class="title">COBRANZA ADMINISTRATIVA</div>
+
+<div class="section-text">
+
+    El Director de Administración y Finanzas de la <span class="bold">I. Municipalidad de San Bernardo</span>, quien suscribe, informa que esta Cobranza corresponde a lo dispuesto en el Artículo 43 Ley Nº 18.287 de Tránsito, que faculta a esta entidad a cobrar una U.T.M. con el descuento de un 30% en el plazo señalado en esta carta.
+
+</div>
+
+
+
+<div class="infraction-cause">
+
+    <span class="bold">CAUSA DE LA INFRACCIÓN:</span><br>
+
+    1.- Transitar en Autopista Central por NO ADQUIRIR su Pase Diario en www.pasastesintag.cl desde el día 11 al 30 posterior a la circulación, o<br>
+
+    2.- Transitar sin dispositivo o Dispositivo TAG inhabilitado por deuda en la concesionaria.<br>
+
+    Disposición Infringida: Art. 114 ley 18.290 del Tránsito y artículo 1º del DS MOP Nº850.
+
+</div>
+
+<br>
+
+<div class="important-note">
+
+    TENER PRESENTE QUE EL PAGAR LA BOLETA DE LA AUTOPISTA NO DEJA EXENTO DE PAGO ESTA COBRANZA SEGÚN LEY MENCIONADA.
+
+</div>
+
+<br>
+
+<div class="infractor-data">
+    <span class="bold">Datos del Infractor:</span><br/>
+
+    <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 8px;">
+        <div style="width: 50%;">
+            <span class="bold">RUN Infractor:</span> {{RUT}}-{{DV}}
+        </div>
+        <div style="width: 50%;">
+            <span class="bold">Tipo de Vehículo:</span> {{TIPO_VEHICULO}}
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; width: 100%;">
+        <div style="width: 50%;">
+            <span class="bold">Placa Patente:</span> {{PATENTE}}
+        </div>
+        <div style="width: 50%;">
+            <span class="bold">Fecha Infracción:</span> {{FECHA_INFRACCION}} <span style="margin-left: 15px;" class="bold">Hora:</span> {{HORA_INFRACCION}}
+        </div>
+    </div>
+    <br/>
+</div>
+
+<div class="payment-options">
+
+    <span class="bold">OPCIONES DE PAGO:</span>
+
+    <ul>
+
+        <li>- Portal: <span class="bold">www.sanbernardo.cl (Trámites online, Cobranza Administrativa) con tarjetas bancarias.</span></li>
+
+        <li>- Cajas de la Tesorería Municipal de San Bernardo, en horario de 8:30 a 14:00 horas</li>
+
+        <li>&#160;&#160;tesoreria@sanbernardo.cl (consultas).</li>
+
+        <li>- El valor de este cupón varía según la U.T.M. del mes de vencimiento.</li>
+
+    </ul>
+
+</div>
+
+
+
+<div class="citacion-box">
+
+    EN CASO DE NO CANCELAR EN DICHO PLAZO, QUEDA CITADO A LA AUDIENCIA DEL DÍA
+    <span style="text-decoration: underline;">{{FECHA_CITACION}}</span>
+    AL <span style="text-decoration: underline;">{{N_JUZGADO}}</span> DE
+    POLICÍA LOCAL DE SAN BERNARDO, UBICADO EN CALLE O’HIGGINS N° 840 {{PISO}}.
+
+</div>
+
+<div class="signature-container">
+
+    {{LOGO_2}}
+
+    <div style="font-size: 8px; margin-top: 5px;">
+
+        Eyzaguirre 450, San Bernardo, Fonos: 2 2927 0834 - 2 2927 0776. Horario de atención de lunes a viernes de 8:30 a 14: 00 hrs.
+
+    </div>
+
+</div>
+<div class="payment-options">
+    <ul>
+        <span style="float: left;">CORR INT: N&deg; {{CORRELATIVO}}</span>
+    </ul>
+</div>
+<br>
+
+
+<div class="coupons-wrapper">
+
+    <div class="coupon">
+
+        <div style="overflow: auto;">
+
+            <span style="font-size: 8px; font-weight: bold;">I. MUNICIPALIDAD DE SAN BERNARDO</span>
+
+            {{LOGO_3}}
+
+        </div>
+
+        <div style="font-size: 7px; margin-bottom: 5px;">CUPON RECAUDACION POR CAJA</div>
+
+
+
+        <table class="coupon-table">
+
+            <tr>
+
+                <td class="bg-gray">N° Conv. BCI<br />120600</td>
+
+                <td class="bg-gray">N° Conv. Servipag<br />97520</td>
+
+                <td class="bg-gray">RUT<br />{{RUT}}-{{DV}}</td>
+
+            </tr>
+
+            <tr>
+
+                <td colspan="2" style="text-align: left;"><span class="bg-gray">Nombre:</span><br />{{NOMBRES}} {{APELLIDO_PATERNO}} {{APELLIDO_MATERNO}}</td>
+
+                <td><span class="bg-gray">FOLIO INTERNO</span><br />{{FOLIO}}</td>
+
+            </tr>
+
+        </table>
+
+
+
+        <table class="coupon-table" style="margin-top: 2px;">
+
+            <tr>
+
+                <td class="bg-gray" style="width: 60%;">Detalle</td>
+
+                <td class="bg-gray">Total</td>
+
+                <td class="bg-gray">Moneda</td>
+
+            </tr>
+
+            <tr>
+
+                <td style="text-align: left;">INFRACCION MULTA TAG</td>
+
+                <td>{{VALOR_MULTA}}</td>
+
+                <td>Pesos($)</td>
+
+            </tr>
+
+            <tr>
+
+                <td class="bg-gray" style="text-align: left;">Valor de la Cuota</td>
+
+                <td>{{VALOR_MULTA}}</td>
+
+                <td class="bg-gray">Vencimiento</td>
+
+            </tr>
+
+            <tr>
+
+                <td class="bg-gray" style="text-align: left;">Total Pagado $</td>
+
+                <td></td>
+
+                <td rowspan="2">{{FECHA_VENCIMIENTO}}</td>
+
+            </tr>
+
+        </table>
+
+        <div class="barcode-area">
+
+            <div style="font-size: 7px;"></div>
+
+        </div>
+
+    </div>
+
+    <div class="coupon-separator"></div>
+
+
+
+    <div class="coupon">
+
+        <div style="overflow: auto;">
+
+            <span style="font-size: 8px; font-weight: bold;">I. MUNICIPALIDAD DE SAN BERNARDO</span>
+
+            {{LOGO_3}}
+
+        </div>
+
+        <div style="font-size: 7px; margin-bottom: 5px;">CUPON RECAUDACION POR CAJA</div>
+
+
+
+        <table class="coupon-table">
+
+            <tr>
+
+                <td class="bg-gray">N° Conv. BCI<br />120600</td>
+
+                <td class="bg-gray">N° Conv. Servipag<br />97520</td>
+
+                <td class="bg-gray">RUT<br />{{RUT}}-{{DV}}</td>
+
+            </tr>
+
+            <tr>
+
+                <td colspan="2" style="text-align: left;"><span class="bg-gray">Nombre:</span><br />{{NOMBRES}} {{APELLIDO_PATERNO}} {{APELLIDO_MATERNO}}</td>
+
+                <td><span class="bg-gray">FOLIO INTERNO</span><br />{{FOLIO}}</td>
+
+            </tr>
+
+        </table>
+
+
+
+        <table class="coupon-table" style="margin-top: 2px;">
+
+            <tr>
+
+                <td class="bg-gray" style="width: 60%;">Detalle</td>
+
+                <td class="bg-gray">Total</td>
+
+                <td class="bg-gray">Moneda</td>
+
+            </tr>
+
+            <tr>
+
+                <td style="text-align: left;">INFRACCION MULTA TAG</td>
+
+                <td>{{VALOR_MULTA}}</td>
+
+                <td>Pesos($)</td>
+
+            </tr>
+
+            <tr>
+
+                <td class="bg-gray" style="text-align: left;">Valor de la Cuota</td>
+
+                <td>{{VALOR_MULTA}}</td>
+
+                <td class="bg-gray">Vencimiento</td>
+
+            </tr>
+
+            <tr>
+
+                <td class="bg-gray" style="text-align: left;">Total Pagado $</td>
+
+                <td></td>
+
+                <td rowspan="2">{{FECHA_VENCIMIENTO}}</td>
+
+            </tr>
+
+        </table>
+
+        <div class="barcode-area">
+
+
+
+            <div style="font-size: 7px;"></div>
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+
+</body>
+
+</html>

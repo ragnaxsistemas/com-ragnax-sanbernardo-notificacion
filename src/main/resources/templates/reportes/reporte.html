@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Procesamiento de Cartas</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+            background-color: #ffffff;
+            @bottom-right {
+                content: "Página " counter(page);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-banner {
+            background-color: #1a3c5a; /* Azul institucional */
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 18pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .summary-text {
+            background-color: #f8f9fa;
+            border-left: 5px solid #1a3c5a;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-style: italic;
+            font-size: 11pt;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+
+        th {
+            background-color: #edf2f7;
+            color: #1a3c5a;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #1a3c5a;
+            font-size: 10pt;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 10pt;
+        }
+
+        .highlight-row {
+            background-color: #fffdf0; /* Un tono crema suave para resaltar */
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+            font-size: 9pt;
+            font-weight: bold;
+        }
+
+        .status-success {
+            color: #2f855a;
+            font-weight: bold;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            font-size: 9pt;
+            color: #718096;
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-banner">
+    <h1>Reporte de Generacion de Cartas</h1>
+    <div style="font-size: 10pt; opacity: 0.8;">Sistema de Notificaciones - Tesorería</div>
+</div>
+
+<div class="container">
+    <div class="summary-text">
+        "El {{observacion}} de Tesorería contenía {{totalFilasGeneradasUpload}} filas, y posterior al procesamiento y normalización con Correos de Chile, dio como resultado {{SIZE_CSV_CORREOS}} filas, generando un total de {{totalCartas}} cartas con sus respectivos códigos de seguimiento Carta Certificada."
+    </div>
+
+    <h3>Detalle del Procesamiento</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Descripción del Hito</th>
+            <th>Identificador / Origen</th>
+            <th>Cantidad de Filas</th>
+            <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Carga Inicial de Datos</td>
+            <td>{{observacion}} - {{show_unidad_UPPER}}</td>
+            <td>{{totalFilasGeneradasUpload}}</td>
+            <td>Procesado</td>
+        </tr>
+        <tr>
+            <td>Normalización Correos de Chile</td>
+            <td>Servicio Externo</td>
+            <td>{{SIZE_CSV_CORREOS}}</td>
+            <td>Completado</td>
+        </tr>
+        <tr class="highlight-row">
+            <td>Generación de Cartas Finales</td>
+            <td>{{observacion}} - {{show_unidad_UPPER}}</td>
+            <td>{{totalCartas}}</td>
+            <td class="status-success">✓ Generado</td>
+        </tr>
+        <tr class="highlight-row">
+            <td>Cartas Individuales</td>
+            <td>{{observacion}} - {{show_unidad_UPPER}}</td>
+            <td>{{totalIndividuales}}</td>
+            <td class="status-success">✓ Generado</td>
+        </tr>
+        <tr class="highlight-row">
+            <td>Cartas Masivas</td>
+            <td>{{observacion}} - {{show_unidad_UPPER}}</td>
+            <td>{{totalMasivas}}</td>
+            <td class="status-success">✓ Generado</td>
+        </tr>
+        <tr class="highlight-row">
+            <td>Errores en la Generacion de Cartas</td>
+            <td></td>
+            <td>{{totalErroneas}}</td>
+            <td class="status-success">✓ Generado</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 30px;">
+        <p><strong>Observaciones:</strong> Se ha realizado la depuración de registros según los estándares de validación de direcciones de Correos de Chile. El archivo final está listo para la emisión física.</p>
+    </div>
+</div>
+
+<div class="footer-note">
+    Este documento es un reporte automático generado por el Sistema de Generacion de Cartas para la Ilustre Municipalidad de San Bernardo.<br>
+    Fecha de emisión: {{FECHA_AHORA_Text}}
+</div>
+
+</body>
+</html>

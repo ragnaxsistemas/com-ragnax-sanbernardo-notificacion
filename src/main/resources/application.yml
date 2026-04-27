@@ -1,0 +1,191 @@
+info:
+  app:
+    description: '@project.description@'
+    encoding: '@project.build.sourceEncoding@'
+    java:
+      version: '@java.version@'
+    name: '@project.name@'
+    version: '@project.version@'
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: com-ragnax-sanbernardo-notificacion
+  hikari:
+    maximum-pool-size: 10
+    minimum-idle: 5
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  mail:
+    host: smtp.resend.com
+    port: 465
+    username: resend
+    password: re_UNjdbpTp_GF4LZDirLGtHe9LDy2TojzhR
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+        socketFactory:
+          port: 465
+          class: javax.net.ssl.SSLSocketFactory
+  # La contraseña es la API Key que generaste (incluyendo el 're_')
+
+datasource:
+  primary:
+    jdbc-url: jdbc:mysql://localhost:3306/imsb?useSSL=false
+    username: root
+    password: m3R0b0L4sT4s4sD3lTr4b4j0
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  usuarios:
+    jdbc-url: jdbc:mysql://localhost:3306/ragnax_usuariov1?useSSL=false
+    username: root
+    password: m3R0b0L4sT4s4sD3lTr4b4j0
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/imsb?useSSL=false
+#    username: root
+#    password: m3R0b0L4sT4s4sD3lTr4b4j0
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    hikari:
+#      maximum-pool-size: 10
+#      minimum-idle: 5
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: none
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLDialect
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+  use-fqn: true
+
+
+server:
+  port: 9999
+
+logging:
+  level:
+    com.itextpdf.html2pdf.css.apply.util.FlexApplierUtil: ERROR
+  file:
+    name: logfile
+    path: /
+management:
+  endpoint:
+    import jakarta.persistence.s:
+      enabled: true
+    metrics:
+      enabled: true
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /actuator/${spring.application.name}
+      exposure:
+        include: logfile,health
+
+swagger:
+  configuracion:
+    apiinfo:
+      titulo: ${spring.application.name} - ${spring.profiles.active}
+      version: ${info.app.version}
+      descripcion: Microservices ${spring.application.name}-> ${spring.profiles.active}
+      termsOfServiceUrl: www.google.com
+      license: Swagger license ${spring.profiles.active}
+      licenseUrl: www.facebook.com
+    documentacion:
+      swgg: http://localhost:${server.port}/swagger-ui.html#
+      docs: http://localhost:${server.port}/api-docs.yaml
+    empresainfo:
+      email: ceo@ragnaxsistemas.cl
+      nombre: RagnaxSistemas
+      url: www.ragnaxsistemas.cl
+
+servicio:
+  app:
+    generarCartaNotificacion: generarCartaNotificacion
+    upload: upload
+    listar: listar/{tipo}
+    download: download/{tipo}/{carpeta}
+    sdownload: download/{tipo}/{carpeta}/{archivo}
+archivo:
+  excel:
+    nombreCarpetaUpload: public_sftp/1_upload/
+    nombreCarpetaNormalizada: public_sftp/3_normalizado/
+    nombreCarpetaMerge: public_sftp/4_merge/
+    #nombreArchivo: LIBRO_EJEMPLO_con50mil_corregido_2y.xlsx
+    #nombreArchivo: 16092025_BP.xlsx
+    nombreArchivoNormalizadaCobranza: "Cobranza_ToNormalize.xlsx"
+    nombreArchivoNormalizadaCobranzaCorreos: "_EnviarCorreos.csv"
+    nombreArchivoMergeCobranza: "_Procesar_Cobranza.xlsx"
+    #nombreHoja: Datos_corregidos_patente_infrac
+    nombreHojaUploadCobranza: Hoja1
+    nombreHojaNormalizadaCobranza: ToNormalize
+    nombreHojaMergeCobranza: Procesar
+    #nombreHojaCobranza: Normalizada
+
+
+
+    nombreHojaNotificacion: CITACION
+
+  html:
+    nombreCarpetaTemplate: templates/
+    nombreArchivoCobranzaIndividual: cartas/cobranza/cobranza_carta_individual.html
+    nombreArchivoCobranzaMasiva:   cartas/cobranza/cobranza_carta_masiva.html
+#    nombreArchivoNotificacionIndividual: cartas/notificacion/notificacion_carta_individual_con_cupon.html
+#    nombreArchivoNotificacionMasiva: cartas/notificacion/notificacion_carta_masiva.html
+    nombreArchivoNotificacionV2: cartas/notificacion/notificacion_carta_v2.html
+    nombreArchivoReporte: reportes/reporte.html
+    logoBciCupon: logos/bci_cupon.png
+    logoFirma1Juzgado: logos/firma1Juzgado.png
+    logoFirma2Juzgado: logos/firma2Juzgado.png
+    logoFirmaTesoreria: logos/firmaTesoreria-DAF.png
+    logoEscudo: logos/escudo-solo-redux32kb.png
+    logo: logos/LogoEsquinaSuperiorIzquierda.png
+
+  creacion:
+    carpeta: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/
+    respaldo: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/2_backup/
+    respaldoNormalizado: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/5_procesado/
+    adjuntos:
+      subCarpetaNormalizado: 3_normalizado/
+      #subCarpetaNormalizadoDocumento: documento/
+      #subCarpetaNormalizadoCorreos: correos/
+      subCarpetaMerge: 4_merge/
+      #subCarpetaMergeDocumento: CARTAS/
+      #subCarpetaMergeCorreos: correos/
+      #subCarpetaProcesado: 5_procesado/
+
+      subCarpetaCobranza: 6_cobranza/
+      subCarpetaCobranzaDocumento: CARTAS/
+      subCarpetaCobranzaConsolidado: CARTAS_CONSOLIDADAS/
+      subCarpetaCobranzaReporte: REPORTES/
+      subCarpetaNotificacion: 7_notificacion/
+      subCarpetaNotificacionDocumento: CARTAS/
+      subCarpetaNotificacionConsolidado: CARTAS_CONSOLIDADAS
+      subCarpetaNotificacionReporte: REPORTES/
+      nombreArchivoConsolidado: consolidado.pdf
+      nombreArchivoReporte: reporte.pdf
