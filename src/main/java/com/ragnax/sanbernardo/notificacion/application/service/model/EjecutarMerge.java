@@ -35,6 +35,7 @@ public class EjecutarMerge extends EjecutarUpload implements Serializable {
     private String totalFilasGeneradasCsv;
 
     private MultipartFile file;***/
+    private String rutaExcelUnion;
 
     private String fechaCreacionMerge;
     private String usuarioMerge;

@@ -28,6 +28,7 @@ public class CCorreosToMergeController {
             @PathVariable String tipo,
             @PathVariable String unidad,
             @RequestParam(value = "user", required = false, defaultValue = "") String user,
+            @RequestParam(value = "rutaExcel", required = false, defaultValue = "") String rutaExcelUnion,
            // @RequestParam(value = "observacion", required = false, defaultValue = "") String observacion,
            // @RequestParam(value = "ejecutarNotificacion", required = false, defaultValue = "") String sejecutarNotificacion,
             @RequestParam("archivo") MultipartFile fileCorreosCsv) throws Exception {
@@ -38,6 +39,7 @@ public class CCorreosToMergeController {
                 .unidad(unidad)
                 .usuarioMerge(user)
                 .fileCorreosCsv(fileCorreosCsv)
+                .rutaExcelUnion(rutaExcelUnion)
                 .build();
 
         return ccorreosToProcessService.procesarToUnnormToMerge(ejecutarMerge);

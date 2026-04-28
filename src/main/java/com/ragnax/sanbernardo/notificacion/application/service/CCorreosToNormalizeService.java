@@ -13,12 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +33,7 @@ public class CCorreosToNormalizeService {
     public ResponseEntity<?> procesarToUnnormToMerge(EjecutarMerge ejecutarMerge) throws Exception {
 
         //String prefijo = null;
-        String originalName = ejecutarMerge.getFileCorreosCsv().getOriginalFilename();
+        //String originalNameCsv = ejecutarMerge.getFileCorreosCsv().getOriginalFilename();
 
         /***if (originalName != null && !originalName.isEmpty()) {
             // Extraemos el prefijo
@@ -57,24 +56,26 @@ public class CCorreosToNormalizeService {
         }***/
 
         // 1. Obtener el nombre limpio del Excel
-        int indexToNormalize = originalName.indexOf("_ToNormalize");
-        String nombreArchivoExcel = originalName.substring(0, indexToNormalize) + "_ToNormalize.xlsx";
+        //int indexToNormalize = originalNameCsv.indexOf("_ToNormalize");
+        //String nombreArchivoExcel = originalNameCsv.substring(0, indexToNormalize) + "_ToNormalize.xlsx";
 
         // 2. Construir la ruta al directorio (basado en tu ejemplo)
         // El path parece ser: .../3_normalizado/{tipo}/{unidad}/{prefijo_timestamp}
-        String carpetaTimestamp = originalName.substring(0, originalName.indexOf("_tesoreria"));
+        //String carpetaTimestamp = originalNameCsv.substring(0, originalNameCsv.indexOf("_tesoreria"));
         // Esto extrae "CD-TRE_2026_04_26_16_27_13"
+        String[] carpetaSlipt = ejecutarMerge.getRutaExcelUnion().split("/");
+
 
         String pathCarpetaNormalizado = Paths.get(
                 apiProperties.getArchivoCreacionCarpeta(), // Ruta base (ej. /public_sftp/)
                 "3_normalizado",
                 ejecutarMerge.getTipo().toLowerCase(),
                 ejecutarMerge.getUnidad().toLowerCase(),
-                carpetaTimestamp
+                carpetaSlipt[0]
         ).toString();
 
         String dirJsonNormalizado = pathCarpetaNormalizado.concat("/").
-                concat(nombreArchivoExcel).replace(".xlsx", ".json");
+                concat(carpetaSlipt[1]).replace(".xlsx", ".json");
 
         EjecutarMerge ejecutarMergePr = new EjecutarMerge();
 
@@ -83,6 +84,7 @@ public class CCorreosToNormalizeService {
         // Copia todos los campos de 'padre' a 'hijo' que se llamen igual
         BeanUtils.copyProperties(ejecutarUpload, ejecutarMergePr);
         ejecutarMergePr.setUsuarioMerge(ejecutarMerge.getUsuarioMerge());
+        ejecutarMergePr.setRutaExcelUnion(ejecutarMerge.getRutaExcelUnion());
         ejecutarMergePr.setTipo(ejecutarMerge.getTipo());
         ejecutarMergePr.setUnidad(ejecutarMerge.getUnidad());
         ejecutarMergePr.setFileCorreosCsv(ejecutarMerge.getFileCorreosCsv());
@@ -93,7 +95,7 @@ public class CCorreosToNormalizeService {
 
         return ResponseEntity.ok(Map.of(
                 "message", "Subida exitosa",
-                "ruta", ""
+                "ruta", ejecutarMergePr.getPathReporte()
         ));
     }
 
@@ -106,13 +108,9 @@ public class CCorreosToNormalizeService {
                 ejecutarMerge.getUsuarioMerge(),
                 ejecutarMerge.getFileCorreosCsv());
 
-        List<ExcelCobranzaCorreos> listCsvSeguimiento = null;
+        ResultadoValidacion resultadoValidacion = validarCsvCorreos(ejecutarMerge);
 
-        try (InputStream csvInputStream = ejecutarMerge.getFileCorreosCsv().getInputStream()) {
-            listCsvSeguimiento = ObtenerExcel.obtenerExcelCorreosCsv(csvInputStream);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
 
         File archivoExcel = new File(ejecutarMerge.getPathArchivoNormalizado());
 
@@ -134,12 +132,13 @@ public class CCorreosToNormalizeService {
         }
 
         log.info(" excelCobranzasDesnormalizado {}", excelCobranzasToNormalize.size());
-        log.info(" listCsvSeguimiento {}", listCsvSeguimiento.size());
+        log.info(" listCsvSeguimiento {}", resultadoValidacion.getCoincidentes().size());
 
         ejecutarMerge = exportarANuevoExcelCobranzaMerge(
                 excelCobranzasToNormalize,
-                listCsvSeguimiento,
+                resultadoValidacion.getCoincidentes(),
                 ejecutarMerge);
+
         ejecutarMerge.setFechaCreacionMerge(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/mm/dd hh:MM:s")));
         log.info("hola {}", ejecutarMerge);
 
@@ -158,36 +157,40 @@ public class CCorreosToNormalizeService {
                         (existente, reemplazo) -> existente // En caso de duplicados, mantenemos el primero
                 ));
 
-        List<ExcelCobranzaNormalizado> listaExcelCobranzaNormalizado =
-                listaToNormalize.stream().map(original -> {
-                    // Creamos la nueva instancia (el objeto "hijo")
+        List<ExcelCobranzaNormalizado> listaExcelCobranzaNormalizado = listaToNormalize.stream()
+                .map(original -> {
                     String key = original.getClientId() != null ? original.getClientId().replaceFirst("^0+(?!$)", "") : "";
 
-                    ExcelCobranzaNormalizado nuevo = new ExcelCobranzaNormalizado
-                            (original.getCert1(), original.getCert2(), original.getFechaCarta(),
-                                    original.getVence(), original.getFolio(),
-                                    original.getApellidoPaterno(), original.getApellidoMaterno(),
-                                    original.getNombres(), original.getRut(),
-                                    original.getDv(),
-                                    original.getDireccion(),
-                                    original.getComuna(), original.getPlacaPatente(),
-                                    original.getDg(), original.getTipoVehiculo(), original.getRolMop(),
-                                    original.getFechaInfraccion(), original.getHoraInfraccion(),
-                                    original.getConvenio1(),
-                                    original.getConvenio2(),
-                                    original.getCodigoBarra(),
-                                    original.getValorMulta(),
-                                    original.getLugarMulta(),
-                                    original.getFechaCitacion(), original.getJuzgado(),
-                                    original.getPiso(), original.getClientId(), original.getToNormalize(), "");
+                    ExcelCobranzaNormalizado nuevo = new ExcelCobranzaNormalizado(
+                            original.getCert1(), original.getCert2(), original.getFechaCarta(),
+                            original.getVence(), original.getFolio(),
+                            original.getApellidoPaterno(), original.getApellidoMaterno(),
+                            original.getNombres(), original.getRut(),
+                            original.getDv(),
+                            original.getDireccion(),
+                            original.getComuna(), original.getPlacaPatente(),
+                            original.getDg(), original.getTipoVehiculo(), original.getRolMop(),
+                            original.getFechaInfraccion(), original.getHoraInfraccion(),
+                            original.getConvenio1(),
+                            original.getConvenio2(),
+                            original.getCodigoBarra(),
+                            original.getValorMulta(),
+                            original.getLugarMulta(),
+                            original.getFechaCitacion(), original.getJuzgado(),
+                            original.getPiso(), original.getClientId(), original.getToNormalize(),
+                            ""
+                    );
 
-                    // 3. Buscamos y agregamos el código de seguimiento
+                    // Si existe en el mapa, le asignamos el valor
                     if (mapaSeguimiento.containsKey(key)) {
                         nuevo.setCodigoSeguimiento(mapaSeguimiento.get(key));
                     }
 
                     return nuevo;
-                }).collect(Collectors.toList());
+                })
+                // FILTRO: Solo dejamos los que tengan un código de seguimiento asignado (no nulo y no vacío)
+                .filter(item -> item.getCodigoSeguimiento() != null && !item.getCodigoSeguimiento().isBlank())
+                .collect(Collectors.toList());
 
         String archivoExcelMerge = null;
 
@@ -225,7 +228,11 @@ public class CCorreosToNormalizeService {
             int rowNum = 1;
             int contador = 0;
 
-            for (ExcelCobranzaNormalizado item : listaExcelCobranzaNormalizado) {
+            List<ExcelCobranzaNormalizado> listaFiltrada = listaExcelCobranzaNormalizado.stream()
+                    .filter(item -> item.getCodigoSeguimiento() != null && !item.getCodigoSeguimiento().isBlank())
+                    .collect(Collectors.toList());
+
+            for (ExcelCobranzaNormalizado item : listaFiltrada) {
 
                 if (item == null) {
                     log.warn("⚠️ Item nulo detectado, se omite");
@@ -271,6 +278,7 @@ public class CCorreosToNormalizeService {
             log.info("Total iterados: {}", contador);
             log.info("Total filas Excel: {}", totalFilasGeneradas);
             log.info("Total lista original: {}", listaToNormalize.size());
+            log.info("Total validadas: {}", listaFiltrada.size());
 
             if (totalFilasGeneradas != listaToNormalize.size()) {
                 log.error("❌ Diferencia detectada! Lista: {} vs Excel: {}",
@@ -327,6 +335,69 @@ public class CCorreosToNormalizeService {
 
         return ejecutarMerge;
 
+    }
+
+    private ResultadoValidacion validarCsvCorreos(EjecutarMerge ejecutarMerge) {
+        List<ExcelCobranzaCorreos> listCsvOriginal;
+        List<ExcelCobranzaCorreos> listCsvSeguimiento;
+
+        String pathNormalizadoCsv = ejecutarMerge.getPathArchivoNormalizado().replace(".xlsx", ".csv");
+
+        pathNormalizadoCsv = pathNormalizadoCsv.replace(".csv", "_EnviarCorreos.csv");
+
+        try (InputStream csvInputStream = ejecutarMerge.getFileCorreosCsv().getInputStream()) {
+            listCsvSeguimiento = ObtenerExcel.obtenerExcelCorreosCsv(csvInputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        try (InputStream csvInputStream = Files.newInputStream(Paths.get(pathNormalizadoCsv))) {
+            // 2. Cargamos la lista desde el InputStream del archivo normalizado
+            listCsvOriginal = ObtenerExcel.obtenerExcelCorreosCsv(csvInputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        // 1. Mapa usando clave compuesta: Nombre + Direccion + Comuna
+        Map<String, ExcelCobranzaCorreos> mapaSeguimiento = listCsvSeguimiento.stream()
+                .collect(Collectors.toMap(
+                        item -> generarClaveUnica(item),
+                        item -> item,
+                        (a, b) -> a // En caso de duplicados en seguimiento, mantenemos el primero
+                ));
+
+        List<ExcelCobranzaCorreos> coincidentes = new ArrayList<>();
+        int contadorNoCoincidentes = 0;
+
+        // 2. Recorremos la lista original buscando por la misma clave compuesta
+        for (ExcelCobranzaCorreos original : listCsvOriginal) {
+            String claveOriginal = generarClaveUnica(original);
+            ExcelCobranzaCorreos seguimiento = mapaSeguimiento.get(claveOriginal);
+
+            if (seguimiento != null) {
+                // Si la clave coincide, lo consideramos coincidente
+                coincidentes.add(seguimiento);
+            } else {
+                contadorNoCoincidentes++;
+            }
+        }
+
+        return new ResultadoValidacion(coincidentes, contadorNoCoincidentes);
+    }
+
+    /**
+     * Genera una clave normalizada para evitar fallos por mayúsculas o espacios extra.
+     */
+    private String generarClaveUnica(ExcelCobranzaCorreos item) {
+        return (trimToEmpty(item.getNombre()) + "|" +
+                trimToEmpty(item.getDireccion()) + "|" +
+                trimToEmpty(item.getComuna()))
+                .toLowerCase()
+                .trim();
+    }
+
+    private String trimToEmpty(String str) {
+        return str == null ? "" : str.trim();
     }
 
     //Quitar 0s a la izquierda

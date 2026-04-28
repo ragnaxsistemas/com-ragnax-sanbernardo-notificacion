@@ -208,8 +208,8 @@ public class PlantillaCobranzas {
         // Si tienes estos campos en tu objeto ejecutarMerge, los mapeamos así:
         // Nota: Asegúrate de que los nombres coincidan con los getters de tu clase
 
-        html = html.replace("{{observacion}}", String.valueOf(ejecutarMerge.getObservacion()));
-        html = html.replace("{{show_unidad_UPPER}}", String.valueOf(ejecutarMerge.getUnidad().toUpperCase()));
+        html = html.replace("{{observacion}}", ejecutarMerge.getObservacion());
+        html = html.replace("{{show_unidad_UPPER}}", ejecutarMerge.getUnidad().toUpperCase());
         html = html.replace("{{SIZE_CSV_CORREOS}}", String.valueOf(ejecutarMerge.getRegistrosUnicos()));
 
         html = html.replace("{{totalMasivas}}", String.valueOf(ejecutarMerge.getTotalMasivas()));
