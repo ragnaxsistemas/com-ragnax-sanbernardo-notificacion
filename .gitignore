@@ -3,9 +3,18 @@
 *.DS_Store
 HELP.md
 target/
+# === Compilación y Salida ===
 !.mvn/wrapper/maven-wrapper.jar
+
+# === Excepciones (No ignorar código fuente) ===
 !**/src/main/**
 !**/src/test/**
+
+# === REGLA ESPECÍFICA SFTP ===
+# Ignoramos el contenido de la carpeta SFTP aunque esté dentro de src/main
+src/main/resources/public_sftp/*
+# Opcional: permite subir la carpeta vacía si usas un .gitkeep
+!src/main/resources/public_sftp/.gitkeep
 
 ### STS ###
 .apt_generated
