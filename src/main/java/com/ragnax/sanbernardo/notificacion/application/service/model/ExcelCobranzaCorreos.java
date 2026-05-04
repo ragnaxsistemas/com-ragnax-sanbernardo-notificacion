@@ -23,6 +23,8 @@ public class ExcelCobranzaCorreos implements Serializable {
     private String direccion;
     @CsvBindByName(column = "comuna")
     private String comuna;
+    @CsvBindByName(column = "toNormalize")
+    private String toNormalize;
     @CsvBindByName(column = "codigo_seguimiento")
     private String codigo_seguimiento;
     @CsvBindByName(column = "destinatario")
@@ -41,21 +43,4 @@ public class ExcelCobranzaCorreos implements Serializable {
     private String id_cliente;
     @CsvBindByName(column = "servicio")
     private String servicio;
-
-    public ExcelCobranzaCorreos(String clientId, String rut, String nombre, String direccion, String comuna, String codigo_seguimiento, String destinatario, String direccion_original, String comuna_propuesta, String codigo_postal, String id_sector, String id_cuartel, String id_cliente, String servicio) {
-        this.clientId = clientId;
-        this.rut = rut;
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.comuna = comuna;
-        this.codigo_seguimiento = codigo_seguimiento;
-        this.destinatario = destinatario;
-        this.direccion_original = direccion_original;
-        this.comuna_propuesta = comuna_propuesta;
-        this.codigo_postal = codigo_postal;
-        this.id_sector = id_sector;
-        this.id_cuartel = id_cuartel;
-        this.id_cliente = id_cliente;
-        this.servicio = servicio;
-    }
 }

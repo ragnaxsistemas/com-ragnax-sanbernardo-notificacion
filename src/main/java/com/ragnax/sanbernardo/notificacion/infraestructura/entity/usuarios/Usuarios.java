@@ -44,7 +44,7 @@ public class Usuarios {
                 foreignKey = @ForeignKey(name = "fk_usuario_unidad"))
     private Unidad idUnidad;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "fk_id_role",
                 foreignKey = @ForeignKey(name = "fk_usuario_role"))
     private Role idRole;
@@ -52,9 +52,4 @@ public class Usuarios {
     @Column(name = "active")
     private Boolean active;
 
-    //@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
-    //private List<OrdenCompra> ordenesCompra;
-
-    //@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
-    //private List<StatusOrdenCompra> statusOrdenes;
 }

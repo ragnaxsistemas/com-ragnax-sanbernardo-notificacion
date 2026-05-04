@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ResultadoValidacion {
+
     private List<ExcelCobranzaCorreos> coincidentes;
     private int noCoincidentes;
 

@@ -8,7 +8,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ObtenerExcel {
 
@@ -107,27 +106,27 @@ public class ObtenerExcel {
     }
 
     /***public static List<ExcelCobranzaCorreos> obtenerExcelCorreosCsv(InputStream inputStream) throws Exception {
-        List<ExcelCobranzaCorreos> beans = null;
-        // Usar el Encoding correcto es vital para que los nombres de cabecera hagan match
-        try (Reader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+     List<ExcelCobranzaCorreos> beans = null;
+     // Usar el Encoding correcto es vital para que los nombres de cabecera hagan match
+     try (Reader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
-            beans = new CsvToBeanBuilder<ExcelCobranzaCorreos>(reader)
-                    .withType(ExcelCobranzaCorreos.class)
-                    .withSeparator(';') // <--- CAMBIA ESTO según tu archivo (',' o ';')
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .withVerifyReader(false) // 👈 importante
-                    .withThrowExceptions(false) // 👈 evita que se corte
-                    .withExceptionHandler(exception -> {
-                        System.err.println("Error en línea " + exception.getLineNumber() + ""+ exception.getMessage());
-                        return null;
-                    })
-                    .build()
-                    .parse();
+     beans = new CsvToBeanBuilder<ExcelCobranzaCorreos>(reader)
+     .withType(ExcelCobranzaCorreos.class)
+     .withSeparator(';') // <--- CAMBIA ESTO según tu archivo (',' o ';')
+     .withIgnoreLeadingWhiteSpace(true)
+     .withVerifyReader(false) // 👈 importante
+     .withThrowExceptions(false) // 👈 evita que se corte
+     .withExceptionHandler(exception -> {
+     System.err.println("Error en línea " + exception.getLineNumber() + ""+ exception.getMessage());
+     return null;
+     })
+     .build()
+     .parse();
 
-            // Filtrar nulos si el ExceptionHandler devolvió alguno
-            return beans.stream().filter(Objects::nonNull).collect(Collectors.toList());
-        }
-    }***/
+     // Filtrar nulos si el ExceptionHandler devolvió alguno
+     return beans.stream().filter(Objects::nonNull).collect(Collectors.toList());
+     }
+     }***/
 
     public static List<ExcelCobranzaToNormalize> obtenerExcelCobranzaNormalizado(InputStream inputStream, String hoja) throws Exception {
         Workbook workbook = new XSSFWorkbook(inputStream);
@@ -180,20 +179,20 @@ public class ObtenerExcel {
         return excelCobranzasToNormalize;
     }
 
-    public static List<ExcelCobranzaNormalizado> obtenerExcelCobranzaMerge(InputStream inputStream, String hoja) throws Exception {
+    public static List<ExcelCobranzaMerge> obtenerExcelCobranzaMerge(InputStream inputStream, String hoja) throws Exception {
         Workbook workbook = new XSSFWorkbook(inputStream);
 
         Sheet sheet = workbook.getSheet(hoja);
 
         DataFormatter formatter = new DataFormatter();
 
-        List<ExcelCobranzaNormalizado> excelCobranzas = new ArrayList<>();
+        List<ExcelCobranzaMerge> ExcelCobranzaMerges = new ArrayList<>();
 
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue; // saltar header
 
             // Creamos el objeto pasando los 29 parámetros que pide tu constructor
-            excelCobranzas.add(new ExcelCobranzaNormalizado(
+            ExcelCobranzaMerges.add(new ExcelCobranzaMerge(
                     getVal(row, 0, formatter),  // cert1
                     getVal(row, 1, formatter),  // cert2
                     getVal(row, 2, formatter),  // fechaCarta
@@ -227,7 +226,7 @@ public class ObtenerExcel {
         }
         workbook.close();
 
-        return excelCobranzas;
+        return ExcelCobranzaMerges;
     }
 
     private static String getVal(Row row, int index, DataFormatter formatter) {

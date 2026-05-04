@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -14,12 +15,11 @@ public class GeneracionCarta implements Serializable {
 
     private String procesoGeneracionCarta;
     /****numFolio contador del Proceso comienza 1**/
-    ;
     private Integer contFolioProceso;
     private Integer contTipoCartas;
+    private Long correlativoHistorico;
 
     private List<byte[]> listaPdfs;
-
-    private Long correlativoHistorico;
+    private List<ExcelCobranzaImpresion> listaExcelCobranzaImpresion;
 
 }

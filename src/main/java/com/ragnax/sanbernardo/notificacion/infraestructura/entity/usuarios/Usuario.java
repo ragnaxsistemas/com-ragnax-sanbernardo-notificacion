@@ -1,4 +1,4 @@
-package com.ragnax.sanbernardo.notificacion.infraestructura.entity.usuarios;
+/***package com.ragnax.sanbernardo.notificacion.infraestructura.entity.usuarios;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  *  implementation class for @Entity: Usuario
  * en la base de Datos representa el registro de las personas asociadas al servicio.
- */
+ ---/
 @Entity
 @Table (name="usuarios")
 @Getter
@@ -37,17 +37,17 @@ public class Usuario implements Serializable{
 
     @OrderBy
     @Column(name="nombre_member")
-    private String nombreMember;/****Nombre de la Persona****/
+    private String nombreMember;/****Nombre de la Persona---/
 
     @Column(name="apellido_paterno_member")
-    private String apellidoPaternoMember; /****Apellido de la Persona****/
+    private String apellidoPaternoMember; /****Apellido de la Persona---/
 
     @Column(name="rut")
-    private String rut; /****Apellido de la Persona****/
+    private String rut; /****Apellido de la Persona---/
 
     @OrderBy
     @Column(name="email_perfil")
-    private String emailPerfil; /****mail usuario ****/
+    private String emailPerfil; /****mail usuario ---/
 
     @Column(name="telefono_contacto_member")
     private String telefonoContactoMember;
@@ -62,4 +62,4 @@ public class Usuario implements Serializable{
 
     @Column(name="active")
     private Boolean active;
-}
+}***/

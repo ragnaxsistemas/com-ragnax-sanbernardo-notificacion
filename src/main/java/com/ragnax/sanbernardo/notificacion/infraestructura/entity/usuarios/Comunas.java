@@ -3,7 +3,6 @@ package com.ragnax.sanbernardo.notificacion.infraestructura.entity.usuarios;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,6 +29,4 @@ public class Comunas {
                 foreignKey = @ForeignKey(name = "fk_comuna_region"))
     private Regiones region;
 
-   // @OneToMany(mappedBy = "comuna", fetch = FetchType.LAZY)
-    // private List<Proveedor> proveedores;
 }

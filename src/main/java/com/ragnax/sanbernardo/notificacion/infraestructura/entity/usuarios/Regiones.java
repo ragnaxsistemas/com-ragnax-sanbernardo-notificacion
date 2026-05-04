@@ -23,6 +23,4 @@ public class Regiones {
     @Column(name = "nombre_region", nullable = false, unique = true, length = 45)
     private String nombreRegion;
 
-    //@OneToMany(mappedBy = "region", fetch = FetchType.LAZY)
-    //private List<Comunas> comunas;
 }

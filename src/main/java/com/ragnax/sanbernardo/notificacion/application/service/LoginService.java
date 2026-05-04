@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,9 +20,6 @@ public class LoginService {
 
         @Autowired
         private final UsuariosRepository usuariosRepository;
-
-        @Autowired
-        private final RoleRepository roleRepository;
 
         @Autowired
         private final MenuRepository menuRepository;
@@ -39,74 +33,95 @@ public class LoginService {
         @Autowired
         private final EmpresaClienteRepository empresaClienteRepository;
 
-        @Transactional("usuariosTransactionManager")
-        public LoginResponse login(String username, String password, String codEmpresa) {
+    @Transactional("usuariosTransactionManager")
+    public LoginResponse login(String username, String password, String codEmpresa) {
 
-            Usuarios usuario = usuariosRepository
-                    .findByUsernameAndPassword(username, password)
-                    .orElseThrow(() -> new RuntimeException("Usuario o contraseña incorrectos"));
+        List<ItemValue> items = Arrays.asList();
 
-            Optional<Unidad> optUnidad = unidadRepository.findById(usuario.getIdUnidad().getIdUnidad());
+        Usuarios usuario = usuariosRepository
+                .findByUsernameAndPassword(username, password)
+                .orElseThrow(() -> new RuntimeException("Usuario o contraseña incorrectos"));
 
-            Optional<EmpresaCliente> optEmpresaCliente = empresaClienteRepository.findById(optUnidad.get().getEmpresaCliente().getIdEmpresaCliente());
-            //Validar si el Usuario esta habilitado para la Empresa x
-            if(!optEmpresaCliente.isPresent() || !optEmpresaCliente.get().getCodigoEmpresaCliente().equals(codEmpresa)) {
-                throw new ImsbException("No se pudo Obtener usuario en empresa "+ codEmpresa, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            Role role = usuario.getIdRole();
+        Unidad unidadObj = unidadRepository.findById(usuario.getIdUnidad().getIdUnidad())
+                .orElseThrow(() -> new RuntimeException("Unidad no encontrada"));
 
-            List<MenuRol> listMenuRol = menuRolRepository.findByRole(role);
+        EmpresaCliente empresaCliente = empresaClienteRepository.findById(unidadObj.getEmpresaCliente().getIdEmpresaCliente())
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
-            Set<String> codMenus = listMenuRol.stream()
-                    .map(MenuRol::getMenu)
-                    .filter(Objects::nonNull)
-                    .filter(menu -> Boolean.TRUE.equals(menu.getEstadoMenu()))
-                    .map(Menu::getCodMenu)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
-
-            Optional<Role> optRole = roleRepository.findById(usuario.getIdRole().getId());
-
-
-
-
-
-            String urlEmpresa = optEmpresaCliente.get().getUrlEmpresaCliente();
-            String unidad = optUnidad.get().getShowNombreUnidad().equalsIgnoreCase("tesoreria") ? "cobranza" : "notificacion";
-
-            List<ItemValue> items = menuRepository.findAllById(codMenus)
-                    .stream()
-                    // 2. Filtramos: Si la URL del menú CONTIENE la de la empresa, SE QUEDA
-                    .filter(menu -> {
-                        if (urlEmpresa.isEmpty() || menu.getUrl() == null) return false; // Si no hay patrón, no pasa nada
-                        if (unidad.isEmpty() || !menu.getUrl().contains(unidad)) return false; // Si no hay patrón, no pasa nada
-                        return menu.getUrl().contains(urlEmpresa);
-                    })
-                    .map(menu -> {
-                        ItemValue item = new ItemValue();
-                        item.setId(menu.getCodMenu());
-                        item.setValue1(menu.getNombre());
-                        item.setValue2(menu.getUrl());
-                        item.setOrden(menu.getOrden());
-                        return item;
-                    })
-                    .toList();
-
-            /***String codigoUnidad = usuario.getIdUnidad() != null
-             ? usuario.getIdUnidad().getCodigoUnidad()
-             : null;***/
-
-            return LoginResponse.builder()
-                    .username(usuario.getUsername())
-                    .nombreMember(usuario.getNombreMember())
-                    .apellidoPaternoMember(usuario.getApellidoPaternoMember())
-                    .apellidoMaternoMember(usuario.getRut())
-                    .telefonoContactoMember(usuario.getTelefonoContactoMember())
-                    .emailPerfil(usuario.getEmailPerfil())
-                    .unidad(optUnidad.get())
-                    .empresa(optEmpresaCliente.get())
-                    .role(optRole.get())
-                    .items(items)
-                    .build();
+        // Validar si el Usuario esta habilitado para la Empresa x
+        if (!empresaCliente.getCodigoEmpresaCliente().equals(codEmpresa)) {
+            throw new ImsbException("No se pudo obtener usuario en empresa " + codEmpresa, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        Set<String> codMenus = menuRolRepository.findByRole(usuario.getIdRole()).stream()
+                .map(MenuRol::getMenu)
+                .filter(menu -> menu != null && Boolean.TRUE.equals(menu.getEstadoMenu()))
+                .map(Menu::getCodMenu)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        String urlEmpresa = empresaCliente.getUrlEmpresaCliente();
+        String nombreUnidadLower = unidadObj.getShowNombreUnidad().toLowerCase();
+
+        if(empresaCliente.getCodigoEmpresaCliente().equalsIgnoreCase(codEmpresa)){
+            final String finalUnidadFiltro = getUnidad(unidadObj.getShowNombreUnidad().toLowerCase());
+
+        items = menuRepository.findAllById(codMenus)
+                .stream()
+                .filter(menu -> {
+                    String menuUrl = menu.getUrl();
+                    if (urlEmpresa == null || urlEmpresa.isEmpty() || menuUrl == null) return false;
+
+                    // 1. Siempre debe contener la URL de la empresa
+                    if (!menuUrl.contains(urlEmpresa)) return false;
+
+                    // 2. Lógica especial para Imprenta (según tu requerimiento de cargar /imsb/cobranza/registro)
+                    if (nombreUnidadLower.contains("imprenta")) {
+                        return menuUrl.contains("imprenta");
+                    }
+
+                    // 3. Lógica para Tesorería (Cobranza) y Juzgado (Notificación)
+                    if (!finalUnidadFiltro.isEmpty()) {
+                        return menuUrl.contains(finalUnidadFiltro);
+                    }
+                    return true;
+                })
+                .map(menu -> {
+                    ItemValue item = new ItemValue();
+                    item.setId(menu.getCodMenu());
+                    item.setValue1(menu.getNombre());
+                    item.setValue2(menu.getUrl());
+                    item.setOrden(menu.getOrden());
+                    return item;
+                })
+                .sorted(Comparator.comparingInt(ItemValue::getOrden))
+                .toList();
+        }
+        return LoginResponse.builder()
+                .username(usuario.getUsername())
+                .nombreMember(usuario.getNombreMember())
+                .apellidoPaternoMember(usuario.getApellidoPaternoMember())
+                .apellidoMaternoMember(usuario.getRut())
+                .telefonoContactoMember(usuario.getTelefonoContactoMember())
+                .emailPerfil(usuario.getEmailPerfil())
+                .unidad(unidadObj)
+                .empresa(empresaCliente)
+                .role(usuario.getIdRole())
+                .items(items)
+                .build();
     }
+
+    public String getUnidad(String nombreUnidadLower){
+        // --- LÓGICA DE ASIGNACIÓN DE UNIDAD (MAPEO) ---
+        String unidadFiltro = "";
+        if (nombreUnidadLower.contains("tesoreria")) {
+            unidadFiltro = "cobranza";
+        } else if (nombreUnidadLower.contains("juzgado")) {
+            unidadFiltro = "notificacion";
+        } else if (nombreUnidadLower.contains("imprenta")) {
+            unidadFiltro = "imprenta"; // O el valor que corresponda a tus URLs de imprenta
+        }
+
+        return unidadFiltro;
+    }
+}

@@ -6,11 +6,11 @@
     <style>
         @page {
             size: letter;
-            margin: 20mm;
+            margin: 15mm; /* Reducido de 20mm */
             background-color: #ffffff;
             @bottom-right {
                 content: "Página " counter(page);
-                font-size: 9pt;
+                font-size: 8pt;
                 color: #666;
             }
         }
@@ -18,22 +18,23 @@
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #333;
-            line-height: 1.6;
+            line-height: 1.3; /* Reducido de 1.6 */
             margin: 0;
             padding: 0;
+            font-size: 9pt; /* Reducido globalmente */
         }
 
         .header-banner {
             background-color: #1a3c5a;
             color: white;
-            padding: 20px;
-            margin-bottom: 30px;
+            padding: 12px 20px; /* Reducido de 20px */
+            margin-bottom: 15px; /* Reducido de 30px */
             border-radius: 4px;
         }
 
         h1 {
             margin: 0;
-            font-size: 18pt;
+            font-size: 14pt; /* Reducido de 18pt */
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -44,18 +45,18 @@
 
         .summary-text {
             background-color: #f8f9fa;
-            border-left: 5px solid #1a3c5a;
-            padding: 15px;
-            margin-bottom: 25px;
+            border-left: 4px solid #1a3c5a;
+            padding: 10px; /* Reducido de 15px */
+            margin-bottom: 15px; /* Reducido de 25px */
             font-style: italic;
-            font-size: 11pt;
+            font-size: 10pt;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            margin-bottom: 30px;
+            margin-top: 5px;
+            margin-bottom: 15px; /* Reducido de 30px */
             background-color: white;
             table-layout: fixed;
         }
@@ -65,15 +66,15 @@
             color: #1a3c5a;
             font-weight: bold;
             text-align: left;
-            padding: 10px 12px;
+            padding: 6px 10px; /* Reducido de 10px 12px */
             border-bottom: 2px solid #1a3c5a;
-            font-size: 10pt;
+            font-size: 9pt;
         }
 
         td {
-            padding: 10px 12px;
+            padding: 6px 10px; /* Reducido de 10px 12px */
             border-bottom: 1px solid #dee2e6;
-            font-size: 10pt;
+            font-size: 9pt;
             word-wrap: break-word;
         }
 
@@ -84,27 +85,27 @@
             font-weight: bold;
         }
 
-        /* Anchos de columnas para asegurar alineación vertical */
-        .col-1 { width: 35%; } /* Primera columna más angosta */
-        .col-2 { width: 15%; } /* Cantidad / Total */
-        .col-3 { width: 35%; } /* Origen */
-        .col-4 { width: 15%; } /* Usuario */
+        .col-1 { width: 35%; }
+        .col-2 { width: 15%; }
+        .col-3 { width: 35%; }
+        .col-4 { width: 15%; }
 
         h3 {
             color: #1a3c5a;
-            font-size: 12pt;
+            font-size: 11pt; /* Reducido de 12pt */
             border-bottom: 1px solid #edf2f7;
-            padding-bottom: 5px;
-            margin-bottom: 5px;
+            padding-bottom: 3px;
+            margin-bottom: 8px; /* Reducido */
+            margin-top: 10px;
         }
 
         .footer-note {
-            margin-top: 40px;
-            font-size: 9pt;
+            margin-top: 20px; /* Reducido de 40px */
+            font-size: 8pt;
             color: #718096;
             text-align: center;
             border-top: 1px solid #eee;
-            padding-top: 20px;
+            padding-top: 10px;
         }
     </style>
 </head>
@@ -112,7 +113,7 @@
 
 <div class="header-banner">
     <h1>Reporte {{observacion}}</h1>
-    <div style="font-size: 10pt; opacity: 0.8;">Sistema de Generacion de Cartas</div>
+    <div style="font-size: 9pt; opacity: 0.8;">Sistema de Generación de Cartas</div>
 </div>
 
 <div class="container">
@@ -159,7 +160,7 @@
         <tr>
             <td>Nómina recibida por Unidad</td>
             <td class="text-center">{{totalFilasGeneradasUpload}}</td>
-            <td class="text-center">{{observacion}} - {{show_unidad_UPPER}}</td>
+            <td class="text-center">{{observacion}} - {{unidad}}</td>
             <td class="text-center">{{usuarioUpload}}</td>
         </tr>
         <tr>
@@ -195,7 +196,7 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 10px;">
         <p><strong>Observaciones:</strong> Sin Observaciones.</p>
     </div>
 </div>

@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class EjecutarMerge extends EjecutarUpload implements Serializable {
+public class EjecutarCartas extends EjecutarMerge implements Serializable {
 
 
    /***private String tipo;
@@ -34,35 +34,36 @@ public class EjecutarMerge extends EjecutarUpload implements Serializable {
     private String totalFilasGeneradasCsv;
 
     private MultipartFile file;***/
-    private String rutaExcelUnion;
+    /***private String rutaExcelUnion;
     private String pathCsvCorreos;
 
     private String fechaCreacionMerge;
     private String usuarioMerge;
     private String pathArchivoMerge;
     private String sizeArchivoMerge;
-    private String nombreArchivoMerge;
+    private String nombreArchivoMerge;***/
 
-    /********/
+    /********
     private String totalFilasGeneradasExcel; //Total filas en Merge
     private String pathFolderCartas; //Cobranza -  Norificacion
     private String pathArchivoCartas; //Cobranza -  Norificacion
     private String pathArchivoConsolidado; //Cobranza -  Norificacion
     private String pathReporte;
-
+    ******/
     private long correlativoInicio;
     private long correlativoHistorico;
 
-    /***private String totalCartas; //Total filas en Merge
+    private String totalCartas; //Total filas en Merge
     private String totalIndividuales; //Total filas en Merge
     private String totalMasivas; //Total filas en Merge
     private String totalErroneas; //Total filas en Merge
     //-
     private String totalUTM;
     private String totalRuts;
-    private String totalPatentesUnicas;***/
-    private MultipartFile fileCorreosCsv;
-    private List<ExcelCobranzaMerge> listaExcelCobranzaMerge;
-    //private List<byte[]> listaPdfs;
+    private String totalPatentesUnicas;
+
+    //private MultipartFile fileCorreosCsv;
+    //private List<ExcelCobranzaNormalizado> listaExcelCobranzaNormalizado;
+    private List<byte[]> listaPdfs;
 
 }

@@ -1,9 +1,13 @@
 package com.ragnax.sanbernardo.notificacion.application.service.utilidades;
 
-import com.ragnax.sanbernardo.notificacion.application.service.model.*;
+import com.ragnax.sanbernardo.notificacion.application.service.model.CartaHtml;
+import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarCartas;
+import com.ragnax.sanbernardo.notificacion.application.service.model.ExcelCobranza;
+import com.ragnax.sanbernardo.notificacion.application.service.model.ExcelCobranzaMerge;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -13,8 +17,18 @@ import java.util.Locale;
 public class PlantillaCobranzas {
 
     public static String generarPlantillaCobranzaIndividual(String proc_correlativo, String contFolioProceso, CartaHtml cartaHtmlIndividual,
-                                                            ExcelCobranzaNormalizado excelCobranza) {
+                                                            ExcelCobranzaMerge excelCobranzaMerges) {
 
+        DateTimeFormatter entradaFormat = DateTimeFormatter.ofPattern("M/d/yy");
+
+        // Convertimos el String a un objeto LocalDate
+        LocalDate fecha = LocalDate.parse(excelCobranzaMerges.getFechaCitacion(), entradaFormat);
+
+        // Definimos el formato de salida deseado
+        DateTimeFormatter salidaFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // Resultado
+        String fechaCitacion = fecha.format(salidaFormat);
         //Escudo
         String imgTag1 = "<img src='data:image/png;base64," + cartaHtmlIndividual.getListImagesBase64().get(0) + "' style='width: 60px; height: auto;'/>";
 
@@ -34,53 +48,52 @@ public class PlantillaCobranzas {
 
         htmlReemplazado = htmlReemplazado.replace("{{LOGO_3}}", imgTag3);
 
-        htmlReemplazado = htmlReemplazado.replace("{{RUT}}", excelCobranza.getRut());
+        htmlReemplazado = htmlReemplazado.replace("{{RUT}}", excelCobranzaMerges.getRut());
 
-        htmlReemplazado = htmlReemplazado.replace("{{DV}}", excelCobranza.getDv());
+        htmlReemplazado = htmlReemplazado.replace("{{DV}}", excelCobranzaMerges.getDv());
 
-        htmlReemplazado = htmlReemplazado.replace("{{NOMBRES}}", excelCobranza.getNombres());
+        htmlReemplazado = htmlReemplazado.replace("{{NOMBRES}}", excelCobranzaMerges.getNombres());
 
-        htmlReemplazado = htmlReemplazado.replace("{{APELLIDO_PATERNO}}", excelCobranza.getApellidoPaterno());
+        htmlReemplazado = htmlReemplazado.replace("{{APELLIDO_PATERNO}}", excelCobranzaMerges.getApellidoPaterno());
 
-        htmlReemplazado = htmlReemplazado.replace("{{APELLIDO_MATERNO}}", excelCobranza.getApellidoMaterno());
+        htmlReemplazado = htmlReemplazado.replace("{{APELLIDO_MATERNO}}", excelCobranzaMerges.getApellidoMaterno());
 
-        htmlReemplazado = htmlReemplazado.replace("{{DIRECCION}}", excelCobranza.getDireccion());
+        htmlReemplazado = htmlReemplazado.replace("{{DIRECCION}}", excelCobranzaMerges.getDireccion());
 
-        htmlReemplazado = htmlReemplazado.replace("{{COMUNA}}", excelCobranza.getComuna());
+        htmlReemplazado = htmlReemplazado.replace("{{COMUNA}}", excelCobranzaMerges.getComuna());
 
-        htmlReemplazado = htmlReemplazado.replace("{{TIPO_VEHICULO}}", excelCobranza.getTipoVehiculo());
+        htmlReemplazado = htmlReemplazado.replace("{{TIPO_VEHICULO}}", excelCobranzaMerges.getTipoVehiculo());
 
-        htmlReemplazado = htmlReemplazado.replace("{{PISO}}",  "1&deg; Piso");
-
-        if(excelCobranza.getTipoVehiculo().equalsIgnoreCase("Moto")){
-            htmlReemplazado = htmlReemplazado.replace("{{PATENTE}}", excelCobranza.getPlacaPatente());
+        if(excelCobranzaMerges.getTipoVehiculo().equalsIgnoreCase("Moto")){
+            htmlReemplazado = htmlReemplazado.replace("{{PATENTE}}", excelCobranzaMerges.getPlacaPatente());
 
         }else{
-            htmlReemplazado = htmlReemplazado.replace("{{PATENTE}}", excelCobranza.getPlacaPatente().concat("-").concat(excelCobranza.getDg()));
+            htmlReemplazado = htmlReemplazado.replace("{{PATENTE}}", excelCobranzaMerges.getPlacaPatente().concat("-").concat(excelCobranzaMerges.getDg()));
         }
 
-        htmlReemplazado = htmlReemplazado.replace("{{FECHA_INFRACCION}}", excelCobranza.getFechaInfraccion());
+        htmlReemplazado = htmlReemplazado.replace("{{FECHA_INFRACCION}}", excelCobranzaMerges.getFechaInfraccion());
 
-        htmlReemplazado = htmlReemplazado.replace("{{HORA_INFRACCION}}", excelCobranza.getHoraInfraccion());
+        htmlReemplazado = htmlReemplazado.replace("{{HORA_INFRACCION}}", excelCobranzaMerges.getHoraInfraccion());
 
-        htmlReemplazado = htmlReemplazado.replace("{{FOLIO}}", excelCobranza.getFolio());
+        htmlReemplazado = htmlReemplazado.replace("{{FOLIO}}", excelCobranzaMerges.getFolio());
 
-        String valorMulta = String.format("%,d", Integer.parseInt(excelCobranza.getValorMulta())).replace(",",".");
+        String valorMulta = String.format("%,d", Integer.parseInt(excelCobranzaMerges.getValorMulta())).replace(",",".");
 
         htmlReemplazado = htmlReemplazado.replace("{{VALOR_MULTA}}", valorMulta);
 
-        htmlReemplazado = htmlReemplazado.replace("{{FECHA_VENCIMIENTO}}", excelCobranza.getVence());
+        htmlReemplazado = htmlReemplazado.replace("{{FECHA_VENCIMIENTO}}", excelCobranzaMerges.getVence());
 
-        htmlReemplazado = htmlReemplazado.replace("{{FECHA_CITACION}}", excelCobranza.getFechaCitacion());
+        htmlReemplazado = htmlReemplazado.replace("{{FECHA_CITACION}}", fechaCitacion);
 
-        if(excelCobranza.getJuzgado().equalsIgnoreCase("PRIMER")){
+        if(excelCobranzaMerges.getJuzgado().equalsIgnoreCase("PRIMER")){
             htmlReemplazado = htmlReemplazado.replace("{{N_JUZGADO}}", "1<sup>er</sup> JUZGADO");
         }
-        else if(excelCobranza.getJuzgado().equalsIgnoreCase("SEGUNDO")){
+        else if(excelCobranzaMerges.getJuzgado().equalsIgnoreCase("SEGUNDO")){
             htmlReemplazado = htmlReemplazado.replace("{{N_JUZGADO}}", "2<sup>do</sup> JUZGADO");
         }
 
-        htmlReemplazado = htmlReemplazado.replace("{{PISO}}", excelCobranza.getPiso().concat(" Piso"));
+        //htmlReemplazado = htmlReemplazado.replace("{{PISO}}",  "1&deg; Piso");
+        htmlReemplazado = htmlReemplazado.replace("{{PISO}}", excelCobranzaMerges.getPiso().concat(" Piso"));
 
         return htmlReemplazado;
     }
@@ -89,8 +102,18 @@ public class PlantillaCobranzas {
                                                         String contFolioProceso,
                                                         CartaHtml cartaHtmlMasiva,
                                                         ExcelCobranza excelCobranza,
-                                                        List<ExcelCobranzaNormalizado> listaExcelCobranza) throws Exception {
+                                                        List<ExcelCobranzaMerge> listaExcelCobranza) throws Exception {
 
+        DateTimeFormatter entradaFormat = DateTimeFormatter.ofPattern("M/d/yy");
+
+        // Convertimos el String a un objeto LocalDate
+        LocalDate fecha = LocalDate.parse(excelCobranza.getFechaCitacion(), entradaFormat);
+
+        // Definimos el formato de salida deseado
+        DateTimeFormatter salidaFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // Resultado
+        String fechaCitacion = fecha.format(salidaFormat);
 
         //Escudo
         String imgTag1 = "<img src='data:image/png;base64," + cartaHtmlMasiva.getListImagesBase64().get(0) + "' style='width: 60px; height: auto;'/>";
@@ -122,7 +145,7 @@ public class PlantillaCobranzas {
 
         htmlReemplazado = htmlReemplazado.replace("{{TIPO_VEHICULO}}", excelCobranza.getTipoVehiculo());
 
-        htmlReemplazado = htmlReemplazado.replace("{{FECHA_CITACION}}", excelCobranza.getFechaCitacion());
+        htmlReemplazado = htmlReemplazado.replace("{{FECHA_CITACION}}", fechaCitacion);
 
         if(excelCobranza.getJuzgado().equalsIgnoreCase("PRIMER")){
             htmlReemplazado = htmlReemplazado.replace("{{N_JUZGADO}}", "1<sup>er</sup> JUZGADO");
@@ -173,7 +196,7 @@ public class PlantillaCobranzas {
         return cuerpo + "-" + dv;
     }
 
-    public static String generarPlantillaReporteCobranzas(String lecturaHtml, String archivoHtmlLogo, EjecutarMerge ejecutarMerge) throws Exception {
+    public static String generarPlantillaReporteCobranzas(String lecturaHtml, String archivoHtmlLogo, EjecutarCartas ejecutarCartas) throws Exception {
 
         // 1. Definir el formateador con localización en español
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
@@ -203,21 +226,41 @@ public class PlantillaCobranzas {
 
         // 3. Reemplazos de Datos de la Tabla
         // Usamos String.valueOf o formateo para asegurar que no falle si son null
-        html = html.replace("{{totalFilasGeneradasUpload}}", String.valueOf(ejecutarMerge.getSizeArchivoUpload()));
+        html = html.replace("{{totalFilasGeneradasUpload}}", String.valueOf(ejecutarCartas.getSizeArchivoUpload()));
 
-        // Si tienes estos campos en tu objeto ejecutarMerge, los mapeamos así:
+        // Si tienes estos campos en tu objeto ejecutarCartas, los mapeamos así:
         // Nota: Asegúrate de que los nombres coincidan con los getters de tu clase
 
-        html = html.replace("{{observacion}}", ejecutarMerge.getObservacion());
-        html = html.replace("{{show_unidad_UPPER}}", ejecutarMerge.getUnidad().toUpperCase());
-        html = html.replace("{{SIZE_CSV_CORREOS}}", String.valueOf(ejecutarMerge.getRegistrosUnicos()));
+        html = html.replace("{{observacion}}", ejecutarCartas.getObservacion());
+        html = html.replace("{{unidad}}", ejecutarCartas.getUnidad().toUpperCase());
+        html = html.replace("{{usuarioUpload}}", ejecutarCartas.getUsuarioUpload().toUpperCase());
+        html = html.replace("{{usuarioMerge}}", ejecutarCartas.getUsuarioMerge().toUpperCase());
 
-        html = html.replace("{{totalMasivas}}", String.valueOf(ejecutarMerge.getTotalMasivas()));
-        html = html.replace("{{totalErroneas}}", String.valueOf(ejecutarMerge.getTotalErroneas()));
+        html = html.replace("{{SIZE_EXCEL_NORMALIZADO}}", String.valueOf(ejecutarCartas.getSizeArchivoNormalizado()));
+        html = html.replace("{{SIZE_CSV_CORREOS}}", String.valueOf(ejecutarCartas.getRegistrosUnicos()));
+        html = html.replace("{{SIZE_EXCEL_MERGE}}", String.valueOf(ejecutarCartas.getSizeArchivoMerge()));
+
+
+        try{
+            //Cuantas llegaron - Cuantas se agruparon en masivas
+            html = html.replace("{{SIZE_AHORRO}}", String.valueOf(Integer.parseInt(ejecutarCartas.getSizeArchivoUpload())-Integer.parseInt(ejecutarCartas.getRegistrosUnicos())));
+        }catch(Exception e){
+            html = html.replace("{{SIZE_AHORRO}}", "");
+        }
+
+        try{
+            //Cuantas llegaron - Cuantas hay en el merge antes de las catas
+            html = html.replace("{{SIZE_EXCEL_ERRORES}}", String.valueOf(Integer.parseInt(ejecutarCartas.getSizeArchivoUpload())-Integer.parseInt(ejecutarCartas.getSizeArchivoMerge())));
+        }catch(Exception e){
+            html = html.replace("{{SIZE_EXCEL_ERRORES}}", "");
+        }
+
+        html = html.replace("{{totalMasivas}}", String.valueOf(ejecutarCartas.getTotalMasivas()));
+        html = html.replace("{{totalErroneas}}", String.valueOf(ejecutarCartas.getTotalErroneas()));
 
         // Estos dos no tenían {{}} en tu HTML de ejemplo, pero los agregamos aquí:
-        html = html.replace("{{totalCartas}}", String.valueOf(ejecutarMerge.getTotalCartas()));
-        html = html.replace("{{totalIndividuales}}", String.valueOf(ejecutarMerge.getTotalIndividuales()));
+        html = html.replace("{{totalCartas}}", String.valueOf(ejecutarCartas.getTotalCartas()));
+        html = html.replace("{{totalIndividuales}}", String.valueOf(ejecutarCartas.getTotalIndividuales()));
 
         // 4. Reemplazo de fecha y footer
         // Asumiendo que tienes un método que devuelve la fecha formateada

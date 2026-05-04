@@ -54,31 +54,33 @@ public class BUploadToDesnormalizadoService {
             processRequestNotificacion( ejecutarUpload);
         }
 
-        CrearJsonExcel.crearJson3Upload(ejecutarUpload);
+        log.info("path {}", ejecutarUpload.getPathArchivoUpload());
+
+        CrearJsonExcel.crearJson3Normalizado(ejecutarUpload);
     }
 
     private EjecutarUpload processRequestCobranza(EjecutarUpload ejecutarUpload)  {
         List<ExcelCobranza> excelCobranzas = new ArrayList<>();
         try{
 
-            Path pathOrigenUpload = null;
-
             Path pathDestinoRespaldo = null;
 
             /**Viene el nombre hasta el upload**/
+            // 1. Obtenemos la ruta donde storageService ya guardó el archivo
             String dirExcelUpload = ejecutarUpload.getPathArchivoUpload();
+            Path pathOrigenUpload = Paths.get(dirExcelUpload);
+
+            // 2. VERIFICACIÓN CRÍTICA
+            if (!Files.exists(pathOrigenUpload)) {
+                throw new RuntimeException("El archivo físico no se encontró en la ruta: " + dirExcelUpload);
+            }
 
             // 1. Lógica específica de QA/PROD
-            if (apiProperties.getProfile().equalsIgnoreCase("qa") || apiProperties.getProfile().equalsIgnoreCase("prod")) {
-                log.info("jar Execution {}", apiProperties.getProfile());
-                pathOrigenUpload = Paths.get(dirExcelUpload);
-                if (!Files.exists(pathOrigenUpload)) {
-                    throw new RuntimeException("El archivo no existe: " + dirExcelUpload);
-                }
-            }
-// 2. Lógica COMÚN para todos los perfiles (DEV, QA, PROD)
-            try (InputStream inputStream = ejecutarUpload.getFile().getInputStream()) {
-                excelCobranzas = ObtenerExcel.obtenerExcelCobranza(inputStream, apiProperties.getArchivoExcelNombreHojaCobranza());
+            try (InputStream inputStream = Files.newInputStream(pathOrigenUpload)) {
+                excelCobranzas = ObtenerExcel.obtenerExcelCobranza(
+                        inputStream,
+                        apiProperties.getArchivoExcelNombreHojaCobranza()
+                );
             }
 
             pathDestinoRespaldo = Paths.get(apiProperties.getArchivoCreacionRespaldo()
@@ -108,8 +110,7 @@ public class BUploadToDesnormalizadoService {
             //Este es el Csv que queda en la carpeta 3... para hacer el luego hacer 4 Merge
             ejecutarUpload = generarCSVUnicosCobranza(
                     listaProcesadaNormalizada,
-                    ejecutarUpload,
-                    ejecutarUpload.getPathArchivoUpload() //ExcelUpload
+                    ejecutarUpload
                     );
 
             mailComponent.enviarCorreoResend(
@@ -117,7 +118,7 @@ public class BUploadToDesnormalizadoService {
                     ejecutarUpload.getObservacion(),
                     Integer.parseInt(ejecutarUpload.getRegistrosUnicos()),
                     ejecutarUpload.getContenidoCsv(),
-                    ejecutarUpload.getArchivoCsvToNormalize());
+                    ejecutarUpload.getNombreArchivoCsvToNormalize());
 
         }catch(Exception e){
             log.error("Exception error", e);
@@ -586,11 +587,10 @@ public class BUploadToDesnormalizadoService {
     /************************************************************************************************/
 
     public EjecutarUpload generarCSVUnicosCobranza(List<ExcelCobranzaToNormalize> listaNormalizada,
-                                         EjecutarUpload ejecutarUpload,
-                                         String  dirExcelToNormalize) {
+                                         EjecutarUpload ejecutarUpload) {
 
         String archivoCsvToNormalize = ejecutarUpload.getPathArchivoNormalizado().replace(".xlsx", apiProperties.getArchivoExcelNombreArchivoNormalizadaCobranzaCorreos());
-
+        String nombreArchivoCsvToNormalize = "";
         log.info("listaNormalizada. Csv {}", listaNormalizada.size());
         log.info("To Correos. Csv {}", archivoCsvToNormalize);
         File archivoFinal = new File(archivoCsvToNormalize);
@@ -646,9 +646,20 @@ public class BUploadToDesnormalizadoService {
             log.error("Error al generar el CSV: {}", e.getMessage());
         }
 
+        try{
+            Path path = Paths.get(archivoCsvToNormalize);
+            int count = path.getNameCount();
+
+// Obtenemos el penúltimo (carpeta) y el último (archivo)
+            nombreArchivoCsvToNormalize = path.getName(count - 1).toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         ejecutarUpload.setContenidoCsv(contenidoCsv);
         ejecutarUpload.setRegistrosUnicos(String.valueOf( registrosUnicos.size()));
-        ejecutarUpload.setArchivoCsvToNormalize(archivoCsvToNormalize);
+        ejecutarUpload.setPathArchivoNormalizadoCsv(archivoCsvToNormalize);
+        ejecutarUpload.setNombreArchivoCsvToNormalize(nombreArchivoCsvToNormalize);
 
         return ejecutarUpload;
 

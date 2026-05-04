@@ -17,9 +17,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Menu {
 
-
-   // @Column(name = "id_menu")
-   // private Integer idMenu;ø
    @Id
     @Column(name = "cod_menu")
     private String codMenu;
@@ -39,6 +36,4 @@ public class Menu {
     @Column(name = "orden")
     private Integer orden;
 
-    //@OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
-    //private List<MenuRol> menuRoles;
 }

@@ -30,9 +30,10 @@ public class EjecutarUpload implements Serializable {
     private String nombreArchivoUpload;
     private String pathArchivoBackup;
     private String pathArchivoNormalizado;
+    private String pathArchivoNormalizadoCsv;
     /***Al Correo **/
     private String sizeArchivoNormalizado;
-    private String archivoCsvToNormalize;
+    private String nombreArchivoCsvToNormalize;
     private String registrosUnicos; //Cuantos patente - rut existen
     /***Setear Nulo*/
     private byte[] contenidoCsv;

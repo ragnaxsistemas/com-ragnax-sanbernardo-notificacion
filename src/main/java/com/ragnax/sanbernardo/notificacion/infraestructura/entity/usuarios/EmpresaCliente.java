@@ -32,7 +32,4 @@ public class EmpresaCliente {
     @Column(name = "url_empresa_cliente", nullable = false, unique = true, length = 45)
     private String urlEmpresaCliente;
 
-
-    //@OneToMany(mappedBy = "unidad", fetch = FetchType.LAZY)
-    //private List<OrdenCompra> ordenesCompra;
 }

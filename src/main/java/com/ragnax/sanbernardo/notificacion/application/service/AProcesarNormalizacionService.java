@@ -17,10 +17,8 @@ import java.util.Map;
 public class AProcesarNormalizacionService {
 
     private final AFileStorageComponent storageService;
+    private final AsyncTaskService asyncTaskService;
 
-    private final BUploadToDesnormalizadoService uploadToDesnormalizadoService;
-
-    // --- LÓGICA DE SUBIDA CENTRALIZADA ---
     public ResponseEntity<?> procesarSubida(String carpetaRaiz,
                                             String tipo,
                                             String unidad,
@@ -28,14 +26,22 @@ public class AProcesarNormalizacionService {
                                             String observacion,
                                             MultipartFile file) throws IOException {
 
+        // 1. PASO SÍNCRONO (Rápido):
+        // Validamos y guardamos el archivo en el storage (Mac/Windows).
+        // Esto asegura que el archivo ya existe en disco antes de responder.
         EjecutarUpload ejecutarUpload = storageService.procesarSubida(carpetaRaiz, tipo, unidad, usuario, observacion, file);
 
-        ejecutarUpload.setFile(file);
-        uploadToDesnormalizadoService.normalizarArchivo(ejecutarUpload);
+        asyncTaskService.ejecutarNormalizacionAsync(ejecutarUpload);
+        // 2. PASO ASÍNCRONO (Segundo plano):
+        // Disparamos la normalización sin esperar a que termine.
+        //this.ejecutarNormalizacionAsync(ejecutarUpload, file);
 
-        return ResponseEntity.ok(Map.of(
-                "message", "Subida exitosa",
-                "ruta", ejecutarUpload.getNombreArchivoUpload()
+        // 3. RESPUESTA INMEDIATA:
+        // Enviamos un 202 Accepted para que Angular cierre el modal.
+        return ResponseEntity.accepted().body(Map.of(
+                "message", "Archivo recibido. Procesando en segundo plano...",
+                "ruta", ejecutarUpload.getNombreArchivoUpload(),
+                "carpeta", ejecutarUpload.getNombreArchivoUpload()
         ));
     }
 }

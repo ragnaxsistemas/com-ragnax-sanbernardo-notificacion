@@ -3,11 +3,15 @@ package com.ragnax.sanbernardo.notificacion.application.service.component;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarUpload;
 import com.ragnax.sanbernardo.notificacion.application.service.model.exceptions.ImsbException;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
+import com.ragnax.sanbernardo.notificacion.infraestructura.configuration.ApiProperties;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,7 +26,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@Slf4j
 public class AFileStorageComponent {
+
+    @Autowired
+    ApiProperties apiProperties;
 
     private final boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
 
@@ -295,6 +303,39 @@ public class AFileStorageComponent {
 
     }
 
+    public String guardarCsvNormalizadoCorreos(MultipartFile file, String tipo, String unidad, String process) throws IOException {
+        // 1. Definir la ruta base de trabajo (usando tus propiedades de ApiProperties si es necesario)
+        // Ejemplo: /public_sftp/4_merge/cobranza/tesoreria/temp_csv/
+        Path rutaDirectorio = Paths.get(
+                apiProperties.getArchivoCreacionCarpeta(),
+                "4_merge",
+                tipo.toLowerCase(),
+                unidad.toLowerCase(),
+                process
+
+        );
+
+        // 2. Crear los directorios si no existen
+        if (!Files.exists(rutaDirectorio)) {
+            Files.createDirectories(rutaDirectorio);
+
+        }
+
+        // 3. Generar un nombre único para evitar colisiones si dos usuarios suben archivos al mismo tiempo
+        //String nombreArchivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path rutaDestino = rutaDirectorio.resolve(file.getOriginalFilename());
+
+        // 4. Copiar el archivo físicamente al disco
+        // Usamos el InputStream del MultipartFile mientras el hilo principal esté vivo
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, rutaDestino, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        log.info("Archivo CSV de Correos guardado físicamente para proceso asíncrono en: {}", rutaDestino);
+
+        // 5. Retornar la ruta absoluta para que el hilo @Async sepa dónde leerlo
+        return rutaDestino.toString();
+    }
 
 
     // --- HELPER DE RUTAS ---
