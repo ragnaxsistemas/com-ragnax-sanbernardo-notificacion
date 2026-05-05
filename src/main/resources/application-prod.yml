@@ -7,42 +7,38 @@ info:
     name: '@project.name@'
     version: '@project.version@'
 
+datasource:
+  primary:
+    jdbc-url: jdbc:mysql://127.0.0.1:3306/imsb?useSSL=false&allowPublicKeyRetrieval=true
+    username: dbimsb
+    password: "FTj$#88*"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  usuarios:
+    jdbc-url: jdbc:mysql://127.0.0.1:3306/ragnax_usuariov1?useSSL=false&allowPublicKeyRetrieval=true
+    username: dbimsb
+    password: "FTj$#88*"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+
 spring:
-#  profiles:
-#    active: prod  # Cambiado a prod
   application:
     name: com-ragnax-sanbernardo-notificacion
-
-  # Configuración de Multi-Datasource (ajustado a tus nuevas tablas)
-  datasource:
-    primary:
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/imsb?useSSL=false&allowPublicKeyRetrieval=true
-      username: dbimsb
-      password: "FTj$#88*"
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    usuarios:
-      jdbc-url: jdbc:mysql://127.0.0.1:3306/ragnax_usuariov1?useSSL=false&allowPublicKeyRetrieval=true
-      username: dbimsb
-      password: "FTj$#88*"
-      driver-class-name: com.mysql.cj.jdbc.Driver
-
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        # Esto es vital para evitar el error de metadatos si una conexión tarda
+        temp.use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.MariaDBDialect
   hikari:
     maximum-pool-size: 10
     minimum-idle: 5
-
-  jpa:
-  #  show-sql: false
-    hibernate:
-      ddl-auto: none
-  #  properties:
-  #    hibernate:
-  #      dialect: org.hibernate.dialect.MariaDBDialect # Optimizado para MariaDB AWS
-
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
-
   # Configuración de Mail (Resend)
   mail:
     host: smtp.resend.com
