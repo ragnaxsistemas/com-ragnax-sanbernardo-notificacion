@@ -172,6 +172,7 @@ public class DProcesarCartaCobranzaService {
         ejecutarCartas.setTotalCartas(String.valueOf(generacionCarta.getContFolioProceso()-1));
         ejecutarCartas.setTotalErroneas(String.valueOf( generacionCarta.getContFolioProceso()-cartInd - cartMas));
         ejecutarCartas.setCorrelativoHistorico(generacionCarta.getCorrelativoHistorico());
+        ejecutarCartas.setActivarConsolidadoImprenta(false);
 
         // 3. Crear ZIP Final leyendo desde disco (No de memoria)
         crearPdfConsolidado(ejecutarCartas, totalRegistros);
@@ -559,6 +560,7 @@ public class DProcesarCartaCobranzaService {
                 .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaReporte()).concat("/")
                 .concat(apiProperties.getArchivoCreacionAdjuntoNombreArchivoReporte()));
 
+        /**Crear Json ejecutar Cartas aca se obtiene el Boton de Validado**/
         CrearJsonExcel.crearJson5Carta(ejecutarCartas);
 
         return ejecutarCartas;

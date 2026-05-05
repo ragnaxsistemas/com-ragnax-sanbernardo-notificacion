@@ -1,5 +1,6 @@
 package com.ragnax.sanbernardo.notificacion.application.service.component;
 
+import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarCartas;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarUpload;
 import com.ragnax.sanbernardo.notificacion.application.service.model.exceptions.ImsbException;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
@@ -166,7 +167,7 @@ public class AFileStorageComponent {
     public Map<String, Object> listarPaginado(Path path, String filtro, int page, int size) throws IOException {
         List<Path> todosLosFiltrados;
 
-        // 1. Filtrado y Ordenamiento (Operación liviana sobre nombres y metadatos básicos)
+        // 1. Filtrado y Ordenamiento
         try (Stream<Path> stream = Files.list(path)) {
             todosLosFiltrados = stream
                     .filter(p -> {
@@ -175,7 +176,6 @@ public class AFileStorageComponent {
                     })
                     .sorted((p1, p2) -> {
                         try {
-                            // El ordenamiento por fecha es necesario, pero costoso en sftp/red
                             return Files.getLastModifiedTime(p2).compareTo(Files.getLastModifiedTime(p1));
                         } catch (IOException e) { return 0; }
                     })
@@ -186,7 +186,6 @@ public class AFileStorageComponent {
         int desde = Math.min(page * size, totalElementos);
         int hasta = Math.min(desde + size, totalElementos);
 
-        // 2. PAGINACIÓN REAL: Solo procesamos el detalle de los archivos que se verán (ej. solo 10)
         List<Path> paginaPaths = todosLosFiltrados.subList(desde, hasta);
 
         List<Map<String, Object>> detalle = paginaPaths.stream().map(p -> {
@@ -198,7 +197,6 @@ public class AFileStorageComponent {
             info.put("esDirectorio", esDirectorio);
 
             try {
-                // Usamos readAttributes solo para los 10 archivos de la página actual
                 BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
                 info.put("fechaCreacion", attr.creationTime().toInstant().toString());
                 info.put("tamano", attr.size());
@@ -206,9 +204,28 @@ public class AFileStorageComponent {
                 info.put("fechaCreacion", "---");
             }
 
-            // Lógica de metadatos (Solo para archivos .xlsx en la página actual)
+            // --- NUEVA LÓGICA: Obtener activarConsolidadoImprenta ---
+            boolean consolidadoImprenta = false;
+
+            if (esDirectorio) {
+                Path rutaReporteJson = p.resolve("REPORTES").resolve("reporte.json");
+                if (Files.exists(rutaReporteJson)) {
+                    try {
+                        // Leemos el objeto y extraemos el valor booleano
+                        EjecutarCartas ejecutarCartas = CrearJsonExcel.getEjecutarCartasFromJson(rutaReporteJson.toString());
+                        if (ejecutarCartas != null) {
+                            consolidadoImprenta = ejecutarCartas.getActivarConsolidadoImprenta();
+                        }
+                    } catch (Exception e) {
+                        // Loguear error pero no detener el listado completo
+                        System.err.println("Error leyendo reporte.json en: " + nombre);
+                    }
+                }
+            }
+            info.put("activarConsolidadoImprenta", consolidadoImprenta);
+
+            // Lógica de metadatos para Excel
             if (!esDirectorio && nombre.endsWith(".xlsx")) {
-                // Tu método estático para leer el JSON compañero
                 Map<String, String> meta = CrearJsonExcel.extraerMetadataJson(p);
                 info.put("observacion", meta.getOrDefault("observacion", ""));
                 info.put("usuario", meta.getOrDefault("usuario", ""));
@@ -220,10 +237,10 @@ public class AFileStorageComponent {
             return info;
         }).collect(Collectors.toList());
 
-        // 3. Preparar respuesta consistente para Angular
+        // 3. Preparar respuesta para Angular
         Map<String, Object> respuesta = new HashMap<>();
         respuesta.put("totalItems", totalElementos);
-        respuesta.put("items", detalle); // Aquí van mezclados carpetas y archivos
+        respuesta.put("items", detalle);
         respuesta.put("paginaActual", page);
         respuesta.put("totalPaginas", (int) Math.ceil((double) totalElementos / size));
         respuesta.put("fechaAhora", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));

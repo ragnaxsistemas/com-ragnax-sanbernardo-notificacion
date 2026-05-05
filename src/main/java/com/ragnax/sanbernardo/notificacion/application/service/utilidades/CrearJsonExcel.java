@@ -159,7 +159,7 @@ public class CrearJsonExcel {
         ejecutarCartas.setFile(null);
         ejecutarCartas.setListaExcelCobranzaMerge(null);
         ejecutarCartas.setFileCorreosCsv(null);
-        ejecutarCartas.setListaPdfs(null);
+        //ejecutarCartas.setListaPdfs(null);
         // 1. Validar que el objeto y el nombre no sean nulos
         if (ejecutarCartas == null || ejecutarCartas.getPathReporte()== null) {
             System.err.println("EjecutarMerge o el nombre del archivo es nulo");
@@ -251,6 +251,35 @@ public class CrearJsonExcel {
         } else {
             // Opción A: Retornar null o Opción B: Lanzar una excepción si es crítico
             System.err.println("No se encontró el archivo JSON asociado a: " + pathXlsx);
+            return null;
+        }
+    }
+
+    //si existe la carpeta reportes
+    public static EjecutarCartas getEjecutarCartasFromJson(String jsonPath) throws IOException {
+        // 1. Construir la ruta del JSON basándonos en el path del Excel
+        // Reemplazamos la extensión para apuntar al archivo .json
+        Path jsonPathReporte = Paths.get(jsonPath);
+
+        // 2. Verificar si el archivo físico existe
+        if (Files.exists(jsonPathReporte)) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+
+                // 3. Leer el archivo y convertirlo directamente al objeto EjecutarUpload
+                EjecutarCartas objetoRecuperado = mapper.readValue(jsonPathReporte.toFile(), EjecutarCartas.class);
+
+                System.out.println("JSON cargado exitosamente desde: " + jsonPath.toString());
+                return objetoRecuperado;
+
+            } catch (IOException e) {
+                System.err.println("Error al deserializar el archivo JSON en: " + jsonPath);
+                e.printStackTrace();
+                throw e;
+            }
+        } else {
+            // Opción A: Retornar null o Opción B: Lanzar una excepción si es crítico
+            System.err.println("No se encontró el archivo JSON asociado a: " + jsonPath);
             return null;
         }
     }

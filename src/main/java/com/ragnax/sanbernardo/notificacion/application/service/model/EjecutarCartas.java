@@ -62,8 +62,10 @@ public class EjecutarCartas extends EjecutarMerge implements Serializable {
     private String totalRuts;
     private String totalPatentesUnicas;
 
+    private Boolean activarConsolidadoImprenta;
+
     //private MultipartFile fileCorreosCsv;
     //private List<ExcelCobranzaNormalizado> listaExcelCobranzaNormalizado;
-    private List<byte[]> listaPdfs;
+    //private List<byte[]> listaPdfs;
 
 }

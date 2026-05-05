@@ -4,6 +4,7 @@ import com.ragnax.sanbernardo.notificacion.application.service.ECarpetaHabilitad
 import com.ragnax.sanbernardo.notificacion.application.service.component.AFileStorageComponent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("") // Cambiado para evitar colisiones con "/"
 @CrossOrigin(origins = "*")
+@Slf4j
 public class EListarController {
 
     private final AFileStorageComponent storageService;
@@ -46,7 +48,7 @@ public class EListarController {
         Path path = storageService.resolveDynamicPath(subPath);
 
         // LOG de diagnóstico para verificar qué está buscando el servidor
-        System.out.println("Buscando en: " + path.toAbsolutePath());
+        log.info("Buscando en: {}" , path.toAbsolutePath());
 
         if (!Files.exists(path)) {
             return ResponseEntity.ok(Map.of(
