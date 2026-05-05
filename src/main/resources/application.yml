@@ -45,12 +45,12 @@ spring:
 
 datasource:
   primary:
-    jdbc-url: jdbc:mysql://localhost:3306/imsb_prod?useSSL=false
+    jdbc-url: jdbc:mysql://localhost:3306/imsb?useSSL=false
     username: root
     password: m3R0b0L4sT4s4sD3lTr4b4j0
     driver-class-name: com.mysql.cj.jdbc.Driver
   usuarios:
-    jdbc-url: jdbc:mysql://localhost:3306/ragnax_usuario_prod?useSSL=false
+    jdbc-url: jdbc:mysql://localhost:3306/ragnax_usuariov1?useSSL=false
     username: root
     password: m3R0b0L4sT4s4sD3lTr4b4j0
     driver-class-name: com.mysql.cj.jdbc.Driver
