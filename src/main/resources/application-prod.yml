@@ -8,8 +8,8 @@ info:
     version: '@project.version@'
 
 spring:
-  profiles:
-    active: prod  # Cambiado a prod
+#  profiles:
+#    active: prod  # Cambiado a prod
   application:
     name: com-ragnax-sanbernardo-notificacion
 
