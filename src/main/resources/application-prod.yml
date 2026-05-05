@@ -24,7 +24,7 @@ spring:
       jdbc-url: jdbc:mysql://127.0.0.1:3306/ragnax_usuariov1?useSSL=false&allowPublicKeyRetrieval=true
       username: dbimsb
       password: FTj$#88*
-      driver-class-name: com.mysql.cj.jdbc.Driver
+      driver-class-name: org.hibernate.dialect.MariaDBDialect
 
   hikari:
     maximum-pool-size: 10
