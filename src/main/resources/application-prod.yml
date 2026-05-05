@@ -16,12 +16,12 @@ spring:
   # Configuración de Multi-Datasource (ajustado a tus nuevas tablas)
   datasource:
     primary:
-      jdbc-url: jdbc:mysql://localhost:3306/imsb?useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/imsb?useSSL=false&allowPublicKeyRetrieval=true
       username: dbimsb
       password: FTj$#88*
       driver-class-name: com.mysql.cj.jdbc.Driver
     usuarios:
-      jdbc-url: jdbc:mysql://localhost:3306/ragnax_usuariov1?useSSL=false&allowPublicKeyRetrieval=true
+      jdbc-url: jdbc:mysql://127.0.0.1:3306/ragnax_usuariov1?useSSL=false&allowPublicKeyRetrieval=true
       username: dbimsb
       password: FTj$#88*
       driver-class-name: com.mysql.cj.jdbc.Driver
