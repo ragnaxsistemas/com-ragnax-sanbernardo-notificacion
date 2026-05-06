@@ -172,7 +172,7 @@ public class DProcesarCartaCobranzaService {
         ejecutarCartas.setTotalCartas(String.valueOf(generacionCarta.getContFolioProceso()-1));
         ejecutarCartas.setTotalErroneas(String.valueOf( generacionCarta.getContFolioProceso()-cartInd - cartMas));
         ejecutarCartas.setCorrelativoHistorico(generacionCarta.getCorrelativoHistorico());
-        ejecutarCartas.setActivarConsolidadoImprenta(false);
+       // ejecutarCartas.setActivarConsolidadoImprenta(false);
 
         // 3. Crear ZIP Final leyendo desde disco (No de memoria)
         crearPdfConsolidado(ejecutarCartas, totalRegistros);
@@ -180,7 +180,7 @@ public class DProcesarCartaCobranzaService {
         return ejecutarCartas;
     }
 
-    public void crearPdfConsolidado(EjecutarCartas ejecutarCartas, List<ExcelCobranzaImpresion> registros) throws Exception {
+    public EjecutarCartas crearPdfConsolidado(EjecutarCartas ejecutarCartas, List<ExcelCobranzaImpresion> registros) throws Exception {
 
         List<byte[]> listaPdfs = new ArrayList<>();
         //String pathDocumentos = ejecutarCartas.getPathFolderCartas().concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaDocumento());
@@ -216,6 +216,15 @@ public class DProcesarCartaCobranzaService {
                         .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaConsolidado())
                         .concat(apiProperties.getArchivoCreacionAdjuntoNombreArchivoConsolidado()),
                 listaPdfs);
+
+        ejecutarCartas.setPathArchivoConsolidado(ejecutarCartas.getPathFolderCartas()
+                .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaConsolidado())
+                .concat(apiProperties.getArchivoCreacionAdjuntoNombreArchivoConsolidado()));
+
+        CrearJsonExcel.crearJson5Consolidado(new EjecutarConsolidado(
+                ejecutarCartas.getTipo(), ejecutarCartas.getUnidad(), ejecutarCartas.getPathArchivoConsolidado(), false));
+
+        return ejecutarCartas;
     }
         //try {
             // 1. Asegurar que la carpeta de destino existe
@@ -557,11 +566,11 @@ public class DProcesarCartaCobranzaService {
                         apiProperties.getArchivoCreacionAdjuntoNombreArchivoReporte()
                 );
         ejecutarCartas.setPathReporte(ejecutarCartas.getPathFolderCartas()
-                .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaReporte()).concat("/")
+                .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaReporte())
                 .concat(apiProperties.getArchivoCreacionAdjuntoNombreArchivoReporte()));
 
         /**Crear Json ejecutar Cartas aca se obtiene el Boton de Validado**/
-        CrearJsonExcel.crearJson5Carta(ejecutarCartas);
+        CrearJsonExcel.crearJson6Carta(ejecutarCartas);
 
         return ejecutarCartas;
     }

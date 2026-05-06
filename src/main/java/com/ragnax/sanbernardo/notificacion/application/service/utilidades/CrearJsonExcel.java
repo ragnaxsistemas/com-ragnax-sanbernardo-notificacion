@@ -3,6 +3,7 @@ package com.ragnax.sanbernardo.notificacion.application.service.utilidades;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarCartas;
+import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarConsolidado;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarMerge;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarUpload;
 
@@ -155,7 +156,49 @@ public class CrearJsonExcel {
         }
     }
 
-    public static void crearJson5Carta(EjecutarCartas ejecutarCartas) {
+    public static void crearJson5Consolidado(EjecutarConsolidado ejecutarConsolidado) {
+
+        //ejecutarCartas.setListaPdfs(null);
+        // 1. Validar que el objeto y el nombre no sean nulos
+        if (ejecutarConsolidado == null || ejecutarConsolidado.getPathArchivoConsolidado()== null) {
+            System.err.println("EjecutarMerge o el nombre del archivo es nulo");
+            return;
+        }
+
+        // 2. Determinar el nombre del archivo JSON (reemplazando .xlsx por .json)
+        String nombreJson = ejecutarConsolidado.getPathArchivoConsolidado().replace(".pdf", "").concat(".json");
+
+        try {
+            // 3. Obtener la ruta del directorio donde está el archivo original
+            // Asumiendo que ejecutarUpload.getRutaArchivo() contiene el path completo del Excel
+            Path rutaArchivoOriginal = Paths.get(ejecutarConsolidado.getPathArchivoConsolidado());
+            Path directorioDestino = rutaArchivoOriginal.getParent(); // Esto obtiene la carpeta contenedora
+
+            if (directorioDestino == null) {
+                throw new IOException("No se pudo determinar el directorio de destino desde la ruta: " + ejecutarConsolidado.getPathArchivoConsolidado());
+            }
+
+            Path pathFinalJson = directorioDestino.resolve(nombreJson);
+
+            // 4. Configurar ObjectMapper y serializar
+            ObjectMapper mapper = new ObjectMapper();
+
+            // Escribimos el objeto directamente como JSON con formato "Pretty"
+            String jsonContent = mapper.writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(ejecutarConsolidado);
+
+            // 5. Escribir el archivo físicamente
+            Files.write(pathFinalJson, jsonContent.getBytes(StandardCharsets.UTF_8));
+
+            System.out.println("JSON de Upload creado exitosamente en: " + pathFinalJson.toString());
+
+        } catch (Exception e) {
+            System.err.println("Error al crear el JSON de Upload para: " + ejecutarConsolidado.getPathArchivoConsolidado());
+            e.printStackTrace();
+        }
+    }
+
+    public static void crearJson6Carta(EjecutarCartas ejecutarCartas) {
         ejecutarCartas.setFile(null);
         ejecutarCartas.setListaExcelCobranzaMerge(null);
         ejecutarCartas.setFileCorreosCsv(null);
@@ -251,6 +294,34 @@ public class CrearJsonExcel {
         } else {
             // Opción A: Retornar null o Opción B: Lanzar una excepción si es crítico
             System.err.println("No se encontró el archivo JSON asociado a: " + pathXlsx);
+            return null;
+        }
+    }
+
+    public static EjecutarConsolidado getEjecutarConsolidadoFromJson(String jsonPath) throws IOException {
+        // 1. Construir la ruta del JSON basándonos en el path del Excel
+        // Reemplazamos la extensión para apuntar al archivo .json
+        Path jsonPathReporte = Paths.get(jsonPath);
+
+        // 2. Verificar si el archivo físico existe
+        if (Files.exists(jsonPathReporte)) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+
+                // 3. Leer el archivo y convertirlo directamente al objeto EjecutarUpload
+                EjecutarConsolidado objetoRecuperado = mapper.readValue(jsonPathReporte.toFile(), EjecutarConsolidado.class);
+
+                System.out.println("JSON cargado exitosamente desde: " + jsonPath.toString());
+                return objetoRecuperado;
+
+            } catch (IOException e) {
+                System.err.println("Error al deserializar el archivo JSON en: " + jsonPath);
+                e.printStackTrace();
+                throw e;
+            }
+        } else {
+            // Opción A: Retornar null o Opción B: Lanzar una excepción si es crítico
+            System.err.println("No se encontró el archivo JSON asociado a: " + jsonPath);
             return null;
         }
     }

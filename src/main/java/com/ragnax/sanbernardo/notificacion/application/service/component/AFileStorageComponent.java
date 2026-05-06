@@ -1,6 +1,7 @@
 package com.ragnax.sanbernardo.notificacion.application.service.component;
 
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarCartas;
+import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarConsolidado;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarUpload;
 import com.ragnax.sanbernardo.notificacion.application.service.model.exceptions.ImsbException;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
@@ -208,18 +209,20 @@ public class AFileStorageComponent {
             boolean consolidadoImprenta = false;
 
             if (esDirectorio) {
-                Path rutaReporteJson = p.resolve("REPORTES").resolve("reporte.json");
+                Path rutaReporteJson = p.resolve("CARTAS_CONSOLIDADAS").resolve("consolidado.json");
                 if (Files.exists(rutaReporteJson)) {
                     try {
                         // Leemos el objeto y extraemos el valor booleano
-                        EjecutarCartas ejecutarCartas = CrearJsonExcel.getEjecutarCartasFromJson(rutaReporteJson.toString());
-                        if (ejecutarCartas != null) {
-                            consolidadoImprenta = ejecutarCartas.getActivarConsolidadoImprenta();
+                        EjecutarConsolidado ejecutarConsolidado = CrearJsonExcel.getEjecutarConsolidadoFromJson(rutaReporteJson.toString());
+                        if (ejecutarConsolidado != null) {
+                            consolidadoImprenta = ejecutarConsolidado.getActivarConsolidadoImprenta();
                         }
                     } catch (Exception e) {
                         // Loguear error pero no detener el listado completo
                         System.err.println("Error leyendo reporte.json en: " + nombre);
                     }
+                }else{
+                    log.info("no existe consolidado.json", path.toString());
                 }
             }
             info.put("activarConsolidadoImprenta", consolidadoImprenta);
@@ -244,6 +247,32 @@ public class AFileStorageComponent {
         respuesta.put("paginaActual", page);
         respuesta.put("totalPaginas", (int) Math.ceil((double) totalElementos / size));
         respuesta.put("fechaAhora", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+        return respuesta;
+    }
+
+    public Map<String, Object> habilitarImprenta(Path path) throws IOException {
+
+        ;
+        Path rutaReporteJson =  path.resolve("consolidado.json");
+        Boolean consolidadoImprenta = false;
+        if (Files.exists(rutaReporteJson)) {
+            try {
+                // Usamos tu utilidad para deserializar el JSON
+                EjecutarConsolidado ejecutarConsolidado = CrearJsonExcel.getEjecutarConsolidadoFromJson(rutaReporteJson.toString());
+                if (ejecutarConsolidado != null) {
+                    consolidadoImprenta = ejecutarConsolidado.getActivarConsolidadoImprenta();
+                    ejecutarConsolidado.setActivarConsolidadoImprenta(true);
+                    CrearJsonExcel.crearJson5Consolidado(ejecutarConsolidado);
+                }
+            } catch (Exception e) {
+                // Log silencioso para no romper el listado si un JSON está mal formado
+                System.err.println("Error procesando reporte.json en: " + rutaReporteJson);
+            }
+        }
+
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("activacionImprenta", path.toString());
 
         return respuesta;
     }

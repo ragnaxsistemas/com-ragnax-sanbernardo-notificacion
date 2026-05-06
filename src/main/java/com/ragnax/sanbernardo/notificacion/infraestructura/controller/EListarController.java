@@ -2,6 +2,7 @@ package com.ragnax.sanbernardo.notificacion.infraestructura.controller;
 
 import com.ragnax.sanbernardo.notificacion.application.service.ECarpetaHabilitadaService;
 import com.ragnax.sanbernardo.notificacion.application.service.component.AFileStorageComponent;
+import com.ragnax.sanbernardo.notificacion.infraestructura.controller.dto.UnidadDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,41 @@ import java.util.Map;
 public class EListarController {
 
     private final AFileStorageComponent storageService;
+
+    private final ECarpetaHabilitadaService carpetaHabilitadaService;
+
+    @GetMapping("/carpetas-habilitadas/unidad/{codEmpresa}")
+    public ResponseEntity<List<UnidadDTO>> buscarPorUnidad(@PathVariable String codEmpresa) {
+        return ResponseEntity.ok(carpetaHabilitadaService.obtenerUnidadesFront(codEmpresa));
+    }
+
+    @GetMapping("/habilitar-imprenta/**")
+    public ResponseEntity<?> habilitarImprenta(
+            HttpServletRequest request,
+            @RequestParam(required = false) String nombre
+    ) throws IOException {
+
+        // 1. Extraer la ruta dinámica capturada por el comodín **
+        String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
+
+        // 2. Resolver la ruta física usando el StorageService
+        // subPath llegará como: "cobranza/tesoreria/CD-FTX_2026..." o "upload/cobranza/tesoreria"
+        Path path = storageService.resolveDynamicPath(subPath);
+
+        // LOG de diagnóstico para verificar qué está buscando el servidor
+        log.info("Habilitando carpeta para imprenta en: {}" , path.toAbsolutePath());
+
+        if (!Files.exists(path)) {
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "La ruta no existe en el servidor"
+            ));
+        }
+
+        // 3. Retornar la lista paginada (carpetas y archivos)
+        return ResponseEntity.ok(storageService.habilitarImprenta(path));
+    }
 
     // --- LISTAR: Soporta todas tus variantes de URL --
     @GetMapping("/listar/**")
