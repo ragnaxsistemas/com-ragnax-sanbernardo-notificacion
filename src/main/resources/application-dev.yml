@@ -9,7 +9,7 @@ info:
 
 spring:
 #  profiles:
-#    active: app
+#  active: dev
   application:
     name: com-ragnax-sanbernardo-notificacion
   hikari:
@@ -45,15 +45,17 @@ spring:
 
 datasource:
   primary:
-    jdbc-url: jdbc:mysql://localhost:3306/imsb?useSSL=false
-    username: root
-    password: m3R0b0L4sT4s4sD3lTr4b4j0
+    jdbc-url: jdbc:mysql://ec2-3-140-205-250.us-east-2.compute.amazonaws.com:3306/imsb_prod?useSSL=false
+    username: dbimsb
+    password: "FTj$#88*"
     driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
   usuarios:
-    jdbc-url: jdbc:mysql://localhost:3306/ragnax_usuariov1?useSSL=false
-    username: root
-    password: m3R0b0L4sT4s4sD3lTr4b4j0
+    jdbc-url: jdbc:mysql://ec2-3-140-205-250.us-east-2.compute.amazonaws.com:3306/ragnax_usuario_prod?useSSL=false
+    username: dbimsb
+    password: "FTj$#88*"
     driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
 
 
 #  datasource:
@@ -139,12 +141,14 @@ archivo:
     #nombreArchivo: LIBRO_EJEMPLO_con50mil_corregido_2y.xlsx
     #nombreArchivo: 16092025_BP.xlsx
     nombreArchivoNormalizadaCobranza: "Cobranza_ToNormalize.xlsx"
+    nombreArchivoNormalizadaNotificacion: "Notificacion_ToNormalize.xlsx"
     nombreArchivoNormalizadaCobranzaCorreos: "_EnviarCorreos.csv"
     nombreArchivoMergeCobranza: "_Procesar_Cobranza.xlsx"
+    nombreArchivoMergeNotificacion: "_Procesar_Notificacion.xlsx"
     #nombreHoja: Datos_corregidos_patente_infrac
     nombreHojaUploadCobranza: Hoja1
-    nombreHojaNormalizada: ToNormalize
-    nombreHojaMerge: Procesar
+    nombreHojaNormalizadaCobranza: ToNormalize
+    nombreHojaMergeCobranza: Procesar
     #nombreHojaCobranza: Normalizada
 
 
@@ -154,9 +158,9 @@ archivo:
   html:
     nombreCarpetaTemplate: templates/
     nombreArchivoCobranzaIndividual: cartas/cobranza/cobranza_carta_individual.html
-    nombreArchivoCobranzaMasiva:   cartas/cobranza/cobranza_carta_masiva.html
-#    nombreArchivoNotificacionIndividual: cartas/notificacion/notificacion_carta_individual_con_cupon.html
-#    nombreArchivoNotificacionMasiva: cartas/notificacion/notificacion_carta_masiva.html
+    nombreArchivoCobranzaMasiva: cartas/cobranza/cobranza_carta_masiva.html
+    #    nombreArchivoNotificacionIndividual: cartas/notificacion/notificacion_carta_individual_con_cupon.html
+    #    nombreArchivoNotificacionMasiva: cartas/notificacion/notificacion_carta_masiva.html
     nombreArchivoNotificacionV2: cartas/notificacion/notificacion_carta_v2.html
     nombreArchivoReporte: reportes/reporte.html
     logoBciCupon: logos/bci_cupon.png

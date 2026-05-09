@@ -7,20 +7,6 @@ info:
     name: '@project.name@'
     version: '@project.version@'
 
-datasource:
-  primary:
-    jdbc-url: jdbc:mysql://127.0.0.1:3306/imsb_prod?useSSL=false&allowPublicKeyRetrieval=true
-    username: dbimsb
-    password: "FTj$#88*"
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-  usuarios:
-    jdbc-url: jdbc:mysql://127.0.0.1:3306/ragnax_usuario_prod?useSSL=false&allowPublicKeyRetrieval=true
-    username: dbimsb
-    password: "FTj$#88*"
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.zaxxer.hikari.HikariDataSource
-
 spring:
   application:
     name: com-ragnax-sanbernardo-notificacion
@@ -57,6 +43,20 @@ spring:
           port: 465
           class: javax.net.ssl.SSLSocketFactory
 
+datasource:
+  primary:
+    jdbc-url: jdbc:mysql://127.0.0.1:3306/imsb_prod?useSSL=false&allowPublicKeyRetrieval=true
+    username: dbimsb
+    password: "FTj$#88*"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+  usuarios:
+    jdbc-url: jdbc:mysql://127.0.0.1:3306/ragnax_usuario_prod?useSSL=false&allowPublicKeyRetrieval=true
+    username: dbimsb
+    password: "FTj$#88*"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+
 server:
   port: 9999
 
@@ -73,14 +73,29 @@ archivo:
     nombreCarpetaNormalizada: /var/www/sb_ope_001a/public_sftp/3_normalizado/
     nombreCarpetaMerge: /var/www/sb_ope_001a/public_sftp/4_merge/
     nombreArchivoNormalizadaCobranza: "Cobranza_ToNormalize.xlsx"
+    nombreArchivoNormalizadaNotificacion: "Notificacion_ToNormalize.xlsx"
+    nombreArchivoNormalizadaCobranzaCorreos: "_EnviarCorreos.csv"
+    nombreArchivoMergeCobranza: "_Procesar_Cobranza.xlsx"
+    nombreArchivoMergeNotificacion: "_Procesar_Notificacion.xlsx"
     nombreHojaUploadCobranza: Hoja1
     nombreHojaNormalizadaCobranza: ToNormalize
     nombreHojaMergeCobranza: Procesar
+    nombreHojaNotificacion: NOTIFICACION
 
   html:
     nombreCarpetaTemplate: templates/
+    nombreArchivoCobranzaIndividual: cartas/cobranza/cobranza_carta_individual.html
+    nombreArchivoCobranzaMasiva: cartas/cobranza/cobranza_carta_masiva.html
+    #    nombreArchivoNotificacionIndividual: cartas/notificacion/notificacion_carta_individual_con_cupon.html
+    #    nombreArchivoNotificacionMasiva: cartas/notificacion/notificacion_carta_masiva.html
     nombreArchivoNotificacionV2: cartas/notificacion/notificacion_carta_v2.html
-    # ... (mantener las rutas de logos relativas a resources/templates)
+    nombreArchivoReporte: reportes/reporte.html
+    logoBciCupon: logos/bci_cupon.png
+    logoFirma1Juzgado: logos/firma1Juzgado.png
+    logoFirma2Juzgado: logos/firma2Juzgado.png
+    logoFirmaTesoreria: logos/firmaTesoreria-DAF.png
+    logoEscudo: logos/escudo-solo-redux32kb.png
+    logo: logos/LogoEsquinaSuperiorIzquierda.png
 
   creacion:
     # RUTAS ABSOLUTAS PARA LINUX/AWS

@@ -24,6 +24,13 @@ public class ApiProperties {
     @Value("${archivo.excel.nombreArchivoNormalizadaCobranza}")
     private String archivoExcelNombreArchivoNormalizadaCobranza;
 
+    @Value("${archivo.excel.nombreArchivoNormalizadaNotificacion}")
+    private String archivoExcelNombreArchivoNormalizadaNotificacion;
+
+    @Value("${archivo.excel.nombreArchivoNormalizadaCobranzaCorreos}")
+    private String archivoExcelNombreArchivoNormalizadaCorreos;
+
+
     @Value("${archivo.excel.nombreArchivoNormalizadaCobranzaCorreos}")
     private String archivoExcelNombreArchivoNormalizadaCobranzaCorreos;
 
@@ -33,10 +40,10 @@ public class ApiProperties {
     @Value("${archivo.excel.nombreHojaUploadCobranza}")
     private String archivoExcelNombreHojaCobranza;
 
-    @Value("${archivo.excel.nombreHojaNormalizadaCobranza}")
-    private String archivoExcelNombreHojaNormalizadaCobranza;
+    @Value("${archivo.excel.nombreHojaNormalizada}")
+    private String archivoExcelNombreHojaNormalizada;
 
-    @Value("${archivo.excel.nombreHojaMergeCobranza}")
+    @Value("${archivo.excel.nombreHojaMerge}")
     private String archivoExcelNombreHojaMergeCobranza;
 
     @Value("${archivo.excel.nombreHojaNotificacion}")

@@ -19,7 +19,7 @@ public class MailComponent {
     @Autowired
     private JavaMailSender emailSender;
 
-    public  void enviarCorreoResend(String destinatario, String observacion, int largoCsv, byte[] archivoAdjunto, String nombreArchivo) {
+    public  void enviarCorreoResend(String destinatario, String observacion, String tipo,  String unidad, int largoCsv, byte[] archivoAdjunto, String nombreArchivo) {
         MimeMessage message = emailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -32,13 +32,16 @@ public class MailComponent {
 
             // Construcción del Cuerpo
             String cuerpo = String.format(
-                    "Estimada Fernanda,\n" +
-                            "Buen día, favor solicito normalizar archivo adjunto correspondiente a %d registros del %s de la I. Municipalidad de San Bernardo.\n\n" +
-                            "Quedamos atentos a sus comentarios, saludos cordiales y gracias de antemano,\n\n" +
+                    "Estimada Fernanda,\n\n" +
+                            "Buen día, favor solicito normalizar archivo adjunto correspondiente a %,d registros del %s de la I. Municipalidad de San Bernardo.\n\n" +
+                            "La presente solicitud corresponde a una %s realizada por la unidad %s.\n\n" +
+                            "Quedamos atentos a sus comentarios, saludos cordiales y gracias de antemano.\n\n" +
                             "Julio Cornejo\n" +
                             "Cel. 993003452",
                     largoCsv,
-                    observacion
+                    observacion,
+                    tipo,
+                    unidad
             );
 
             helper.setText(cuerpo);
@@ -47,7 +50,7 @@ public class MailComponent {
             helper.addAttachment(nombreArchivo, new ByteArrayResource(archivoAdjunto));// 'true' para HTML (como tus plantillas)
 
             emailSender.send(message);
-            System.out.println("Correo enviado con éxito vía Resend");
+            log.info("Correo enviado con éxito vía Resend");
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -55,35 +58,5 @@ public class MailComponent {
         }
     }
 
-
-    public void enviarCorreoNormalizacion(String destinatario, String observacion, int largoCsv, byte[] archivoAdjunto, String nombreArchivo) throws MessagingException, MessagingException {
-
-        MimeMessage message = emailSender.createMimeMessage();
-
-        // El parámetro 'true' indica que el mensaje es multipart (soporta adjuntos)
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
-
-        // Configuración de Cabeceras
-        helper.setTo(destinatario);
-        helper.setSubject(String.format("Solicitud normalizacion %s Correos de Chile - I. Municipalidad de San Bernardo", observacion));
-
-        // Construcción del Cuerpo
-        String cuerpo = String.format(
-                "Estimada Fernanda,\n" +
-                        "Buen día, favor solicito normalizar archivo adjunto correspondiente a %d registros del %s de la I. Municipalidad de San Bernardo.\n\n" +
-                        "Quedamos atentos a sus comentarios, saludos cordiales y gracias de antemano,\n\n" +
-                        "Julio Cornejo\n" +
-                        "Cel. 993003452",
-                largoCsv,
-                observacion
-        );
-
-        helper.setText(cuerpo);
-
-        // Adjuntar el archivo
-        helper.addAttachment(nombreArchivo, new ByteArrayResource(archivoAdjunto));
-
-        emailSender.send(message);
-    }
 }
 

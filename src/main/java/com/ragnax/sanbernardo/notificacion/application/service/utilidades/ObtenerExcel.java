@@ -59,9 +59,9 @@ public class ObtenerExcel {
         return excelCobranzas;
     }
 
-    public static List<ExcelCobranzaCorreos> obtenerExcelCorreosCsv(InputStream inputStream) throws Exception {
+    public static List<ExcelCorreos> obtenerExcelCorreosCsv(InputStream inputStream) throws Exception {
 
-        List<ExcelCobranzaCorreos> result;
+        List<ExcelCorreos> result;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 
@@ -94,8 +94,8 @@ public class ObtenerExcel {
             // 👇 ahora sí parseas limpio
             Reader cleanedReader = new StringReader(String.join("\n", cleanedLines));
 
-            result = new CsvToBeanBuilder<ExcelCobranzaCorreos>(cleanedReader)
-                    .withType(ExcelCobranzaCorreos.class)
+            result = new CsvToBeanBuilder<ExcelCorreos>(cleanedReader)
+                    .withType(ExcelCorreos.class)
                     .withSeparator(';')
                     .withIgnoreLeadingWhiteSpace(true)
                     .build()
@@ -261,9 +261,7 @@ public class ObtenerExcel {
                     formatter.formatCellValue(row.getCell(11)),
                     formatter.formatCellValue(row.getCell(12)),
                     formatter.formatCellValue(row.getCell(13)),
-                    formatter.formatCellValue(row.getCell(14)),
-                    formatter.formatCellValue(row.getCell(15)),
-                    formatter.formatCellValue(row.getCell(16))
+                    formatter.formatCellValue(row.getCell(14))
             ));
         }
         /***Cerrar EXCEL*/

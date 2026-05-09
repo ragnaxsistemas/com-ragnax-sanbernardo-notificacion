@@ -7,6 +7,7 @@ import com.ragnax.sanbernardo.notificacion.infraestructura.repository.usuarios.E
 import com.ragnax.sanbernardo.notificacion.infraestructura.repository.usuarios.UnidadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -18,6 +19,26 @@ public class ECarpetaHabilitadaService {
 
     private final UnidadRepository unidadRepository;
 
+
+    /***public List<UnidadDTO> obtenerArchivos(String tipo, String unidad, String proceso, String codSeguimiento,
+                                           int page,
+                                           int size) {
+        EmpresaCliente empresa = empresaClienteRepository.findByCodigoEmpresaCliente(codEmpresa)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        return unidadRepository.findByEmpresaCliente(empresa).stream()
+                .filter(u -> {
+                    String nombre = u.getShowNombreUnidad().toLowerCase();
+                    return nombre.contains("tesoreria") || nombre.contains("juzgado");
+                })
+                .map(u -> UnidadDTO.builder()
+                        .codigoUnidad(u.getCodigoUnidad())
+                        .nombreUnidad(u.getNombreUnidad())
+                        .showNombreUnidad(u.getShowNombreUnidad())
+                        .codEmpresa(empresa.getCodigoEmpresaCliente())
+                        .build())
+                .toList();
+    }***/
 
     public List<UnidadDTO> obtenerUnidadesFront(String codEmpresa) {
         EmpresaCliente empresa = empresaClienteRepository.findByCodigoEmpresaCliente(codEmpresa)

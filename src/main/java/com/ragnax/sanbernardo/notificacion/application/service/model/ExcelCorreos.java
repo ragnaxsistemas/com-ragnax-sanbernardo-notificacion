@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 
-public class ExcelCobranzaCorreos implements Serializable {
+public class ExcelCorreos implements Serializable {
 
     @CsvBindByName(column = "clientId")
     private String clientId;

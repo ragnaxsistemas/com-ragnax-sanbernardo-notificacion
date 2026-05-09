@@ -6,6 +6,7 @@ import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarUpl
 import com.ragnax.sanbernardo.notificacion.application.service.model.exceptions.ImsbException;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
 import com.ragnax.sanbernardo.notificacion.infraestructura.configuration.ApiProperties;
+import com.ragnax.sanbernardo.notificacion.infraestructura.controller.dto.DescargasImprenta;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,11 +117,11 @@ public class AFileStorageComponent {
         Path path = getBaseDir().resolve(resolvedSubPath).normalize();
 
         // --- LOGS DE DEPURACIÓN ACTUALIZADOS ---
-        System.out.println("--- Debug Path Resolution (Posicional) ---");
-        System.out.println("Entrada Original : " + subPath);
-        System.out.println("Ruta Traducida   : " + resolvedSubPath);
-        System.out.println("Path Absoluto    : " + path.toAbsolutePath());
-        System.out.println("------------------------------------------");
+        log.info("--- Debug Path Resolution (Posicional) ---");
+        log.info("Entrada Original : " + subPath);
+        log.info("Ruta Traducida   : " + resolvedSubPath);
+        log.info("Path Absoluto    : " + path.toAbsolutePath());
+        log.info("------------------------------------------");
 
         // 6. Seguridad
         if (!path.startsWith(getBaseDir())) {
@@ -206,23 +207,33 @@ public class AFileStorageComponent {
             }
 
             // --- NUEVA LÓGICA: Obtener activarConsolidadoImprenta ---
+            // --- LÓGICA CORREGIDA: Obtener activarConsolidadoImprenta ---
             boolean consolidadoImprenta = false;
+            List<DescargasImprenta> descargasImprenta = null;
 
             if (esDirectorio) {
-                Path rutaReporteJson = p.resolve("CARTAS_CONSOLIDADAS").resolve("consolidado.json");
-                if (Files.exists(rutaReporteJson)) {
-                    try {
-                        // Leemos el objeto y extraemos el valor booleano
-                        EjecutarConsolidado ejecutarConsolidado = CrearJsonExcel.getEjecutarConsolidadoFromJson(rutaReporteJson.toString());
-                        if (ejecutarConsolidado != null) {
-                            consolidadoImprenta = ejecutarConsolidado.getActivarConsolidadoImprenta();
+                // Solo buscamos el JSON si la carpeta actual es "CARTAS_CONSOLIDADAS"
+                if (nombre.equals("CARTAS_CONSOLIDADAS")) {
+                    Path rutaReporteJson = p.resolve("consolidado.json"); // Busca directamente adentro
+
+                    if (Files.exists(rutaReporteJson)) {
+                        try {
+                            EjecutarConsolidado ejecutarConsolidado = CrearJsonExcel.getEjecutarConsolidadoFromJson(rutaReporteJson.toString());
+                            if (ejecutarConsolidado != null) {
+                                consolidadoImprenta = ejecutarConsolidado.getActivarConsolidadoImprenta();
+                                if (consolidadoImprenta) {
+                                    descargasImprenta = ejecutarConsolidado.getDescargasImprenta();
+                                    info.put("descargasImprenta", descargasImprenta);
+                                }
+                            }
+                        } catch (Exception e) {
+                            log.error("Error leyendo consolidado.json en: " + nombre, e);
                         }
-                    } catch (Exception e) {
-                        // Loguear error pero no detener el listado completo
-                        System.err.println("Error leyendo reporte.json en: " + nombre);
                     }
-                }else{
-                    log.info("no existe consolidado.json", path.toString());
+                } else {
+                    // Para cualquier otra carpeta (como la raíz CD-816...),
+                    // no buscamos el JSON hacia adentro para que no aparezca en el nivel superior.
+                    log.debug("Carpeta {} no es CARTAS_CONSOLIDADAS, saltando búsqueda de JSON", nombre);
                 }
             }
             info.put("activarConsolidadoImprenta", consolidadoImprenta);

@@ -82,7 +82,7 @@ public class DProcesarCartaCobranzaService {
 
     //debe venir declarado o el ultimo se guarda en vacio.
     private EjecutarCartas mapaRutPatenteFila(EjecutarCartas ejecutarCartas,
-                                    List<ExcelCobranzaMerge> excelCobranzaMerges) throws Exception {
+                                              List<ExcelCobranzaMerge> excelCobranzaMerges) throws Exception {
 
         Map<String, Map<String, List<ExcelCobranzaMerge>>> mapaRutPatenteIndividual = new HashMap<>();
 
@@ -118,10 +118,10 @@ public class DProcesarCartaCobranzaService {
         //6_cobranza/tesoreria/CD-FTX_2026_04_27_11_57_14/CARTAS
 
         /***plantillaService.unirPdfs(
-                ejecutarCartas.getPathFolderCartas()
-                        .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaConsolidado())
-                        .concat(apiProperties.getArchivoCreacionAdjuntoNombreArchivoConsolidado()),
-                ejecutarCartas.getListaPdfs());***/
+         ejecutarCartas.getPathFolderCartas()
+         .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaConsolidado())
+         .concat(apiProperties.getArchivoCreacionAdjuntoNombreArchivoConsolidado()),
+         ejecutarCartas.getListaPdfs());***/
 
         procesoCartaRepository.save(
                 new ProcesoCarta(LocalDateTime.now(), ejecutarCartas.getCorrelativoInicio(),
@@ -140,8 +140,8 @@ public class DProcesarCartaCobranzaService {
 
 
     private EjecutarCartas ejecucionListaMapaRutPatente(EjecutarCartas ejecutarCartas,
-                                                         Map<String, Map<String, List<ExcelCobranzaMerge>>> mapaRutPatenteIndividual,
-                                                         Map<String, Map<String, List<ExcelCobranzaMerge>>> mapaRutPatenteMasiva) throws Exception {
+                                                        Map<String, Map<String, List<ExcelCobranzaMerge>>> mapaRutPatenteIndividual,
+                                                        Map<String, Map<String, List<ExcelCobranzaMerge>>> mapaRutPatenteMasiva) throws Exception {
 
         long correlativo = obtenerCorrelativo();
         ejecutarCartas.setCorrelativoInicio(correlativo);
@@ -172,7 +172,7 @@ public class DProcesarCartaCobranzaService {
         ejecutarCartas.setTotalCartas(String.valueOf(generacionCarta.getContFolioProceso()-1));
         ejecutarCartas.setTotalErroneas(String.valueOf( generacionCarta.getContFolioProceso()-cartInd - cartMas));
         ejecutarCartas.setCorrelativoHistorico(generacionCarta.getCorrelativoHistorico());
-       // ejecutarCartas.setActivarConsolidadoImprenta(false);
+        // ejecutarCartas.setActivarConsolidadoImprenta(false);
 
         // 3. Crear ZIP Final leyendo desde disco (No de memoria)
         crearPdfConsolidado(ejecutarCartas, totalRegistros);
@@ -226,59 +226,59 @@ public class DProcesarCartaCobranzaService {
 
         return ejecutarCartas;
     }
-        //try {
-            // 1. Asegurar que la carpeta de destino existe
-            //Files.createDirectories(Paths.get(pathDestino));
-            //Path rutaFinal = Paths.get(pathDestino).resolve(nombreFin);
+    //try {
+    // 1. Asegurar que la carpeta de destino existe
+    //Files.createDirectories(Paths.get(pathDestino));
+    //Path rutaFinal = Paths.get(pathDestino).resolve(nombreFin);
 
-            /***try (BufferedWriter writer = Files.newBufferedWriter(rutaFinal, StandardCharsets.UTF_8)) {
-                // 2. Escribir el encabezado del archivo único
-                writer.write("<html><head><meta charset='UTF-8'><style>");
-                writer.write(".page-break { page-break-after: always; } "); // Para que cada carta sea una hoja
-                writer.write("body { margin: 0; padding: 0; }");
-                writer.write("</style></head><body>");
+    /***try (BufferedWriter writer = Files.newBufferedWriter(rutaFinal, StandardCharsets.UTF_8)) {
+     // 2. Escribir el encabezado del archivo único
+     writer.write("<html><head><meta charset='UTF-8'><style>");
+     writer.write(".page-break { page-break-after: always; } "); // Para que cada carta sea una hoja
+     writer.write("body { margin: 0; padding: 0; }");
+     writer.write("</style></head><body>");
 
-                // 3. Iterar sobre los registros y leer sus archivos
-                for (ExcelCobranzaImpresion reg : registros) {
-                    File archivoCarta = new File(pathDocumentos, reg.getNombreArchivo());
+     // 3. Iterar sobre los registros y leer sus archivos
+     for (ExcelCobranzaImpresion reg : registros) {
+     File archivoCarta = new File(pathDocumentos, reg.getNombreArchivo());
 
-                    if (archivoCarta.exists()) {
-                        // Leer el contenido del HTML individual
-                        String contenido = Files.readString(archivoCarta.toPath(), StandardCharsets.UTF_8);
+     if (archivoCarta.exists()) {
+     // Leer el contenido del HTML individual
+     String contenido = Files.readString(archivoCarta.toPath(), StandardCharsets.UTF_8);
 
-                        // 4. Extraer solo el contenido dentro de <body> (limpieza básica)
-                        String cuerpoHtml = extraerCuerpo(contenido);
+     // 4. Extraer solo el contenido dentro de <body> (limpieza básica)
+     String cuerpoHtml = extraerCuerpo(contenido);
 
-                        writer.write("<div class='page-break'>");
-                        writer.write(cuerpoHtml);
-                        writer.write("</div>");
-                    } else {
-                        log.warn("No se encontró el archivo: {}", archivoCarta.getAbsolutePath());
-                    }
-                }
+     writer.write("<div class='page-break'>");
+     writer.write(cuerpoHtml);
+     writer.write("</div>");
+     } else {
+     log.warn("No se encontró el archivo: {}", archivoCarta.getAbsolutePath());
+     }
+     }
 
-                // 5. Cerrar el HTML
-                writer.write("</body></html>");
-                log.info("Consolidado HTML creado exitosamente en: {}", rutaFinal);
+     // 5. Cerrar el HTML
+     writer.write("</body></html>");
+     log.info("Consolidado HTML creado exitosamente en: {}", rutaFinal);
 
-            }
-        } catch (IOException e) {
-            log.error("Error al concatenar archivos HTML: {}", e.getMessage());
-        }
-    }
+     }
+     } catch (IOException e) {
+     log.error("Error al concatenar archivos HTML: {}", e.getMessage());
+     }
+     }
 
-    /**
+     /**
      * Método auxiliar para obtener solo lo que está dentro de <body>
      */
     /***private String extraerCuerpo(String htmlCompleto) {
-        if (htmlCompleto.contains("<body") && htmlCompleto.contains("</body>")) {
-            int inicio = htmlCompleto.indexOf(">", htmlCompleto.indexOf("<body")) + 1;
-            int fin = htmlCompleto.lastIndexOf("</body>");
-            return htmlCompleto.substring(inicio, fin);
-        }
-        // Si no tiene body, devolvemos el contenido tal cual (o un div)
-        return htmlCompleto;
-    }***/
+     if (htmlCompleto.contains("<body") && htmlCompleto.contains("</body>")) {
+     int inicio = htmlCompleto.indexOf(">", htmlCompleto.indexOf("<body")) + 1;
+     int fin = htmlCompleto.lastIndexOf("</body>");
+     return htmlCompleto.substring(inicio, fin);
+     }
+     // Si no tiene body, devolvemos el contenido tal cual (o un div)
+     return htmlCompleto;
+     }***/
 
     private GeneracionCarta ejecutarMapaRutPatente(EjecutarCartas ejecutarCartas,
                                                    GeneracionCarta generacionCarta,
@@ -340,7 +340,7 @@ public class DProcesarCartaCobranzaService {
                     contFolioProceso++;
                     correlativoHistorico++;
                 }
-               // break;
+                // break;
             }
             //break;
         }
@@ -353,128 +353,128 @@ public class DProcesarCartaCobranzaService {
     }
 
     /***private GeneracionCarta ejecutarMapaRutPatente(EjecutarCartas ejecutarCartas,
-                                                   GeneracionCarta generacionCarta,
-                                                   Map<String, Map<String, List<ExcelCobranzaMerge>>> mapaRutPatente) throws Exception {
-        List<ExcelCobranzaImpresion> listaExcelCobranzaImpresion = new ArrayList<>();
-        //String procesoYMD = "aaa";
-        // Extraemos valores iniciales del objeto de estado
-        String procCorrelativo = "";
-        String html = "";
-        long correlativoHistorico = generacionCarta.getCorrelativoHistorico();
-        int contFolioProceso = generacionCarta.getContFolioProceso();
-        int contFolioTipo = 1;
-        List<byte[]> listaPdfs = generacionCarta.getListaPdfs();
-        String folioImpresoActual = generacionCarta.getProcesoGeneracionCarta();
+     GeneracionCarta generacionCarta,
+     Map<String, Map<String, List<ExcelCobranzaMerge>>> mapaRutPatente) throws Exception {
+     List<ExcelCobranzaImpresion> listaExcelCobranzaImpresion = new ArrayList<>();
+     //String procesoYMD = "aaa";
+     // Extraemos valores iniciales del objeto de estado
+     String procCorrelativo = "";
+     String html = "";
+     long correlativoHistorico = generacionCarta.getCorrelativoHistorico();
+     int contFolioProceso = generacionCarta.getContFolioProceso();
+     int contFolioTipo = 1;
+     List<byte[]> listaPdfs = generacionCarta.getListaPdfs();
+     String folioImpresoActual = generacionCarta.getProcesoGeneracionCarta();
 
-        ejecutarCartas.setPathFolderCartas(apiProperties.getArchivoCreacionCarpeta()
-                .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranza())  //contiene slash
-                .concat(ejecutarCartas.getUnidad()).concat("/").concat(ejecutarCartas.getBaseNombre()).concat("/"));
-        // Rutas base
-        String pathBaseCartas =
-                ejecutarCartas.getPathFolderCartas()
-                        .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaDocumento());
+     ejecutarCartas.setPathFolderCartas(apiProperties.getArchivoCreacionCarpeta()
+     .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranza())  //contiene slash
+     .concat(ejecutarCartas.getUnidad()).concat("/").concat(ejecutarCartas.getBaseNombre()).concat("/"));
+     // Rutas base
+     String pathBaseCartas =
+     ejecutarCartas.getPathFolderCartas()
+     .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaDocumento());
 
-        CartaHtml cartaHtmlIndividual =  generarCartaHtmlIndividual();
+     CartaHtml cartaHtmlIndividual =  generarCartaHtmlIndividual();
 
-        CartaHtml cartaHtmlMasiva =  generarCartaHtmlMasiva();
+     CartaHtml cartaHtmlMasiva =  generarCartaHtmlMasiva();
 
-        // Iteramos sobre el mapa (Rut -> Patente -> List<Excel>)
-        for (Map.Entry<String, Map<String, List<ExcelCobranzaMerge>>> entryRut : mapaRutPatente.entrySet()) {
-            Map<String, List<ExcelCobranzaMerge>> mapaPatentes = entryRut.getValue();
+     // Iteramos sobre el mapa (Rut -> Patente -> List<Excel>)
+     for (Map.Entry<String, Map<String, List<ExcelCobranzaMerge>>> entryRut : mapaRutPatente.entrySet()) {
+     Map<String, List<ExcelCobranzaMerge>> mapaPatentes = entryRut.getValue();
 
-            for (Map.Entry<String, List<ExcelCobranzaMerge>> entryPatente : mapaPatentes.entrySet()) {
+     for (Map.Entry<String, List<ExcelCobranzaMerge>> entryPatente : mapaPatentes.entrySet()) {
 
-                //if(entryRut.getKey().toString().equalsIgnoreCase("17174335")  && entryPatente.getKey().toString().equalsIgnoreCase("SCJK25")){
-                List<ExcelCobranzaMerge> listaExcelCobranza = entryPatente.getValue();
+     //if(entryRut.getKey().toString().equalsIgnoreCase("17174335")  && entryPatente.getKey().toString().equalsIgnoreCase("SCJK25")){
+     List<ExcelCobranzaMerge> listaExcelCobranza = entryPatente.getValue();
 
-                // Validar que el rut no esté vacío
-                if (listaExcelCobranza != null && !listaExcelCobranza.isEmpty() && !listaExcelCobranza.get(0).getRut().isBlank()) {
+     // Validar que el rut no esté vacío
+     if (listaExcelCobranza != null && !listaExcelCobranza.isEmpty() && !listaExcelCobranza.get(0).getRut().isBlank()) {
 
-                    log.info("rut {} patente {} cantidad {}", entryRut.getKey() ,entryPatente.getKey(), listaExcelCobranza.size());
-                    // Agrupamos en bloquesExcelCobranza de 7 para la grilla
-                    List<List<ExcelCobranzaMerge>> bloquesExcelCobranza = new ArrayList<>();
-                    for (int i = 0; i < listaExcelCobranza.size(); i += 7) {
-                        bloquesExcelCobranza.add(listaExcelCobranza.subList(i, Math.min(i + 7, listaExcelCobranza.size())));
-                    }
+     log.info("rut {} patente {} cantidad {}", entryRut.getKey() ,entryPatente.getKey(), listaExcelCobranza.size());
+     // Agrupamos en bloquesExcelCobranza de 7 para la grilla
+     List<List<ExcelCobranzaMerge>> bloquesExcelCobranza = new ArrayList<>();
+     for (int i = 0; i < listaExcelCobranza.size(); i += 7) {
+     bloquesExcelCobranza.add(listaExcelCobranza.subList(i, Math.min(i + 7, listaExcelCobranza.size())));
+     }
 
-                    for (List<ExcelCobranzaMerge> bloqueActualExcelCobranzaMerge : bloquesExcelCobranza) {
+     for (List<ExcelCobranzaMerge> bloqueActualExcelCobranzaMerge : bloquesExcelCobranza) {
 
-                        ExcelCobranzaMerge excelCobranzaMergePrimero = bloqueActualExcelCobranzaMerge.get(0);
-                        folioImpresoActual = String.valueOf(contFolioProceso);
+     ExcelCobranzaMerge excelCobranzaMergePrimero = bloqueActualExcelCobranzaMerge.get(0);
+     folioImpresoActual = String.valueOf(contFolioProceso);
 
-                        byte[] pdfGenerado;
+     byte[] pdfGenerado;
 
-                        /***INDIVIDUAL---/
-                        // Lógica de generación de Plantilla e iText 7
-                        if (listaExcelCobranza.size() == 1) {
-                            procCorrelativo = ejecutarCartas.getBaseNombre().concat("_h").concat(String.valueOf(correlativoHistorico)).concat("_p").concat(String.valueOf(contFolioProceso)).concat("_t").concat(String.valueOf(contFolioTipo)).concat("_c").concat(String.valueOf(bloqueActualExcelCobranzaMerge.size()));
-                            html = PlantillaCobranzas.generarPlantillaCobranzaIndividual(
-                                    procCorrelativo,
-                                    String.valueOf(contFolioProceso),
-                                    cartaHtmlIndividual,
-                                    excelCobranzaMergePrimero
-                            );
+     /***INDIVIDUAL---/
+     // Lógica de generación de Plantilla e iText 7
+     if (listaExcelCobranza.size() == 1) {
+     procCorrelativo = ejecutarCartas.getBaseNombre().concat("_h").concat(String.valueOf(correlativoHistorico)).concat("_p").concat(String.valueOf(contFolioProceso)).concat("_t").concat(String.valueOf(contFolioTipo)).concat("_c").concat(String.valueOf(bloqueActualExcelCobranzaMerge.size()));
+     html = PlantillaCobranzas.generarPlantillaCobranzaIndividual(
+     procCorrelativo,
+     String.valueOf(contFolioProceso),
+     cartaHtmlIndividual,
+     excelCobranzaMergePrimero
+     );
 
-                            // Aquí usamos el método de iText 7 con el código de barras
-                            //pdfGenerado = plantillaService.generarPdffromHtmlCobranzaConBarcode(html,
-                            //        excelCobranzaMergePrimero.getCodigoBarra(), excelCobranzaMergePrimero.getCodigoSeguimiento());
+     // Aquí usamos el método de iText 7 con el código de barras
+     //pdfGenerado = plantillaService.generarPdffromHtmlCobranzaConBarcode(html,
+     //        excelCobranzaMergePrimero.getCodigoBarra(), excelCobranzaMergePrimero.getCodigoSeguimiento());
 
-                            //log.info("Folio Proceso: {} | CodigoSeguimiento: {} ", contFolioProceso, excelCobranzaPrimero.getCodigoSeguimiento());
-                        } else {
-                            procCorrelativo = ejecutarCartas.getBaseNombre().concat("_h").concat(String.valueOf(correlativoHistorico)).concat("_p").concat(String.valueOf(contFolioProceso)).concat("_t").concat(String.valueOf(contFolioTipo)).concat("_c").concat(String.valueOf(bloqueActualExcelCobranzaMerge.size()));
-                            html = PlantillaCobranzas.generarPlantillaCobranzaMasiva(
-                                    procCorrelativo,
-                                    String.valueOf(contFolioProceso),
-                                    cartaHtmlMasiva,
-                                    excelCobranzaMergePrimero,
-                                    bloqueActualExcelCobranzaMerge);
+     //log.info("Folio Proceso: {} | CodigoSeguimiento: {} ", contFolioProceso, excelCobranzaPrimero.getCodigoSeguimiento());
+     } else {
+     procCorrelativo = ejecutarCartas.getBaseNombre().concat("_h").concat(String.valueOf(correlativoHistorico)).concat("_p").concat(String.valueOf(contFolioProceso)).concat("_t").concat(String.valueOf(contFolioTipo)).concat("_c").concat(String.valueOf(bloqueActualExcelCobranzaMerge.size()));
+     html = PlantillaCobranzas.generarPlantillaCobranzaMasiva(
+     procCorrelativo,
+     String.valueOf(contFolioProceso),
+     cartaHtmlMasiva,
+     excelCobranzaMergePrimero,
+     bloqueActualExcelCobranzaMerge);
 
-                            //pdfGenerado = plantillaService.generarPdffromHtmlCodeEan(html, excelCobranzaMergePrimero.getCodigoSeguimiento());
-                            //log.info("Folio Proceso: {} | CodigoSeguimiento: {} ", contFolioProceso, excelCobranzaPrimero.getCodigoSeguimiento());
-                        }
+     //pdfGenerado = plantillaService.generarPdffromHtmlCodeEan(html, excelCobranzaMergePrimero.getCodigoSeguimiento());
+     //log.info("Folio Proceso: {} | CodigoSeguimiento: {} ", contFolioProceso, excelCobranzaPrimero.getCodigoSeguimiento());
+     }
 
-                        String nombreArchivo = String.valueOf(correlativoHistorico).concat("_")
-                                .concat(String.format("%d_%d_%d_%s%s_%s.pdf",
-                                contFolioProceso, contFolioTipo, bloqueActualExcelCobranzaMerge.size(),
-                                        excelCobranzaMergePrimero.getRut(),
-                                        excelCobranzaMergePrimero.getDv(),
-                                        excelCobranzaMergePrimero.getCodigoSeguimiento()));
+     String nombreArchivo = String.valueOf(correlativoHistorico).concat("_")
+     .concat(String.format("%d_%d_%d_%s%s_%s.pdf",
+     contFolioProceso, contFolioTipo, bloqueActualExcelCobranzaMerge.size(),
+     excelCobranzaMergePrimero.getRut(),
+     excelCobranzaMergePrimero.getDv(),
+     excelCobranzaMergePrimero.getCodigoSeguimiento()));
 
-                        //tipo cobranza - notificacion - procesados - upload
-                        //carta documento - reporte - consolidado / cobranza - notificacion
-                        //unidad 1juzgado 2juzgado tesoreria
-                        //proceso 2026_01_01_01_01_01
-                        //archivo xxxx.pdf
-                        //String archivo = plantillaService.guardarPdfIndividual(pdfGenerado, pathBaseCartas, nombreArchivo);
+     //tipo cobranza - notificacion - procesados - upload
+     //carta documento - reporte - consolidado / cobranza - notificacion
+     //unidad 1juzgado 2juzgado tesoreria
+     //proceso 2026_01_01_01_01_01
+     //archivo xxxx.pdf
+     //String archivo = plantillaService.guardarPdfIndividual(pdfGenerado, pathBaseCartas, nombreArchivo);
 
-                        //log.info("Correlativo proceso: {} | creado Archivo: {} ", correlativoHistorico, archivo);
+     //log.info("Correlativo proceso: {} | creado Archivo: {} ", correlativoHistorico, archivo);
 
-                        // Actualización de contadores y lista
-                        //listaPdfs.add(pdfGenerado);
+     // Actualización de contadores y lista
+     //listaPdfs.add(pdfGenerado);
 
-                        listaExcelCobranzaImpresion.add(
-                                convertirAHijo(
-                                        bloqueActualExcelCobranzaMerge.get(0),
-                                        ejecutarCartas.getObservacion(),
-                                        nombreArchivo,
-                                        procCorrelativo,
-                                        String.valueOf(correlativoHistorico),
-                                        String.valueOf(contFolioProceso),
-                                        String.valueOf(contFolioTipo),
-                                        String.valueOf(listaExcelCobranza.size()),
-                                        html));
-                        contFolioProceso++;
-                        contFolioTipo++;
-                        correlativoHistorico++;
-                    }
-                }
-                //break;
-            }
-            //break;
-        }
-        // Retornamos el nuevo estado
-        return new GeneracionCarta(folioImpresoActual, contFolioProceso, contFolioTipo, correlativoHistorico, listaPdfs, listaExcelCobranzaImpresion);
-    }***/
+     listaExcelCobranzaImpresion.add(
+     convertirAHijo(
+     bloqueActualExcelCobranzaMerge.get(0),
+     ejecutarCartas.getObservacion(),
+     nombreArchivo,
+     procCorrelativo,
+     String.valueOf(correlativoHistorico),
+     String.valueOf(contFolioProceso),
+     String.valueOf(contFolioTipo),
+     String.valueOf(listaExcelCobranza.size()),
+     html));
+     contFolioProceso++;
+     contFolioTipo++;
+     correlativoHistorico++;
+     }
+     }
+     //break;
+     }
+     //break;
+     }
+     // Retornamos el nuevo estado
+     return new GeneracionCarta(folioImpresoActual, contFolioProceso, contFolioTipo, correlativoHistorico, listaPdfs, listaExcelCobranzaImpresion);
+     }***/
 
     public ExcelCobranzaImpresion convertirAHijo(ExcelCobranzaMerge padre,
                                                  String observacion,
@@ -537,7 +537,7 @@ public class DProcesarCartaCobranzaService {
     }
 
     private EjecutarCartas generarReporte(EjecutarCartas ejecutarCartas,
-                                         List<ExcelCobranzaMerge> excelCobranzas) throws Exception {
+                                          List<ExcelCobranzaMerge> excelCobranzas) throws Exception {
 
 
         log.info("generarReporte procesados: {} nombre: {}", ejecutarCartas.getTotalCartas(),
@@ -563,8 +563,8 @@ public class DProcesarCartaCobranzaService {
         plantillaService.guardarPdfIndividual(pdf,
                 ejecutarCartas.getPathFolderCartas()
                         .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaReporte()).concat("/"),
-                        apiProperties.getArchivoCreacionAdjuntoNombreArchivoReporte()
-                );
+                apiProperties.getArchivoCreacionAdjuntoNombreArchivoReporte()
+        );
         ejecutarCartas.setPathReporte(ejecutarCartas.getPathFolderCartas()
                 .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaCobranzaReporte())
                 .concat(apiProperties.getArchivoCreacionAdjuntoNombreArchivoReporte()));
@@ -624,7 +624,7 @@ public class DProcesarCartaCobranzaService {
                         apiProperties.getArchivoHtmlLogoEscudo()),
                 apiProperties.getArchivoHtmlNombreCarpetaTemplate().concat(
                         apiProperties.getArchivoHtmlLogoFirmaTesoreria())
-                );
+        );
 
         ClassPathResource imgFileEsc = new ClassPathResource(logos.get(0)); //escudo
         ClassPathResource imgFileFirma = new ClassPathResource(logos.get(1)); //firma

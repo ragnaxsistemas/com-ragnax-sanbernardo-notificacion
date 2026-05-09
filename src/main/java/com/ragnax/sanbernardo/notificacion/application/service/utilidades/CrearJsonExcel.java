@@ -6,6 +6,7 @@ import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarCar
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarConsolidado;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarMerge;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarUpload;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class CrearJsonExcel {
 
 
@@ -148,7 +150,7 @@ public class CrearJsonExcel {
             // 5. Escribir el archivo físicamente
             Files.write(pathFinalJson, jsonContent.getBytes(StandardCharsets.UTF_8));
 
-            System.out.println("JSON de Upload creado exitosamente en: " + pathFinalJson.toString());
+            log.info("JSON de Upload creado exitosamente en: " + pathFinalJson.toString());
 
         } catch (Exception e) {
             System.err.println("Error al crear el JSON de Upload para: " + ejecutarMerge.getPathArchivoNormalizado());
@@ -190,7 +192,7 @@ public class CrearJsonExcel {
             // 5. Escribir el archivo físicamente
             Files.write(pathFinalJson, jsonContent.getBytes(StandardCharsets.UTF_8));
 
-            System.out.println("JSON de Upload creado exitosamente en: " + pathFinalJson.toString());
+            log.info("JSON de Upload creado exitosamente en: " + pathFinalJson.toString());
 
         } catch (Exception e) {
             System.err.println("Error al crear el JSON de Upload para: " + ejecutarConsolidado.getPathArchivoConsolidado());
@@ -234,7 +236,7 @@ public class CrearJsonExcel {
             // 5. Escribir el archivo físicamente
             Files.write(pathFinalJson, jsonContent.getBytes(StandardCharsets.UTF_8));
 
-            System.out.println("JSON de Upload creado exitosamente en: " + pathFinalJson.toString());
+            log.info("JSON de Upload creado exitosamente en: " + pathFinalJson.toString());
 
         } catch (Exception e) {
             System.err.println("Error al crear el JSON de Upload para: " + ejecutarCartas.getPathArchivoNormalizado());
@@ -255,7 +257,7 @@ public class CrearJsonExcel {
                 // 3. Leer el archivo y convertirlo directamente al objeto EjecutarUpload
                 EjecutarUpload objetoRecuperado = mapper.readValue(jsonPath.toFile(), EjecutarUpload.class);
 
-                System.out.println("JSON cargado exitosamente desde: " + jsonPath.toString());
+                log.info("JSON cargado exitosamente desde: " + jsonPath.toString());
                 return objetoRecuperado;
 
             } catch (IOException e) {
@@ -283,7 +285,7 @@ public class CrearJsonExcel {
                 // 3. Leer el archivo y convertirlo directamente al objeto EjecutarUpload
                 EjecutarMerge objetoRecuperado = mapper.readValue(jsonPath.toFile(), EjecutarMerge.class);
 
-                System.out.println("JSON cargado exitosamente desde: " + jsonPath.toString());
+                log.info("JSON cargado exitosamente desde: " + jsonPath.toString());
                 return objetoRecuperado;
 
             } catch (IOException e) {
@@ -311,7 +313,7 @@ public class CrearJsonExcel {
                 // 3. Leer el archivo y convertirlo directamente al objeto EjecutarUpload
                 EjecutarConsolidado objetoRecuperado = mapper.readValue(jsonPathReporte.toFile(), EjecutarConsolidado.class);
 
-                System.out.println("JSON cargado exitosamente desde: " + jsonPath.toString());
+                log.info("JSON cargado exitosamente desde: " + jsonPath.toString());
                 return objetoRecuperado;
 
             } catch (IOException e) {
@@ -340,7 +342,7 @@ public class CrearJsonExcel {
                 // 3. Leer el archivo y convertirlo directamente al objeto EjecutarUpload
                 EjecutarCartas objetoRecuperado = mapper.readValue(jsonPathReporte.toFile(), EjecutarCartas.class);
 
-                System.out.println("JSON cargado exitosamente desde: " + jsonPath.toString());
+                log.info("JSON cargado exitosamente desde: " + jsonPath.toString());
                 return objetoRecuperado;
 
             } catch (IOException e) {

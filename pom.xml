@@ -161,6 +161,14 @@
 
     <build>
         <finalName>com-ragnax-sanbernardo-notificacion</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>public_sftp/**</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
