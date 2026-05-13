@@ -2,10 +2,15 @@ spring:
   config:
     activate:
       on-profile: app
-  jpa: # probar el dialect de prod
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        # Forzar el dialecto aquí ayuda, pero el cambio real es en el Java
+        dialect: org.hibernate.dialect.MariaDBDialect
+        temp.use_jdbc_metadata_defaults: false
   #dev consulta en servidor externo
 datasource:
   primary:
