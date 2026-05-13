@@ -22,7 +22,7 @@ public class ExceptionControllerAdvice {
 	@ResponseStatus(value = HttpStatus.ACCEPTED)
 	@ExceptionHandler(ProcesoNotificacionCartaException.class)
 	public ResponseEntity<ApiRagnaxError> handlerException(ProcesoNotificacionCartaException sae) {
-		log.error("Error ProcesoNotificacionCartaException", sae.getCodigoSSOProcesoNotificacionCartaException(), sae.getMessage());
+		log.error("Error ProcesoNotificacionCartaException {}", sae.getCodigoSSOProcesoNotificacionCartaException(), sae.getMessage());
 
 		return new ResponseEntity<>(new ApiRagnaxError(sae.getCodigoSSOProcesoNotificacionCartaException(), sae.getMessage()),
 				HttpStatus.ACCEPTED);
@@ -31,7 +31,7 @@ public class ExceptionControllerAdvice {
 	@ResponseStatus(value = HttpStatus.ALREADY_REPORTED)
 	@ExceptionHandler(NumberFormatException.class)
 	public ResponseEntity<ApiRagnaxError> handlerException(NumberFormatException nfe) {
-		log.error("Error NumberFormatException", nfe.getMessage());
+		log.error("Error NumberFormatException {}", nfe.getMessage());
 
 		return new ResponseEntity<>(new ApiRagnaxError("Error en Formato", nfe.getMessage()),
 				HttpStatus.ALREADY_REPORTED);
@@ -40,7 +40,7 @@ public class ExceptionControllerAdvice {
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiRagnaxError> handlerException(Exception e) {
-		log.error("Error Exception", e.getMessage());
+		log.error("Error Exception {}", e.getMessage());
 		return new ResponseEntity<>(new ApiRagnaxError("Error en Aplicacion",  e.getMessage()),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}

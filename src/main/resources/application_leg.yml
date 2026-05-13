@@ -8,6 +8,8 @@ info:
     version: '@project.version@'
 
 spring:
+  profiles:
+    active: app
   application:
     name: com-ragnax-sanbernardo-notificacion
   hikari:
@@ -16,6 +18,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
   servlet:
     multipart:
       max-file-size: 50MB
@@ -38,18 +43,38 @@ spring:
           class: javax.net.ssl.SSLSocketFactory
   # La contraseña es la API Key que generaste (incluyendo el 're_')
 
-#datasource:
- #primary:
-#  jdbc-url: jdbc:mysql://localhost:3306/imsb?useSSL=false
-#  username: root
-#  password: m3R0b0L4sT4s4sD3lTr4b4j0
-#  driver-class-name: com.mysql.cj.jdbc.Driver
- #usuarios:
-#  jdbc-url: jdbc:mysql://localhost:3306/ragnax_usuariov1?useSSL=false
-#  username: root
-#  password: m3R0b0L4sT4s4sD3lTr4b4j0
-#  driver-class-name: com.mysql.cj.jdbc.Driver
+datasource:
+  primary:
+    jdbc-url: jdbc:mysql://localhost:3306/imsb?useSSL=false
+    username: root
+    password: m3R0b0L4sT4s4sD3lTr4b4j0
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  usuarios:
+    jdbc-url: jdbc:mysql://localhost:3306/ragnax_usuariov1?useSSL=false
+    username: root
+    password: m3R0b0L4sT4s4sD3lTr4b4j0
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
+
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/imsb?useSSL=false
+#    username: root
+#    password: m3R0b0L4sT4s4sD3lTr4b4j0
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    hikari:
+#      maximum-pool-size: 10
+#      minimum-idle: 5
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: none
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLDialect
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 springdoc:
   api-docs:
@@ -63,6 +88,7 @@ server:
   port: 9999
   servlet:
     context-path: /imsbcartas
+
 
 logging:
   level:
@@ -123,15 +149,19 @@ archivo:
     nombreHojaNormalizada: ToNormalize
     nombreHojaMerge: Procesar
     #nombreHojaCobranza: Normalizada
+
+
+
     nombreHojaNotificacion: NOTIFICACION
 
   html:
     nombreCarpetaTemplate: templates/
     nombreArchivoCobranzaIndividual: cartas/cobranza/cobranza_carta_individual.html
     nombreArchivoCobranzaMasiva:   cartas/cobranza/cobranza_carta_masiva.html
+#    nombreArchivoNotificacionIndividual: cartas/notificacion/notificacion_carta_individual_con_cupon.html
+#    nombreArchivoNotificacionMasiva: cartas/notificacion/notificacion_carta_masiva.html
     nombreArchivoNotificacionV2: cartas/notificacion/notificacion_carta_v2.html
     nombreArchivoReporte: reportes/reporte.html
-
     logoBciCupon: logos/bci_cupon.png
     logoFirma1Juzgado: logos/firma1Juzgado.png
     logoFirma2Juzgado: logos/firma2Juzgado.png
@@ -140,12 +170,17 @@ archivo:
     logo: logos/LogoEsquinaSuperiorIzquierda.png
 
   creacion:
-#    carpeta: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/
-#    respaldo: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/2_backup/
-#    respaldoNormalizado: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/5_procesado/
+    carpeta: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/
+    respaldo: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/2_backup/
+    respaldoNormalizado: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/5_procesado/
     adjuntos:
       subCarpetaNormalizado: 3_normalizado/
+      #subCarpetaNormalizadoDocumento: documento/
+      #subCarpetaNormalizadoCorreos: correos/
       subCarpetaMerge: 4_merge/
+      #subCarpetaMergeDocumento: CARTAS/
+      #subCarpetaMergeCorreos: correos/
+      #subCarpetaProcesado: 5_procesado/
 
       subCarpetaCobranza: 6_cobranza/
       subCarpetaCobranzaDocumento: CARTAS/

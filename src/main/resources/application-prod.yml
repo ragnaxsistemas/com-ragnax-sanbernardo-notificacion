@@ -1,48 +1,14 @@
-info:
-  app:
-    description: '@project.description@'
-    encoding: '@project.build.sourceEncoding@'
-    java:
-      version: '@java.version@'
-    name: '@project.name@'
-    version: '@project.version@'
-
 spring:
-  application:
-    name: com-ragnax-sanbernardo-notificacion
+  config:
+    activate:
+      on-profile: prod
   jpa:
-    hibernate:
-      ddl-auto: none
     properties:
       hibernate:
         # Esto es vital para evitar el error de metadatos si una conexión tarda
         temp.use_jdbc_metadata_defaults: false
         dialect: org.hibernate.dialect.MariaDBDialect
-  hikari:
-    maximum-pool-size: 10
-    minimum-idle: 5
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
-  # Configuración de Mail (Resend)
-  mail:
-    host: smtp.resend.com
-    port: 465
-    username: resend
-    password: re_UNjdbpTp_GF4LZDirLGtHe9LDy2TojzhR
-    properties:
-      mail:
-        smtp:
-          auth: true
-          ssl:
-            enable: true
-          starttls:
-            enable: true
-        socketFactory:
-          port: 465
-          class: javax.net.ssl.SSLSocketFactory
-
+#prod es prod
 datasource:
   primary:
     jdbc-url: jdbc:mysql://127.0.0.1:3306/imsb_prod?useSSL=false&allowPublicKeyRetrieval=true
@@ -58,7 +24,7 @@ datasource:
     type: com.zaxxer.hikari.HikariDataSource
 
 server:
-  port: 9999
+  port: 80
 
 logging:
   level:
@@ -72,40 +38,9 @@ archivo:
     nombreCarpetaUpload: /var/www/sb_ope_001a/public_sftp/1_upload/
     nombreCarpetaNormalizada: /var/www/sb_ope_001a/public_sftp/3_normalizado/
     nombreCarpetaMerge: /var/www/sb_ope_001a/public_sftp/4_merge/
-    nombreArchivoNormalizadaCobranza: "Cobranza_ToNormalize.xlsx"
-    nombreArchivoNormalizadaNotificacion: "Notificacion_ToNormalize.xlsx"
-    nombreArchivoNormalizadaCobranzaCorreos: "_EnviarCorreos.csv"
-    nombreArchivoMergeCobranza: "_Procesar_Cobranza.xlsx"
-    nombreArchivoMergeNotificacion: "_Procesar_Notificacion.xlsx"
-    nombreHojaUploadCobranza: Hoja1
-    nombreHojaNormalizadaCobranza: ToNormalize
-    nombreHojaMergeCobranza: Procesar
-    nombreHojaNotificacion: NOTIFICACION
-
-  html:
-    nombreCarpetaTemplate: templates/
-    nombreArchivoCobranzaIndividual: cartas/cobranza/cobranza_carta_individual.html
-    nombreArchivoCobranzaMasiva: cartas/cobranza/cobranza_carta_masiva.html
-    #    nombreArchivoNotificacionIndividual: cartas/notificacion/notificacion_carta_individual_con_cupon.html
-    #    nombreArchivoNotificacionMasiva: cartas/notificacion/notificacion_carta_masiva.html
-    nombreArchivoNotificacionV2: cartas/notificacion/notificacion_carta_v2.html
-    nombreArchivoReporte: reportes/reporte.html
-    logoBciCupon: logos/bci_cupon.png
-    logoFirma1Juzgado: logos/firma1Juzgado.png
-    logoFirma2Juzgado: logos/firma2Juzgado.png
-    logoFirmaTesoreria: logos/firmaTesoreria-DAF.png
-    logoEscudo: logos/escudo-solo-redux32kb.png
-    logo: logos/LogoEsquinaSuperiorIzquierda.png
 
   creacion:
     # RUTAS ABSOLUTAS PARA LINUX/AWS
     carpeta: /var/www/sb_ope_001a/public_sftp/
     respaldo: /var/www/sb_ope_001a/public_sftp/2_backup/
     respaldoNormalizado: /var/www/sb_ope_001a/public_sftp/5_procesado/
-    adjuntos:
-      subCarpetaNormalizado: 3_normalizado/
-      subCarpetaMerge: 4_merge/
-      subCarpetaCobranza: 6_cobranza/
-      subCarpetaNotificacion: 7_notificacion/
-      nombreArchivoConsolidado: consolidado.pdf
-      nombreArchivoReporte: reporte.pdf
