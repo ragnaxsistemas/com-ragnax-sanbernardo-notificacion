@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RefreshScope
 @RestController
 @RequestMapping("/procesar-normalizacion")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class CCorreosToMergeController {
 
     private CCorreosToNormalizeService ccorreosToProcessService;

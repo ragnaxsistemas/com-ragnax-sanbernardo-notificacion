@@ -29,8 +29,10 @@ public class AProcesarNormalizacionService {
         // 1. PASO SÍNCRONO (Rápido):
         // Validamos y guardamos el archivo en el storage (Mac/Windows).
         // Esto asegura que el archivo ya existe en disco antes de responder.
+        log.info("procesarSubida carpetaRaiz {}", carpetaRaiz);
         EjecutarUpload ejecutarUpload = storageService.procesarSubida(carpetaRaiz, tipo, unidad, usuario, observacion, file);
 
+        log.info("procesarSubida archivoUpload {}", ejecutarUpload.getPathArchivoUpload());
         asyncTaskService.ejecutarNormalizacionAsync(ejecutarUpload);
         // 2. PASO ASÍNCRONO (Segundo plano):
         // Disparamos la normalización sin esperar a que termine.

@@ -7,7 +7,6 @@ import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarCon
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
 import com.ragnax.sanbernardo.notificacion.infraestructura.configuration.ApiProperties;
 import com.ragnax.sanbernardo.notificacion.infraestructura.controller.dto.DescargasImprenta;
-import com.ragnax.sanbernardo.notificacion.infraestructura.controller.dto.ItemValue;
 import com.ragnax.sanbernardo.notificacion.infraestructura.controller.dto.UnidadDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("") // Cambiado para evitar colisiones con "/"
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @Slf4j
 public class EListarController {
 
@@ -112,22 +111,25 @@ public class EListarController {
 
     // --- DOWNLOAD (Corregido para soportar puntos y extensiones) ---
     // El truco es :.+ para que capture el nombre completo del archivo con su extensión
-   @CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
+   //@CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
    @GetMapping("/download/**")
    public ResponseEntity<Resource> downloadUniversal(HttpServletRequest request) throws IOException {
        // 1. Extraer la ruta completa después de /download/
+       log.info("********** downloadUniversal **********");
+
        String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
        String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
        String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
-
+       log.info("downloadUniversal pathPattern {}", pathPattern);
+       log.info("downloadUniversal fullPath {}", fullPath);
        // 2. Usar el resolveDynamicPath que ya corregimos (el que traduce el alias del primer segmento)
        Path filePath = storageService.resolveDynamicPath(subPath);
-
+       log.info("downloadUniversal fullPath {}", filePath.toString());
        // 3. Verificaciones de seguridad y existencia
        if (!Files.exists(filePath) || !Files.isReadable(filePath) || Files.isDirectory(filePath)) {
            return ResponseEntity.notFound().build();
        }
-
+       log.info("downloadUniversal fullPath {}", fullPath);
        Resource resource = new UrlResource(filePath.toUri());
        String contentType = Files.probeContentType(filePath);
        if (contentType == null) contentType = "application/octet-stream";
@@ -135,6 +137,10 @@ public class EListarController {
        // 4. Preparar el nombre del archivo para la descarga
        String fileName = filePath.getFileName().toString();
        String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+
+       log.info("downloadUniversal headerValue {}", headerValue);
+       log.info("downloadUniversal contentType {}", contentType);
+       log.info("********************");
 
        return ResponseEntity.ok()
                .contentType(MediaType.parseMediaType(contentType))
@@ -144,7 +150,7 @@ public class EListarController {
 
     // --- DOWNLOAD (Corregido para soportar puntos y extensiones) ---
     // El truco es :.+ para que capture el nombre completo del archivo con su extensión
-    @CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
+    //@CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
     @GetMapping("/download-imprenta/**")
     public ResponseEntity<Resource> downloadImprenta(
             HttpServletRequest request,

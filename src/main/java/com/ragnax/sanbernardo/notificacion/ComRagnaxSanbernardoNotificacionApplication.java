@@ -2,6 +2,7 @@ package com.ragnax.sanbernardo.notificacion;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +18,13 @@ import java.util.concurrent.Executor;
 @Slf4j
 @EnableAsync // 1. Habilita el soporte para @Async
 @EnableScheduling
-public class ComRagnaxSanbernardoNotificacionApplication {
+public class ComRagnaxSanbernardoNotificacionApplication implements CommandLineRunner {
+    @Override
+    public void run(String... args) throws Exception {
+        log.info("------------");
+    }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		SpringApplication.run(ComRagnaxSanbernardoNotificacionApplication.class, args);
 	}
 

@@ -296,6 +296,7 @@ public class AFileStorageComponent {
                                          String observacion,
                                          MultipartFile file) throws IOException {
         // ✅ solo unidad
+        log.info("validarUnidad unidad {}", unidad);
         validarUnidad(unidad);
 
         if (file.isEmpty()) {
@@ -333,14 +334,18 @@ public class AFileStorageComponent {
                     .resolve(unidad)
                     .resolve(observacion);
         }
-
+        log.info("validarUnidad targetDir {}", targetDir);
 
         Files.createDirectories(targetDir);
 
+        log.info("validarUnidad safeName {}", safeName);
         Path destino = targetDir.resolve(safeName);
+
+        log.info("validarUnidad destino {}", destino);
 
         Files.copy(file.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
         if(carpetaRaiz.equalsIgnoreCase("upload") ){
+            log.info("validarUnidad crearJson1Upload {}", observacion);
             CrearJsonExcel.crearJson1Upload(targetDir, usuario, fechaCreacion, safeName, observacion);
         }
 
@@ -355,7 +360,7 @@ public class AFileStorageComponent {
         ejecutarNotificacion.setBaseNombre(strBaseNombre);
         ejecutarNotificacion.setNombreArchivoUpload(safeName);
         ejecutarNotificacion.setPathArchivoUpload(destino.toString());
-
+        log.info("crearJson1Upload return {}", destino.toString());
         return ejecutarNotificacion;
 
     }

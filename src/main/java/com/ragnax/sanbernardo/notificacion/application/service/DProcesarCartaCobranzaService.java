@@ -205,7 +205,7 @@ public class DProcesarCartaCobranzaService {
             } else if (cantidad > 1) {
                 // Solo escribe en el log si es divisible por 1000
                 if (correlativo % 1000 == 0) {
-                    log.info("mas {} - {} - {} - {}", reg.getProcCorrelativoImpresion(), correlativo,
+                    log.info("masivo {} - {} - {} - {}", reg.getProcCorrelativoImpresion(), correlativo,
                             reg.getContFolioProceso(), reg.getContFolioTipo());
                 }
                 listaPdfs.add(reg.getPdf());

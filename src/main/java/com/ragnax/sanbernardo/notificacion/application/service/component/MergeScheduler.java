@@ -38,7 +38,7 @@ public class MergeScheduler {
     // Ejecuta a las 12:00, 03:00 y 05:00 AM
     @Scheduled(cron = "0 0 0,3,5 * * *")
     // Ejecuta exactamente a las 11:34 AM
-    //@Scheduled(cron = "0 30 13 * * *")
+    @Scheduled(cron = "0 49 4 * * *")
     public void procesarPendientesCadaHora() throws Exception {
         log.info("⏰ Iniciando revisión horaria de procesos pendientes...");
 
@@ -60,6 +60,7 @@ public class MergeScheduler {
 
             procesar(ejecutarMerge, epc);
         }
+        log.info(" FIN mergeScheduler");
         // Mapeas de tu entidad al DTO EjecutarMerge que recibe tu método Async
         /***CArgarArchivoExcel**/
     }
@@ -100,5 +101,6 @@ public class MergeScheduler {
             }
             log.info(" resultadoValidacion {}", excelCobranzaNormalizado.size());
         }
+        log.info(" FIN procesar");
     }
 }

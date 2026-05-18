@@ -6,6 +6,7 @@ import com.ragnax.sanbernardo.notificacion.infraestructura.controller.dto.LoginR
 import com.ragnax.sanbernardo.notificacion.infraestructura.entity.usuarios.*;
 import com.ragnax.sanbernardo.notificacion.infraestructura.repository.usuarios.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoginService {
 
         @Autowired
@@ -35,6 +37,8 @@ public class LoginService {
 
     @Transactional("usuariosTransactionManager")
     public LoginResponse login(String username, String password, String codEmpresa) {
+
+        log.info("v3 username {} password {} codEmpresa {}", username, password, codEmpresa);
 
         List<ItemValue> items = Arrays.asList();
 
@@ -80,7 +84,11 @@ public class LoginService {
                         return menuUrl.contains("imprenta");
                     }
 
-                    // 3. Lógica para Tesorería (Cobranza) y Juzgado (Notificación)
+                    if (nombreUnidadLower.contains("administracion")) {
+                        return menuUrl.contains("administracion");
+                    }
+
+                    // 3. Lógica para Tesorería (Cobranza) y Juzgado (Notificación) y Juzgado (Administracion)
                     if (!finalUnidadFiltro.isEmpty()) {
                         return menuUrl.contains(finalUnidadFiltro);
                     }
@@ -120,6 +128,8 @@ public class LoginService {
             unidadFiltro = "notificacion";
         } else if (nombreUnidadLower.contains("imprenta")) {
             unidadFiltro = "imprenta"; // O el valor que corresponda a tus URLs de imprenta
+        } else if (nombreUnidadLower.contains("administracion")) {
+            unidadFiltro = "administracion"; // O el valor que corresponda a tus URLs de imprenta
         }
 
         return unidadFiltro;

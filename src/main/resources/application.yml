@@ -18,8 +18,8 @@ spring:
       ddl-auto: none
   servlet:
     multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: 110MB
+      max-request-size: 110MB
   mail:
     host: smtp.resend.com
     port: 465
@@ -63,9 +63,17 @@ server:
   port: 9999
   servlet:
     context-path: /imsbcartas
+    session:
+      cookie:
+        secure: true
+  forward-headers-strategy: native
 
 logging:
   level:
+    com:
+      ragnax:
+        sanbernardo:
+          notificacion: INFO
     com.itextpdf.html2pdf.css.apply.util.FlexApplierUtil: ERROR
   file:
     name: logfile
