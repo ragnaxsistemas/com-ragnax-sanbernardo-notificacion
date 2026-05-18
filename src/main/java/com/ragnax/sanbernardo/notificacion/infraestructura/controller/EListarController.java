@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -112,57 +113,74 @@ public class EListarController {
     // --- DOWNLOAD (Corregido para soportar puntos y extensiones) ---
     // El truco es :.+ para que capture el nombre completo del archivo con su extensión
    //@CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
-   @GetMapping("/download/**")
-   public ResponseEntity<Resource> downloadUniversal(HttpServletRequest request) throws IOException {
-       // 1. Extraer la ruta completa después de /download/
-       log.info("********** downloadUniversal **********");
+    @GetMapping("/download/**")
+    public ResponseEntity<?> downloadUniversal(HttpServletRequest request) throws IOException { // 🚩 Cambiado a ResponseEntity<?>
+        log.info("********** downloadUniversal **********");
 
-       String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-       String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-       String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
-       log.info("downloadUniversal pathPattern {}", pathPattern);
-       log.info("downloadUniversal fullPath {}", fullPath);
-       // 2. Usar el resolveDynamicPath que ya corregimos (el que traduce el alias del primer segmento)
-       Path filePath = storageService.resolveDynamicPath(subPath);
-       log.info("downloadUniversal fullPath {}", filePath.toString());
-       // 3. Verificaciones de seguridad y existencia
-       if (!Files.exists(filePath) || !Files.isReadable(filePath) || Files.isDirectory(filePath)) {
-           return ResponseEntity.notFound().build();
-       }
-       log.info("downloadUniversal fullPath {}", fullPath);
-       Resource resource = new UrlResource(filePath.toUri());
-       String contentType = Files.probeContentType(filePath);
-       if (contentType == null) contentType = "application/octet-stream";
+        String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+        String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
 
-       // 4. Preparar el nombre del archivo para la descarga
-       String fileName = filePath.getFileName().toString();
-       String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+        Path filePath = storageService.resolveDynamicPath(subPath);
 
-       log.info("downloadUniversal headerValue {}", headerValue);
-       log.info("downloadUniversal contentType {}", contentType);
-       log.info("********************");
+        if (!Files.exists(filePath) || !Files.isReadable(filePath) || Files.isDirectory(filePath)) {
+            return ResponseEntity.notFound().build();
+        }
 
-       return ResponseEntity.ok()
-               .contentType(MediaType.parseMediaType(contentType))
-               .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-               .body(resource);
-   }
+        String contentType = Files.probeContentType(filePath);
+        if (contentType == null) contentType = "application/octet-stream"; // Pasar a Utilidad
+
+        String fileName = filePath.getFileName().toString();
+        String headerValue = String.format("attachment; filename=\"%s\"", fileName); // Pasar a Utilidad
+
+        // 🚩 DETECTAR SI LA PETICIÓN PASÓ POR NGINX (Buscando cabeceras de proxy comunes)
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            // 🔥 PRODUCCIÓN (AWS con Nginx)
+            String rootPathStr = apiProperties.getArchivoCreacionCarpeta();
+
+            // Extraemos la parte relativa
+            String relativePath = filePath.toString().replace(rootPathStr, "");
+            // Pasar a Utilidad
+            // 🚩 IMPORTANTE: Construimos la URI interna incluyendo el prefijo context-path que configuramos en Nginx
+            String nginxInternalUrl = "/imsbcartas/internal-files/" + relativePath.replace("\\", "/").replaceAll("^/+", "");
+
+            log.info("[PROD] Redireccionando a Nginx X-Accel: {}", nginxInternalUrl);
+            // Pasar a Utilidad
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                    .header("X-Accel-Redirect", nginxInternalUrl) // Le pasa el control a Nginx de forma exacta
+                    .build();
+        } else {
+            // 💻 ESTAMOS EN DESARROLLO (MacBook Local) -> Transmitir los bytes tradicionales
+            log.info("[LOCAL] Transmitiendo bytes directamente desde Spring Boot");
+            Resource resource = new UrlResource(filePath.toUri());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                    .body(resource); // Retorna los bytes reales
+        }
+    }
 
     // --- DOWNLOAD (Corregido para soportar puntos y extensiones) ---
     // El truco es :.+ para que capture el nombre completo del archivo con su extensión
     //@CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
     @GetMapping("/download-imprenta/**")
-    public ResponseEntity<Resource> downloadImprenta(
-            HttpServletRequest request,
-            @RequestHeader(value = "X-Download-Metadata", required = false) String metadataBase64
+    public ResponseEntity<Void> downloadImprenta( // 🚩 Cambiado a ResponseEntity<Void>
+                                                  HttpServletRequest request,
+                                                  @RequestHeader(value = "X-Download-Metadata", required = false) String metadataBase64
     ) throws IOException {
 
-        // 1. Extraer la ruta completa después de /download/
+        log.info("********** downloadImprenta (Optimizado con Nginx X-Accel) **********");
+
+        // 1. Extraer la ruta completa después de /download-imprenta/
         String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
 
-        // 2. Usar el resolveDynamicPath que ya corregimos (el que traduce el alias del primer segmento)
+        // 2. Usar el resolveDynamicPath (Traduce el alias del primer segmento)
         Path filePath = storageService.resolveDynamicPath(subPath);
 
         // 3. Verificaciones de seguridad y existencia
@@ -170,77 +188,93 @@ public class EListarController {
             return ResponseEntity.notFound().build();
         }
 
+        // 🚩 [TODA TU LÓGICA DE AUDITORÍA SE MANTIENE INTACTA]
         if (metadataBase64 != null) {
-            // 1. Decodificar Base64 a JSON
             byte[] decodedBytes = Base64.getDecoder().decode(metadataBase64);
             String json = new String(decodedBytes, StandardCharsets.UTF_8);
 
-            // 2. Convertir JSON a Map (u objeto específico)
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> metadata = mapper.readValue(json, Map.class);
 
-            // Ejemplo: Obtener el nombre que enviamos
-            log.info("Descarga autorizada para: " + metadata.get("nombre"));
+            log.info("Descarga autorizada para Imprenta: " + metadata.get("nombre"));
 
             EjecutarConsolidado ec = CrearJsonExcel.getEjecutarConsolidadoFromJson(filePath.toString().replace(".pdf", ".json"));
-            // Si la lista es nula, le asignamos una nueva antes de operar
             if (ec.getDescargasImprenta() == null) ec.setDescargasImprenta(new ArrayList<>());
 
-            ec.getDescargasImprenta().add(new DescargasImprenta(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")), metadata.get("nombre").toString()));
+            ec.getDescargasImprenta().add(new DescargasImprenta(
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")),
+                    metadata.get("nombre").toString()
+            ));
 
+            // Guarda el JSON trackeando que la imprenta ya descargó el archivo
             CrearJsonExcel.crearJson5Consolidado(ec);
-
         }
 
-        Resource resource = new UrlResource(filePath.toUri());
         String contentType = Files.probeContentType(filePath);
         if (contentType == null) contentType = "application/octet-stream";
 
-        // 4. Preparar el nombre del archivo para la descarga
         String fileName = filePath.getFileName().toString();
         String headerValue = String.format("attachment; filename=\"%s\"", fileName);
 
+        // 🚩 4. MAQUILAR LA RUTA VIRTUAL PARA NGINX
+        // Recuerda que esta ruta base debe coincidir exactamente con el 'alias' en /etc/nginx/conf.d/imsb-backend.conf
+        String rootPathStr = apiProperties.getArchivoCreacionCarpeta();
+        String relativePath = filePath.toString().replace(rootPathStr, "");
+
+        // Construimos la URI de redirección interna que interceptará Nginx
+        String nginxInternalUrl = "/internal-files/" + relativePath.replace("\\", "/");
+
+        log.info("Imprenta autorizada. Redireccionando internamente a Nginx: {}", nginxInternalUrl);
+        log.info("********************");
+
+        // 🚩 Retornamos la respuesta con body vacío. Java termina aquí.
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-                .body(resource);
+                .header("X-Accel-Redirect", nginxInternalUrl) // La cabecera mágica
+                .build();
     }
 
-    /***@CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
-    @GetMapping("/download-pdf/**")
-    public ResponseEntity<Resource> obtenerPdf(HttpServletRequest request) throws IOException {
-        // 1. Extraer la ruta completa después de /download/
-        String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-        String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-        String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
+    @GetMapping("/download/manual")
+    public ResponseEntity<?> downloadManualUsuario(HttpServletRequest request) throws IOException {
+        log.info("********** downloadManualUsuario **********");
 
-        // 2. Usar el resolveDynamicPath que ya corregimos (el que traduce el alias del primer segmento)
-        Path path = storageService.resolveDynamicPath(subPath);
+        String rootPathStr = apiProperties.getArchivoCreacionCarpeta(); // /var/www/sb_ope_001a/public_sftp/ o la de tu Mac
+        Path filePath = Paths.get(rootPathStr, "documentacion", "manual_usuario.pdf");
 
-        // LOG de diagnóstico para verificar qué está buscando el servidor
-        log.info("Buscando en: {}" , path.toAbsolutePath());
+        log.info("Buscando manual en: {}", filePath.toString());
 
-
-
-        // 3. Verificaciones de seguridad y existencia
-        if (!Files.exists(path) || !Files.isReadable(path) || Files.isDirectory(path)) {
+        if (!Files.exists(filePath) || !Files.isReadable(filePath) || Files.isDirectory(filePath)) {
+            log.error("El archivo manual_usuario.pdf no existe o no se puede leer.");
             return ResponseEntity.notFound().build();
         }
-        //Creaar el binario del Archivo pdf
 
-
-        Resource resource = new UrlResource(filePath.toUri());
         String contentType = Files.probeContentType(filePath);
-        if (contentType == null) contentType = "application/octet-stream";
+        if (contentType == null) contentType = "application/pdf";
 
-        // 4. Preparar el nombre del archivo para la descarga
-        String fileName = filePath.getFileName().toString();
-        String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+        String headerValue = "attachment; filename=\"manual_usuario.pdf\"";
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-                .body(resource);
-    }***/
+        // 🚩 DETECCIÓN INFALIBLE POR RUTA FÍSICA
+        if (rootPathStr.startsWith("/var/www")) {
+            // 🔥 PRODUCCIÓN (AWS con Nginx)
+            String relativePath = filePath.toString().replace(rootPathStr, "");
+            String nginxInternalUrl = "/imsbcartas/internal-files/" + relativePath.replace("\\", "/").replaceAll("^/+", "");
+
+            log.info("[PROD-MANUAL] Forzando engranaje Nginx X-Accel: {}", nginxInternalUrl);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                    .header("X-Accel-Redirect", nginxInternalUrl)
+                    .build();
+        } else {
+            // 💻 DESARROLLO (MacBook Local)
+            log.info("[LOCAL-MANUAL] Transmitiendo bytes directamente desde Spring Boot");
+            Resource resource = new UrlResource(filePath.toUri());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                    .body(resource);
+        }
+    }
 
 }

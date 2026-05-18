@@ -15,6 +15,7 @@ public class GeneracionCarta implements Serializable {
 
     private String procesoGeneracionCarta;
     /****numFolio contador del Proceso comienza 1**/
+    private Integer contFolioTipo;
     private Integer contFolioProceso;
     private Integer contTipoCartas;
     private Long correlativoHistorico;
