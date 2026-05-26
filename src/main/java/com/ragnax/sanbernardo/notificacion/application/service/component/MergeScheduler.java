@@ -38,7 +38,7 @@ public class MergeScheduler {
     // Ejecuta a las 12:00, 03:00 y 05:00 AM
     @Scheduled(cron = "0 0 0,3,5 * * *")
     // Ejecuta exactamente a las 11:34 AM
-    //@Scheduled(cron = "10 18 2 * * *")
+    @Scheduled(cron = "0 5 15 * * *")
     public void procesarPendientesCadaHora() throws Exception {
         log.info("⏰ Iniciando revisión horaria de procesos pendientes...");
 

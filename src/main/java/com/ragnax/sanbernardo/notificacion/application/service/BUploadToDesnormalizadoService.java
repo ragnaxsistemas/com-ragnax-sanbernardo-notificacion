@@ -112,7 +112,6 @@ public class BUploadToDesnormalizadoService {
                     );
 
             mailComponent.enviarCorreoResend(
-                    "julio.ignacio.cornejo.sb@gmail.com",
                     ejecutarUpload.getObservacion(),
                     ejecutarUpload.getTipo(),
                     ejecutarUpload.getUnidad(),
@@ -181,7 +180,6 @@ public class BUploadToDesnormalizadoService {
             );
 
             mailComponent.enviarCorreoResend(
-                    "julio.ignacio.cornejo.sb@gmail.com",
                     ejecutarUpload.getObservacion(),
                     ejecutarUpload.getTipo(),
                     ejecutarUpload.getUnidad(),

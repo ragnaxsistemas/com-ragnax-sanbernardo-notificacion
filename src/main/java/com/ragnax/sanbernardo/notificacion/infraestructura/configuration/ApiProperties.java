@@ -12,6 +12,19 @@ public class ApiProperties {
     @Value("${spring.profiles.active}")
     private String profile;
 
+    @Value("${spring.mail.host}")
+    private String mailHost;
+
+    @Value("${spring.mail.username}")
+    private String mailUsername;
+
+    @Value("${mail.destinatarioCopia}")
+    private String mailDestinatarioBase;
+
+    @Value("${mail.destinatarioNormalizacion}")
+    private String mailDestinatarioNormalizacion;
+
+
     @Value("${archivo.excel.nombreCarpetaUpload}")
     private String archivoExcelNombreCarpetaUpload;
 
@@ -91,9 +104,6 @@ public class ApiProperties {
     @Value("${archivo.creacion.respaldo}")
     private String archivoCreacionRespaldo;
 
-    //@Value("${archivo.creacion.respaldoNormalizado}")
-    //private String archivoCreacionRespaldoNormalizado;
-
     @Value("${archivo.creacion.adjuntos.subCarpetaNormalizado}")
     private String archivoCreacionAdjuntoSubCarpetaNormalizado;
 
@@ -111,18 +121,6 @@ public class ApiProperties {
 
     @Value("${archivo.creacion.adjuntos.subCarpetaCobranzaReporte}")
     private String archivoCreacionAdjuntoSubCarpetaCobranzaReporte;
-
-    //@Value("${archivo.creacion.adjuntos.subCarpetaNotificacion}")
-    //private String archivoCreacionAdjuntoSubCarpetaNotificacion;
-
-    //@Value("${archivo.creacion.adjuntos.subCarpetaNotificacionDocumento}")
-    //private String archivoCreacionAdjuntoSubCarpetaNotificacionDocumento;
-
-   // @Value("${archivo.creacion.adjuntos.subCarpetaNotificacionConsolidado}")
-    //private String archivoCreacionAdjuntoSubCarpetaNotificacionConsolidado;
-
-    //@Value("${archivo.creacion.adjuntos.subCarpetaNotificacionReporte}")
-    //private String archivoCreacionAdjuntoSubCarpetaNotificacionReporte;
 
     @Value("${archivo.creacion.adjuntos.nombreArchivoConsolidado}")
     private String archivoCreacionAdjuntoNombreArchivoConsolidado;

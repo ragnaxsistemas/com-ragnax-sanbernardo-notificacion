@@ -39,10 +39,11 @@ import java.util.Map;
 @Slf4j
 public class EListarController {
 
+    private final ApiProperties apiProperties;
+
     private final AFileStorageComponent storageService;
 
     private final ECarpetaHabilitadaService carpetaHabilitadaService;
-    private final ApiProperties apiProperties;
 
     @GetMapping("/carpetas-habilitadas/unidad/{codEmpresa}")
     public ResponseEntity<List<UnidadDTO>> buscarPorUnidad(@PathVariable String codEmpresa) {
@@ -59,22 +60,8 @@ public class EListarController {
         String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
-
-        // 2. Resolver la ruta física usando el StorageService
-        // subPath llegará como: "cobranza/tesoreria/CD-FTX_2026..." o "upload/cobranza/tesoreria"
-        Path path = storageService.resolveDynamicPath(subPath);
-
-        // LOG de diagnóstico para verificar qué está buscando el servidor
-        log.info("Habilitando carpeta para imprenta en: {}" , path.toAbsolutePath());
-
-        if (!Files.exists(path)) {
-            return ResponseEntity.ok(Map.of(
-                    "mensaje", "La ruta no existe en el servidor"
-            ));
-        }
-
         // 3. Retornar la lista paginada (carpetas y archivos)
-        return ResponseEntity.ok(storageService.habilitarImprenta(path));
+        return ResponseEntity.ok(carpetaHabilitadaService.habilitarCarpeta(subPath));
     }
 
     // --- LISTAR: Soporta todas tus variantes de URL --
@@ -276,5 +263,4 @@ public class EListarController {
                     .body(resource);
         }
     }
-
 }

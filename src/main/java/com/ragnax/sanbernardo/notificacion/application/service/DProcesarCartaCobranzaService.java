@@ -1,5 +1,6 @@
 package com.ragnax.sanbernardo.notificacion.application.service;
 
+import com.ragnax.sanbernardo.notificacion.application.service.component.MailComponent;
 import com.ragnax.sanbernardo.notificacion.application.service.component.PdfComponent;
 import com.ragnax.sanbernardo.notificacion.application.service.model.*;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
 
 public class DProcesarCartaCobranzaService {
 
+    @Autowired
+    private MailComponent mailComponent;
 
     @Autowired
     private PdfComponent plantillaService;
@@ -66,6 +69,13 @@ public class DProcesarCartaCobranzaService {
 
             ejecutarMerge = mapaRutPatenteFila(ejecutarCartas,
                     excelCobranzasMerge);
+
+           mailComponent.enviarCorreoResendCargaMerge(
+                    ejecutarMerge.getObservacion(),
+                    ejecutarMerge.getTipo(),
+                    ejecutarMerge.getUnidad(),
+                    Integer.parseInt(ejecutarMerge.getSizeArchivoMerge()),
+                    ejecutarMerge.getNombreArchivoMerge());
 
         }catch(Exception e){
             log.error("Exception error", e);
@@ -308,6 +318,7 @@ public class DProcesarCartaCobranzaService {
     }
 
     private void saveCartas(List<ExcelCobranzaImpresion> impresiones){
+        log.info("saveCartas {} registros en impresiones", impresiones.size());
         if (impresiones == null || impresiones.isEmpty()) {
             log.warn("Lista de impresiones vacía, nada que salvar.");
             return;

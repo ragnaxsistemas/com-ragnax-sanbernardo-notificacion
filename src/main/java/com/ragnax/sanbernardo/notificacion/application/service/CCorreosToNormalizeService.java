@@ -1,6 +1,7 @@
 package com.ragnax.sanbernardo.notificacion.application.service;
 
 import com.ragnax.sanbernardo.notificacion.application.service.component.AFileStorageComponent;
+import com.ragnax.sanbernardo.notificacion.application.service.component.MailComponent;
 import com.ragnax.sanbernardo.notificacion.application.service.model.*;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.ObtenerExcel;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +32,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class CCorreosToNormalizeService {
-
-    private final DProcesarCartaCobranzaService procesarCartaCobranzaService;
 
     private final EjecutarProcesoCartaRepository ejecutarProcesoCartaRepository;
 
@@ -87,24 +87,7 @@ public class CCorreosToNormalizeService {
         //devolver a ejecutarMergePr
         ejecutarMergePr.setListaExcelCobranzaMerge(ejecutarMerge.getListaExcelCobranzaMerge());
 
-        /******************
-         File archivoExcel = new File(ejecutarMergePr.getPathArchivoNormalizado());
-
-         if (ejecutarMerge.getTipo().equalsIgnoreCase("COBRANZA")) {
-
-         List<ExcelCobranzaToNormalize> excelCobranzasToNormalize = new ArrayList<>();
-
-         if (archivoExcel.exists()) {
-         try (InputStream excelInputStream = new FileInputStream(archivoExcel)) {
-
-         log.info("Abriendo Excel: " + archivoExcel.getAbsolutePath());
-
-         excelCobranzasToNormalize =
-         ObtenerExcel.obtenerExcelCobranzaNormalizado(excelInputStream, apiProperties.getArchivoExcelNombreHojaNormalizadaCobranza());
-         }
-         }
-         }********/
-        //ejecutarMergePr = procesarCartaCobranzaService.processArchivoCobranza(ejecutarMergePr);
+        //Realizado el merge, enviar correo indicando procesamiento de archivo merge pendiente
         return ResponseEntity.ok(Map.of(
                 "message", "Subida exitosa",
                 "ruta", ejecutarMergePr.getPathArchivoMerge()
@@ -119,8 +102,6 @@ public class CCorreosToNormalizeService {
                 ejecutarMerge.getTipo(),
                 ejecutarMerge.getUsuarioMerge(),
                 ejecutarMerge.getFileCorreosCsv());
-
-
 
         if (ejecutarMerge.getTipo().equalsIgnoreCase("COBRANZA")) {
 
@@ -198,6 +179,7 @@ public class CCorreosToNormalizeService {
                                                            List<ExcelCorreos> listCsvSeguimiento,
                                                            EjecutarMerge ejecutarMerge) {
 
+        String nombreArchivoMerge = null;
         int totalFilasGeneradas = 0;
         List<ExcelCobranzaMerge> listaFiltrada = null;
         Map<String, String> mapaSeguimiento = listCsvSeguimiento.stream()
@@ -351,9 +333,11 @@ public class CCorreosToNormalizeService {
                     .concat(ejecutarMerge.getUnidad()).concat("/")
                     .concat(ejecutarMerge.getBaseNombre()).concat("/")
                     .concat(ejecutarMerge.getBaseNombre()).concat("_")
-                    //  .concat(proceso).concat("_")
                     .concat(nombreArchivo);
 
+            nombreArchivoMerge = ejecutarMerge.getBaseNombre().concat("_")
+
+                    .concat(nombreArchivo);
             log.info("Ruta archivo: {}", archivoExcelMerge);
 
             File archivoFinal = new File(archivoExcelMerge);
@@ -379,7 +363,7 @@ public class CCorreosToNormalizeService {
 
         ejecutarMerge.setPathArchivoMerge(archivoExcelMerge);
         ejecutarMerge.setSizeArchivoMerge(String.valueOf(totalFilasGeneradas));
-        ejecutarMerge.setNombreArchivoMerge(archivoExcelMerge);
+        ejecutarMerge.setNombreArchivoMerge(nombreArchivoMerge);
         ejecutarMerge.setTotalFilasGeneradasExcel(String.valueOf(totalFilasGeneradas));
         //Aqui esta la base para realizar
         ejecutarMerge.setListaExcelCobranzaMerge(listaFiltrada);
@@ -411,7 +395,6 @@ public class CCorreosToNormalizeService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
 
         // 1. Mapa usando clave compuesta: toNormalize
         Map<String, ExcelCorreos> mapaSeguimiento = listCsvSeguimiento.stream()
@@ -506,7 +489,6 @@ public class CCorreosToNormalizeService {
      * Genera una clave normalizada para evitar fallos por mayúsculas o espacios extra.
      */
     private String generarClaveUnicaCsv(ExcelCorreos item) {
-        log.info(item.getToNormalize());
         return item.getToNormalize().trim();
     }
 

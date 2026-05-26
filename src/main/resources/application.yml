@@ -21,21 +21,25 @@ spring:
       max-file-size: 110MB
       max-request-size: 110MB
   mail:
-    host: smtp.resend.com
+    # 🚩 Reemplaza por el Host DNS real del servidor Kerio de la muni (ej: mail.sanbernardo.cl)
+    host: correo.sanbernardo.cl
     port: 465
-    username: resend
-    password: re_UNjdbpTp_GF4LZDirLGtHe9LDy2TojzhR
+    username: sistema.cartas@sanbernardo.cl
+    password: "Arboleda4431.," # 🚩 Importante ponerlo entre comillas por el punto y la coma al final
     properties:
       mail:
         smtp:
           auth: true
           ssl:
             enable: true
+          # Kerio con puerto 465 prefiere SSL directo en lugar de forzar un Upgrade por STARTTLS
           starttls:
-            enable: true
-        socketFactory:
-          port: 465
-          class: javax.net.ssl.SSLSocketFactory
+            enable: false
+          # Parámetros estrictos para el Socket SSL seguro
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
   # La contraseña es la API Key que generaste (incluyendo el 're_')
 
 #datasource:
@@ -108,7 +112,9 @@ swagger:
       email: ceo@ragnaxsistemas.cl
       nombre: RagnaxSistemas
       url: www.ragnaxsistemas.cl
-
+mail:
+  destinatarioCopia: sistema.cartas@sanbernardo.cl
+  destinatarioNormalizacion: sistema.cartas@sanbernardo.cl
 servicio:
   app:
     generarCartaNotificacion: generarCartaNotificacion

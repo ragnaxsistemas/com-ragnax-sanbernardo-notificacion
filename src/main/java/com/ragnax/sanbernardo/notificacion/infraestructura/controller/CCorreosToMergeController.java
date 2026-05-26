@@ -39,7 +39,6 @@ public class CCorreosToMergeController {
                 .build();
 
         return ccorreosToProcessService.fromCorreosToMerge(ejecutarMerge);
-
     }
 }
 
