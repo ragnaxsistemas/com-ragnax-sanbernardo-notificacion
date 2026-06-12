@@ -113,6 +113,7 @@ swagger:
       nombre: RagnaxSistemas
       url: www.ragnaxsistemas.cl
 mail:
+  destinatarioOficial: fernanda.rodriguez@correos.cl
   destinatarioCopia: sistema.cartas@sanbernardo.cl
   destinatarioNormalizacion: sistema.cartas@sanbernardo.cl
 servicio:

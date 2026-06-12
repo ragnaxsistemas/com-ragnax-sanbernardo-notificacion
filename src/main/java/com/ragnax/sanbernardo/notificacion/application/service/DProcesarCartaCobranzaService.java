@@ -70,12 +70,12 @@ public class DProcesarCartaCobranzaService {
             ejecutarMerge = mapaRutPatenteFila(ejecutarCartas,
                     excelCobranzasMerge);
 
-           mailComponent.enviarCorreoResendCargaMerge(
+           /***mailComponent.enviarCorreoResendCargaMerge(
                     ejecutarMerge.getObservacion(),
                     ejecutarMerge.getTipo(),
                     ejecutarMerge.getUnidad(),
                     Integer.parseInt(ejecutarMerge.getSizeArchivoMerge()),
-                    ejecutarMerge.getNombreArchivoMerge());
+                    ejecutarMerge.getNombreArchivoMerge());***/
 
         }catch(Exception e){
             log.error("Exception error", e);

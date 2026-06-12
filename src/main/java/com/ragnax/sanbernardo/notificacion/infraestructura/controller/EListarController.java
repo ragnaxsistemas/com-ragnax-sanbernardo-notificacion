@@ -155,46 +155,46 @@ public class EListarController {
     // El truco es :.+ para que capture el nombre completo del archivo con su extensión
     //@CrossOrigin(origins = "*", exposedHeaders = {"Content-Disposition"})
     @GetMapping("/download-imprenta/**")
-    public ResponseEntity<Void> downloadImprenta( // 🚩 Cambiado a ResponseEntity<Void>
-                                                  HttpServletRequest request,
-                                                  @RequestHeader(value = "X-Download-Metadata", required = false) String metadataBase64
+    public ResponseEntity<?> downloadImprenta(
+            HttpServletRequest request,
+            @RequestParam(value = "metadata", required = false) String metadataBase64
     ) throws IOException {
 
-        log.info("********** downloadImprenta (Optimizado con Nginx X-Accel) **********");
+        log.info("********** downloadImprenta (Optimizado por Link Directo Nginx) **********");
 
-        // 1. Extraer la ruta completa después de /download-imprenta/
         String pathPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String fullPath = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String subPath = new AntPathMatcher().extractPathWithinPattern(pathPattern, fullPath);
 
-        // 2. Usar el resolveDynamicPath (Traduce el alias del primer segmento)
         Path filePath = storageService.resolveDynamicPath(subPath);
 
-        // 3. Verificaciones de seguridad y existencia
         if (!Files.exists(filePath) || !Files.isReadable(filePath) || Files.isDirectory(filePath)) {
             return ResponseEntity.notFound().build();
         }
 
-        // 🚩 [TODA TU LÓGICA DE AUDITORÍA SE MANTIENE INTACTA]
-        if (metadataBase64 != null) {
-            byte[] decodedBytes = Base64.getDecoder().decode(metadataBase64);
-            String json = new String(decodedBytes, StandardCharsets.UTF_8);
+        // 🚩 [AUDITORÍA] Se ejecuta al abrir el link nativo
+        if (metadataBase64 != null && !metadataBase64.isEmpty()) {
+            try {
+                byte[] decodedBytes = Base64.getDecoder().decode(metadataBase64);
+                String json = new String(decodedBytes, StandardCharsets.UTF_8);
 
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> metadata = mapper.readValue(json, Map.class);
+                ObjectMapper mapper = new ObjectMapper();
+                Map<String, Object> metadata = mapper.readValue(json, Map.class);
 
-            log.info("Descarga autorizada para Imprenta: " + metadata.get("nombre"));
+                log.info("Descarga autorizada para Imprenta: " + metadata.get("nombre"));
 
-            EjecutarConsolidado ec = CrearJsonExcel.getEjecutarConsolidadoFromJson(filePath.toString().replace(".pdf", ".json"));
-            if (ec.getDescargasImprenta() == null) ec.setDescargasImprenta(new ArrayList<>());
+                EjecutarConsolidado ec = CrearJsonExcel.getEjecutarConsolidadoFromJson(filePath.toString().replace(".pdf", ".json"));
+                if (ec.getDescargasImprenta() == null) ec.setDescargasImprenta(new ArrayList<>());
 
-            ec.getDescargasImprenta().add(new DescargasImprenta(
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")),
-                    metadata.get("nombre").toString()
-            ));
+                ec.getDescargasImprenta().add(new DescargasImprenta(
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")),
+                        metadata.get("nombre").toString()
+                ));
 
-            // Guarda el JSON trackeando que la imprenta ya descargó el archivo
-            CrearJsonExcel.crearJson5Consolidado(ec);
+                CrearJsonExcel.crearJson5Consolidado(ec);
+            } catch (Exception e) {
+                log.error("Error procesando auditoría de imprenta: " + e.getMessage());
+            }
         }
 
         String contentType = Files.probeContentType(filePath);
@@ -203,22 +203,19 @@ public class EListarController {
         String fileName = filePath.getFileName().toString();
         String headerValue = String.format("attachment; filename=\"%s\"", fileName);
 
-        // 🚩 4. MAQUILAR LA RUTA VIRTUAL PARA NGINX
-        // Recuerda que esta ruta base debe coincidir exactamente con el 'alias' en /etc/nginx/conf.d/imsb-backend.conf
         String rootPathStr = apiProperties.getArchivoCreacionCarpeta();
         String relativePath = filePath.toString().replace(rootPathStr, "");
 
-        // Construimos la URI de redirección interna que interceptará Nginx
-        String nginxInternalUrl = "/internal-files/" + relativePath.replace("\\", "/");
+        // 🚩 IMPORTANTE: Usamos el prefijo idéntico a downloadUniversal para acoplarnos al alias estable de Nginx
+        String nginxInternalUrl = "/imsbcartas/internal-files/" + relativePath.replace("\\", "/").replaceAll("^/+", "");
 
         log.info("Imprenta autorizada. Redireccionando internamente a Nginx: {}", nginxInternalUrl);
         log.info("********************");
 
-        // 🚩 Retornamos la respuesta con body vacío. Java termina aquí.
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-                .header("X-Accel-Redirect", nginxInternalUrl) // La cabecera mágica
+                .header("X-Accel-Redirect", nginxInternalUrl)
                 .build();
     }
 

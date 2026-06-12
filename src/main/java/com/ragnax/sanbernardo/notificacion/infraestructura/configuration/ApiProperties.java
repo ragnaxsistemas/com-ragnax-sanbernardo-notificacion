@@ -18,6 +18,9 @@ public class ApiProperties {
     @Value("${spring.mail.username}")
     private String mailUsername;
 
+    @Value("${mail.destinatarioOficial}")
+    private String mailDestinatarioOficial;
+
     @Value("${mail.destinatarioCopia}")
     private String mailDestinatarioBase;
 

@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
@@ -22,13 +24,17 @@ public class PlantillaCobranzas {
         DateTimeFormatter entradaFormat = DateTimeFormatter.ofPattern("M/d/yy");
 
         // Convertimos el String a un objeto LocalDate
-        LocalDate fecha = LocalDate.parse(excelCobranzaMerges.getFechaCitacion(), entradaFormat);
-
+        LocalDate lFechaVence = LocalDate.parse(excelCobranzaMerges.getVence(), entradaFormat);
+        LocalDate lFechaCitacion = LocalDate.parse(excelCobranzaMerges.getFechaCitacion(), entradaFormat);
+        LocalDate lFechaInfraccion = LocalDate.parse(excelCobranzaMerges.getFechaInfraccion(), entradaFormat);
         // Definimos el formato de salida deseado
         DateTimeFormatter salidaFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         // Resultado
-        String fechaCitacion = fecha.format(salidaFormat);
+        String fechaCitacion = lFechaCitacion.format(salidaFormat);
+        String fechaVence = lFechaVence.format(salidaFormat);
+        String fechaInfraccion = lFechaInfraccion.format(salidaFormat);
+
         //Escudo
         String imgTag1 = "<img src='data:image/png;base64," + cartaHtmlIndividual.getListImagesBase64().get(0) + "' style='width: 60px; height: auto;'/>";
 
@@ -71,7 +77,7 @@ public class PlantillaCobranzas {
             htmlReemplazado = htmlReemplazado.replace("{{PATENTE}}", excelCobranzaMerges.getPlacaPatente().concat("-").concat(excelCobranzaMerges.getDg()));
         }
 
-        htmlReemplazado = htmlReemplazado.replace("{{FECHA_INFRACCION}}", excelCobranzaMerges.getFechaInfraccion());
+        htmlReemplazado = htmlReemplazado.replace("{{FECHA_INFRACCION}}",  fechaInfraccion);
 
         htmlReemplazado = htmlReemplazado.replace("{{HORA_INFRACCION}}", excelCobranzaMerges.getHoraInfraccion());
 
@@ -81,7 +87,7 @@ public class PlantillaCobranzas {
 
         htmlReemplazado = htmlReemplazado.replace("{{VALOR_MULTA}}", valorMulta);
 
-        htmlReemplazado = htmlReemplazado.replace("{{FECHA_VENCIMIENTO}}", excelCobranzaMerges.getVence());
+        htmlReemplazado = htmlReemplazado.replace("{{FECHA_VENCIMIENTO}}", fechaVence);
 
         htmlReemplazado = htmlReemplazado.replace("{{FECHA_CITACION}}", fechaCitacion);
 
@@ -98,6 +104,7 @@ public class PlantillaCobranzas {
         return htmlReemplazado;
     }
 
+
     public static String generarPlantillaCobranzaMasiva(String proc_correlativo,
                                                         String contFolioProceso,
                                                         CartaHtml cartaHtmlMasiva,
@@ -107,13 +114,17 @@ public class PlantillaCobranzas {
         DateTimeFormatter entradaFormat = DateTimeFormatter.ofPattern("M/d/yy");
 
         // Convertimos el String a un objeto LocalDate
-        LocalDate fecha = LocalDate.parse(excelCobranza.getFechaCitacion(), entradaFormat);
+        LocalDate lFechaCitacion = LocalDate.parse(excelCobranza.getFechaCitacion(), entradaFormat);
+        LocalDate lFechaVence = null;
+        LocalDate lFechaInfraccion = null;
 
         // Definimos el formato de salida deseado
         DateTimeFormatter salidaFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         // Resultado
-        String fechaCitacion = fecha.format(salidaFormat);
+        String fechaCitacion = lFechaCitacion.format(salidaFormat);
+        String fechaVence = null;
+        String fechaInfraccion = null;
 
         //Escudo
         String imgTag1 = "<img src='data:image/png;base64," + cartaHtmlMasiva.getListImagesBase64().get(0) + "' style='width: 60px; height: auto;'/>";
@@ -167,14 +178,17 @@ public class PlantillaCobranzas {
         String numFormateado = "";
         String trHml = "";
         for(int i = 0; i< listaExcelCobranza.size(); i++){
+            lFechaInfraccion = LocalDate.parse(listaExcelCobranza.get(i).getFechaInfraccion(), entradaFormat);
+            lFechaVence = LocalDate.parse(listaExcelCobranza.get(i).getVence(), entradaFormat);
+
             numFormateado = String.format("%,d", Integer.parseInt(listaExcelCobranza.get(i).getValorMulta())).replace(",",".");
             trHml = trHml+"<tr>"+
                     "<td>"+ listaExcelCobranza.get(i).getFolio()+ "</td>"+
-                    "<td>"+ listaExcelCobranza.get(i).getFechaInfraccion()+  "</td>"+
+                    "<td>"+ lFechaInfraccion+  "</td>"+
                     "<td>"+ listaExcelCobranza.get(i).getHoraInfraccion()+"</td>"+
                     "<td>" +listaExcelCobranza.get(i).getRolMop()+ "</td>"+
                     "<td class=\"lugar-infr\">"+listaExcelCobranza.get(i).getLugarMulta()+"</td>"+
-                    "<td>"+ listaExcelCobranza.get(i).getVence()+  "</td>"+
+                    "<td>"+ lFechaVence+  "</td>"+
                     "<td>"+ numFormateado + "</td>"+
                     "</tr>";
         }
