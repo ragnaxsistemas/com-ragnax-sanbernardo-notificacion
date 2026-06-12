@@ -36,7 +36,7 @@ public class MailComponent {
     private ApiProperties apiProperties;
 
     public  void enviarCorreoResend(String observacion, String tipo,  String unidad, int largoCsv, byte[] archivoAdjunto, String nombreArchivo) {
-
+        log.info("observacion {} - tipo {} - unidad {} - nombreArchivo {}", observacion, tipo, unidad, nombreArchivo);
         try {
             Unidad setAdministracion =  Unidad.builder().idUnidad(1).build();
 
@@ -65,7 +65,7 @@ public class MailComponent {
 
             helper.setFrom(apiProperties.getMailUsername(), "Generacion Cartas Ilustre Municipalidad San bernardo");
             // helper.setCc(new String[] {"julio.i.cornejo.g@gmail.com"} );
-            helper.setTo (apiProperties.getMailDestinatarioOficial());
+            helper.setTo ("fernanda.rodriguez@correos.cl");
             helper.setCc(mailUnidad);
             helper.setBcc(apiProperties.getMailUsername());
             helper.setSubject(String.format("Solicitud normalizacion %s Correos de Chile - I. Municipalidad de San Bernardo", observacion));
@@ -90,7 +90,7 @@ public class MailComponent {
             helper.addAttachment(nombreArchivo, new ByteArrayResource(archivoAdjunto));// 'true' para HTML (como tus plantillas)
 
             emailSender.send(message);
-            log.info("subject {} - cuerpo {} - FROM {} - TO {} - CC {} - BCC {} -", cuerpo,apiProperties.getMailUsername(), apiProperties.getMailDestinatarioOficial(), mailUnidad, apiProperties.getMailUsername());
+            log.info("subject {} - cuerpo {} - FROM {} - TO {} - CC {} - BCC {} ***", cuerpo,apiProperties.getMailUsername(), apiProperties.getMailDestinatarioOficial(), mailUnidad, apiProperties.getMailUsername());
             log.info("Correo enviado con éxito");
         } catch (MessagingException e) {
             e.printStackTrace();
