@@ -1,7 +1,6 @@
 package com.ragnax.sanbernardo.notificacion.application.service;
 
 import com.ragnax.sanbernardo.notificacion.application.service.component.AFileStorageComponent;
-import com.ragnax.sanbernardo.notificacion.application.service.component.MailComponent;
 import com.ragnax.sanbernardo.notificacion.application.service.model.*;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.ObtenerExcel;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

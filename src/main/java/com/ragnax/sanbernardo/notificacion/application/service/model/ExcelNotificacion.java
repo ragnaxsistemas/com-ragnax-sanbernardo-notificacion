@@ -13,27 +13,21 @@ public class ExcelNotificacion implements Serializable {
 
     private String juzgado;
     private String nombreCompleto;
-    private String rut;
     private String direccion;
     private String comuna;
-    private String anho;
     private String rol;
-    private String fechaTramite;
-    private String fechaCitacion;
-    private String placaPatente;
-    private String codigoInterno;
-    private String fechaVencimiento;
+    private String anho;
+    private String mac;
+    private String rut;
+    private String ppu;
+    private String vehiculo;
     private String fechaInfraccion;
     private String horaInfraccion;
+    private String fechaCitacion;
+    private String horaCitacion;
+    private String codigoInterno;
+    private String fechaVencimiento;
     private String folio;
-
-    //private String MAC;
-    //rivate String fechaCitacion;
-    //private String tipoVehiculo;
-    //rivate String fechaCitacion;
-    //private String horaCitacion;
-    //private String codInterno;
-
 
 
 }

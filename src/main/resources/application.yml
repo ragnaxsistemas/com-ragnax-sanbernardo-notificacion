@@ -138,7 +138,7 @@ archivo:
     nombreHojaNormalizada: ToNormalize
     nombreHojaMerge: Procesar
     #nombreHojaCobranza: Normalizada
-    nombreHojaNotificacion: NOTIFICACION
+    nombreHojaNotificacion: CITACION
 
   html:
     nombreCarpetaTemplate: templates/

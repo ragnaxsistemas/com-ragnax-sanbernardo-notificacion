@@ -46,10 +46,10 @@ public class BUploadToDesnormalizadoService {
                 ejecutarUpload.getNombreArchivoUpload());
 
         if(ejecutarUpload.getTipo().equalsIgnoreCase(COBRANZA)){
-            ejecutarUpload =processRequestCobranza( ejecutarUpload);
+            ejecutarUpload = processRequestCobranza( ejecutarUpload);
         }
         if(ejecutarUpload.getTipo().equalsIgnoreCase(NOTIFICACION)){
-            processRequestNotificacion( ejecutarUpload);
+            ejecutarUpload = processRequestNotificacion( ejecutarUpload);
         }
 
         log.info("path {}", ejecutarUpload.getPathArchivoUpload());
@@ -160,7 +160,7 @@ public class BUploadToDesnormalizadoService {
             ejecutarUpload.setPathArchivoBackup(pathDestinoRespaldo.toString());
             Files.createDirectories(pathDestinoRespaldo.getParent());
 
-            Files.copy( Paths.get(dirExcelUpload), pathDestinoRespaldo, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get(dirExcelUpload), pathDestinoRespaldo, StandardCopyOption.REPLACE_EXISTING);
             /*******Archivo Original IMSB obtenido y Respaldado*****************************/
             /*******************************************************************************/
             log.info(" excelNotificacion Upload{}", excelNotificacion.size() );
@@ -272,6 +272,10 @@ public class BUploadToDesnormalizadoService {
                 int idActual = 0;
                 String stringId = "";
 
+                //String fechaCarta = reg.getFechaCarta();
+                //String fechaVence = reg.getVence();
+                //String fechaInfraccion = reg.getFechaInfraccion();
+                //String fechaCitacion = reg.getFechaCitacion();
                 for (ExcelCobranza reg : lista) {
 
                     // 👉 cada 7 registros o inicio genera nuevo ID
@@ -298,11 +302,16 @@ public class BUploadToDesnormalizadoService {
                         log.info("rut {} - patente {} - stringId {} ", entryRut.getKey(), entryPatente.getKey(), stringId);
                     }
 
+                    String fechaCarta = reg.getFechaCarta();
+                    String fechaVence = reg.getVence();
+                    String fechaInfraccion = reg.getFechaInfraccion();
+                    String fechaCitacion = reg.getFechaCitacion();
+
                     ExcelCobranzaToNormalize nuevo = new ExcelCobranzaToNormalize(
                             reg.getCert1(),
                             reg.getCert2(),
-                            reg.getFechaCarta(),
-                            reg.getVence(),
+                            fechaCarta,
+                            fechaVence,
                             reg.getFolio(),
                             reg.getApellidoPaterno(),
                             reg.getApellidoMaterno(),
@@ -315,14 +324,14 @@ public class BUploadToDesnormalizadoService {
                             reg.getDg(),
                             reg.getTipoVehiculo(),
                             reg.getRolMop(),
-                            reg.getFechaInfraccion(),
+                            fechaInfraccion,
                             reg.getHoraInfraccion(),
                             reg.getConvenio1(),
                             reg.getConvenio2(),
                             reg.getCodigoBarra(),
                             reg.getValorMulta(),
                             reg.getLugarMulta(),
-                            reg.getFechaCitacion(),
+                            fechaCitacion,
                             reg.getJuzgado(),
                             reg.getPiso(),
                             stringId,
@@ -343,7 +352,7 @@ public class BUploadToDesnormalizadoService {
                 excelNotificaciones.stream()
                         .collect(Collectors.groupingBy(
                                 ExcelNotificacion::getRut,
-                                Collectors.groupingBy(ExcelNotificacion::getPlacaPatente)
+                                Collectors.groupingBy(ExcelNotificacion::getPpu)
                         ))
                         .entrySet()
                         .stream()
@@ -387,26 +396,27 @@ public class BUploadToDesnormalizadoService {
 
                     contadorPatente++;
 
-                    // 1. Preparamos el campo concatenado
-                    String nombreCompleto = String.format("%s",
-                            reg.getNombreCompleto());
-
                     // 1. Preparamos el campo concatenado usando el stringId formateado
                     String concatenado = String.format("%s, %s, %s, %s",
                             stringId, // Ahora usa "000001"
-                            nombreCompleto,
+                            reg.getNombreCompleto(),
                             reg.getDireccion(),
                             reg.getComuna()
                     );
 
+                    String fInfraccion = reg.getFechaInfraccion();
+                    String fCitacion = reg.getFechaCitacion();
+                    String fVencimiento = reg.getFechaVencimiento();
+
                     // 2. Usamos el constructor con todos los atributos
                     // Pasamos los campos de ExcelCobranza + los 2 campos nuevos
                     ExcelNotificacionToNormalize nuevo = new ExcelNotificacionToNormalize
-                            (reg.getJuzgado(), reg.getNombreCompleto(), reg.getRut(), reg.getDireccion(),
-                                    reg.getComuna(), reg.getAnho(), reg.getRol(), reg.getFechaTramite(),
-                                    reg.getFechaCitacion(), reg.getPlacaPatente(), reg.getCodigoInterno(),
-                                    reg.getFechaVencimiento(), reg.getFechaInfraccion(), reg.getHoraInfraccion(),
-                                    reg.getFolio(), stringId,      // clientId
+                            (reg.getJuzgado(), reg.getNombreCompleto(),
+                                    reg.getDireccion(), reg.getComuna(), reg.getRol(), reg.getAnho(), reg.getMac(),
+                                    reg.getRut(), reg.getPpu(),  reg.getVehiculo(),
+                                    reg.getFechaInfraccion(), reg.getHoraInfraccion(), reg.getFechaCitacion(),
+                                    reg.getHoraCitacion(), reg.getCodigoInterno(),
+                                    reg.getFechaVencimiento(), reg.getFolio(), stringId,      // clientId
                                     concatenado    // toNormalize
                             );
                     // 3. Agregamos a la lista final
@@ -416,6 +426,10 @@ public class BUploadToDesnormalizadoService {
         };
 
         return listaProcesadaNormalizada;
+    }
+
+    private String nvl(Object value) {
+        return value == null ? "" : value.toString();
     }
 
     public EjecutarUpload exportarANuevoExcelCobranza(String proceso,
@@ -558,14 +572,6 @@ public class BUploadToDesnormalizadoService {
         return ejecutarUpload;
     }
 
-    private String nvl(Object value) {
-        return value == null ? "" : value.toString();
-    }
-
-    /************************************************************************************************/
-    /************************************************************************************************/
-    /************************************************************************************************/
-
     public EjecutarUpload generarCSVUnicosCobranza(List<ExcelCobranzaToNormalize> listaNormalizada,
                                          EjecutarUpload ejecutarUpload) {
 
@@ -644,9 +650,9 @@ public class BUploadToDesnormalizadoService {
         return ejecutarUpload;
 
     }
-
+    /*** NOTIFICACION*******/
     public EjecutarUpload exportarANuevoExcelNotificacion(String proceso,
-                                                      List<ExcelNotificacionToNormalize> listaToNormalize,
+                                                      List<ExcelNotificacionToNormalize> listaToNormalizace,
                                                       EjecutarUpload ejecutarUpload) {
 
         String dirArchivoExcelToNormalize = null;
@@ -665,9 +671,9 @@ public class BUploadToDesnormalizadoService {
 
             // 2. Columnas (corregidas para coincidir con createCell)
             String[] columnas = {
-                    "JUZGADO", "NOMBRE", "RUT", "DIRECCION", "COMUNA", "AÑO", "ROL", "FECHA TRAMITE", "FECHA CITACION",
-                    "PLACA PATENTE", "COD. INTERNO", "F.VENC BANCO", "FECHA INFRACCION", "HORA", "FOLIO",
-                    "clientId", "toNormalize"
+                    "JUZGADO", "NOMBRE", "DIRECCION", "COMUNA", "ROL", "AÑO", "MAC", "RUT", "PPU",
+                    "VEHICULO",	"F.INFRACCIÓN", "HORA", "F.CITACIÓN", "HORA",	"COD.INTERNO",	"F.VENC.BCO",
+                    "FOLIO", "ClientId", "Concatenado"
             };
 
             // 3. Header
@@ -678,13 +684,13 @@ public class BUploadToDesnormalizadoService {
                 cell.setCellStyle(headerStyle);
             }
 
-            log.info("Generando Excel con {} registros...", listaToNormalize.size());
+            log.info("Generando Excel con {} registros...", listaToNormalizace.size());
 
             // 4. Datos
             int rowNum = 1;
             int contador = 0;
 
-            for (ExcelNotificacionToNormalize item : listaToNormalize) {
+            for (ExcelNotificacionToNormalize item : listaToNormalizace) {
 
                 if (item == null) {
                     log.warn("⚠️ Item nulo detectado, se omite");
@@ -694,24 +700,26 @@ public class BUploadToDesnormalizadoService {
                 Row row = sheet.createRow(rowNum++);
                 contador++;
 
-                row.createCell(0).setCellValue(item.getJuzgado());
-                row.createCell(1).setCellValue(item.getNombreCompleto());
-                row.createCell(2).setCellValue(item.getRut());
-                row.createCell(3).setCellValue(item.getDireccion());
-                row.createCell(4).setCellValue(item.getComuna());
-                row.createCell(5).setCellValue(item.getAnho());
-                row.createCell(6).setCellValue(item.getRol());
-                row.createCell(7).setCellValue(item.getFechaTramite());
-                row.createCell(8).setCellValue(item.getFechaCitacion());
-                row.createCell(9).setCellValue(item.getPlacaPatente());
-                row.createCell(10).setCellValue(item.getCodigoInterno());
-                row.createCell(11).setCellValue(item.getFechaVencimiento());
-                row.createCell(12).setCellValue(item.getFechaInfraccion());
-                row.createCell(13).setCellValue(item.getHoraInfraccion());
-                row.createCell(14).setCellValue(item.getFolio());
-                row.createCell(15).setCellValue(item.getClientId());
-                row.createCell(16).setCellValue(item.getToNormalize());
+                row.createCell(0).setCellValue(nvl(item.getJuzgado()));
+                row.createCell(1).setCellValue(nvl(item.getNombreCompleto()));
+                row.createCell(2).setCellValue(nvl(item.getDireccion()));
+                row.createCell(3).setCellValue(nvl(item.getComuna()));
+                row.createCell(4).setCellValue(nvl(item.getRol()));
+                row.createCell(5).setCellValue(nvl(item.getAnho()));
+                row.createCell(6).setCellValue(nvl(item.getMac()));
+                row.createCell(7).setCellValue(nvl(item.getRut()));
+                row.createCell(8).setCellValue(nvl(item.getPpu()));
+                row.createCell(9).setCellValue(nvl(item.getVehiculo()));
+                row.createCell(10).setCellValue(nvl(item.getFechaInfraccion()));
+                row.createCell(11).setCellValue(nvl(item.getHoraInfraccion()));
+                row.createCell(12).setCellValue(nvl(item.getFechaCitacion()));
+                row.createCell(13).setCellValue(nvl(item.getHoraCitacion()));
+                row.createCell(14).setCellValue(nvl(item.getCodigoInterno()));
+                row.createCell(15).setCellValue(nvl(item.getFechaVencimiento()));
+                row.createCell(16).setCellValue(nvl(item.getFolio()));
 
+                row.createCell(17).setCellValue(nvl(item.getClientId()));
+                row.createCell(18).setCellValue(nvl(item.getToNormalize()));
             }
 
             // 5. Validación
@@ -719,11 +727,11 @@ public class BUploadToDesnormalizadoService {
 
             log.info("Total iterados: {}", contador);
             log.info("Total filas Excel: {}", totalFilasGeneradas);
-            log.info("Total lista original: {}", listaToNormalize.size());
+            log.info("Total lista original: {}", listaToNormalizace.size());
 
-            if (totalFilasGeneradas != listaToNormalize.size()) {
+            if (totalFilasGeneradas != listaToNormalizace.size()) {
                 log.error("❌ Diferencia detectada! Lista: {} vs Excel: {}",
-                        listaToNormalize.size(), totalFilasGeneradas);
+                        listaToNormalizace.size(), totalFilasGeneradas);
             } else {
                 log.info("✅ Validación OK: no se perdieron registros");
             }
@@ -734,7 +742,7 @@ public class BUploadToDesnormalizadoService {
             }
 
             // 7. Archivo
-            nombreArchivo = proceso.concat("_").concat(ejecutarUpload.getUnidad()).concat("_").concat(apiProperties.getArchivoExcelNombreArchivoNormalizadaNotificacion());
+            nombreArchivo = proceso.concat("_").concat(ejecutarUpload.getUnidad()).concat("_").concat(apiProperties.getArchivoExcelNombreArchivoNormalizadaCobranza());
             // 7. Dreccion
             dirArchivoExcelToNormalize = apiProperties.getArchivoCreacionCarpeta()
                     .concat(apiProperties.getArchivoCreacionAdjuntoSubCarpetaNormalizado())
@@ -771,7 +779,7 @@ public class BUploadToDesnormalizadoService {
 
         return ejecutarUpload;
     }
-
+    /*********/
     public EjecutarUpload generarCSVUnicosNotificacion(List<ExcelNotificacionToNormalize> listaNormalizada,
                                                    EjecutarUpload ejecutarUpload) {
 

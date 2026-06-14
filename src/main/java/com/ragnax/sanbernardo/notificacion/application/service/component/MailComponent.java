@@ -42,7 +42,8 @@ public class MailComponent {
 
             MimeMessage message = emailSender.createMimeMessage();
 
-            Optional<Unidad> optUnidad = unidadRepository.findByShowNombreUnidad(unidad);
+            Optional<Unidad> optUnidad = unidadRepository.findByCodigoUnidad("imsb_".concat(unidad));
+
             List<Usuarios> lista = usuariosRepository.findByIdUnidad(optUnidad.get());
             String[] mailUnidad = lista.stream()
                     .map(Usuarios::getEmailPerfil)
@@ -63,12 +64,15 @@ public class MailComponent {
             helper.setBcc(apiProperties.getMailUsername());
             helper.setSubject(String.format("Solicitud normalizacion %s Correos de Chile - I. Municipalidad de San Bernardo", observacion));***/
 
+            String subject = String.format("Solicitud normalizacion %s Correos de Chile - I. Municipalidad de San Bernardo", observacion);
+
             helper.setFrom(apiProperties.getMailUsername(), "Generacion Cartas Ilustre Municipalidad San bernardo");
             // helper.setCc(new String[] {"julio.i.cornejo.g@gmail.com"} );
-            helper.setTo ("fernanda.rodriguez@correos.cl");
+            helper.setTo (apiProperties.getMailDestinatarioOficial()); //apiProperties.getMailDestinatarioOficial());
             helper.setCc(mailUnidad);
+            //log.info("mailUnidad {}", mailUnidad);
             helper.setBcc(apiProperties.getMailUsername());
-            helper.setSubject(String.format("Solicitud normalizacion %s Correos de Chile - I. Municipalidad de San Bernardo", observacion));
+            helper.setSubject(subject);
 
             // Construcción del Cuerpo
             String cuerpo = String.format(
@@ -90,7 +94,7 @@ public class MailComponent {
             helper.addAttachment(nombreArchivo, new ByteArrayResource(archivoAdjunto));// 'true' para HTML (como tus plantillas)
 
             emailSender.send(message);
-            log.info("subject {} - cuerpo {} - FROM {} - TO {} - CC {} - BCC {} ***", cuerpo,apiProperties.getMailUsername(), apiProperties.getMailDestinatarioOficial(), mailUnidad, apiProperties.getMailUsername());
+            log.info("subject {} - cuerpo {} - FROM {} - TO {} - CC {} - BCC {} ***", subject, cuerpo,apiProperties.getMailUsername(), apiProperties.getMailDestinatarioOficial(), mailUnidad, apiProperties.getMailUsername());
             log.info("Correo enviado con éxito");
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -107,7 +111,7 @@ public class MailComponent {
         try {
             MimeMessage message = emailSender.createMimeMessage();
 
-            Optional<Unidad> optUnidad = unidadRepository.findByShowNombreUnidad(unidad);
+            Optional<Unidad> optUnidad = unidadRepository.findByCodigoUnidad("imsb_".concat(unidad));
             List<Usuarios> lista = usuariosRepository.findByIdUnidad(optUnidad.get());
             String[] mailUnidad = lista.stream()
                     .map(Usuarios::getEmailPerfil)
@@ -157,7 +161,7 @@ public class MailComponent {
 
         MimeMessage message = emailSender.createMimeMessage();
         try {
-            Optional<Unidad> optUnidad = unidadRepository.findByShowNombreUnidad(unidad);
+            Optional<Unidad> optUnidad = unidadRepository.findByCodigoUnidad("imsb_".concat(unidad));
             List<Usuarios> lista = usuariosRepository.findByIdUnidad(optUnidad.get());
             String[] mailUnidad = lista.stream()
                     .map(Usuarios::getEmailPerfil)

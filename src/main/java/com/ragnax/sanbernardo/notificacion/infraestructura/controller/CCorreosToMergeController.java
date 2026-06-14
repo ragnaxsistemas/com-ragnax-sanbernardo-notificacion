@@ -15,10 +15,10 @@ public class CCorreosToMergeController {
 
     private CCorreosToNormalizeService ccorreosToProcessService;
 
-	public CCorreosToMergeController(CCorreosToNormalizeService ccorreosToProcessService) {
-		super();
+    public CCorreosToMergeController(CCorreosToNormalizeService ccorreosToProcessService) {
+        super();
         this.ccorreosToProcessService = ccorreosToProcessService;
-	}
+    }
 
     // --- UPLOAD NORMALIZADO: URL http://localhost:9999/notificacion/upload-normalizado/1juzgado ---
     @PostMapping("/from-correos-to-merge/{tipo}/{unidad}")
@@ -41,4 +41,3 @@ public class CCorreosToMergeController {
         return ccorreosToProcessService.fromCorreosToMerge(ejecutarMerge);
     }
 }
-

@@ -7,6 +7,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 public class ObtenerExcel {
@@ -19,6 +23,14 @@ public class ObtenerExcel {
 
         DataFormatter formatter = new DataFormatter();
 
+        DateTimeFormatter entrada = new DateTimeFormatterBuilder()
+                .appendValue(ChronoField.DAY_OF_MONTH)
+                .appendLiteral('/')
+                .appendValue(ChronoField.MONTH_OF_YEAR)
+                .appendLiteral('/')
+                .appendValue(ChronoField.YEAR, 4)
+                .toFormatter();
+
         List<ExcelCobranza> excelCobranzas = new ArrayList<>();
         for (Row row : sheet) {
 
@@ -27,8 +39,10 @@ public class ObtenerExcel {
             excelCobranzas.add(new
                     ExcelCobranza(formatter.formatCellValue(row.getCell(0)),
                     formatter.formatCellValue(row.getCell(1)),
-                    formatter.formatCellValue(row.getCell(2)),
-                    formatter.formatCellValue(row.getCell(3)),
+
+                    obtenerFecha(row.getCell(2), formatter),
+                    obtenerFecha(row.getCell(3), formatter),
+
                     formatter.formatCellValue(row.getCell(4)),
                     formatter.formatCellValue(row.getCell(5)),
                     formatter.formatCellValue(row.getCell(6)),
@@ -41,14 +55,18 @@ public class ObtenerExcel {
                     formatter.formatCellValue(row.getCell(13)),
                     formatter.formatCellValue(row.getCell(14)),
                     formatter.formatCellValue(row.getCell(15)),
-                    formatter.formatCellValue(row.getCell(16)),
+
+                    obtenerFecha(row.getCell(16), formatter),
+
                     formatter.formatCellValue(row.getCell(17)),
                     formatter.formatCellValue(row.getCell(18)),
                     formatter.formatCellValue(row.getCell(19)),
                     formatter.formatCellValue(row.getCell(20)),
                     formatter.formatCellValue(row.getCell(21)),
                     formatter.formatCellValue(row.getCell(22)),
-                    formatter.formatCellValue(row.getCell(23)),
+
+                    obtenerFecha(row.getCell(23), formatter),  //fecha Citacion
+
                     formatter.formatCellValue(row.getCell(24)),
                     formatter.formatCellValue(row.getCell(25))
             ));
@@ -57,6 +75,65 @@ public class ObtenerExcel {
         workbook.close();
 
         return excelCobranzas;
+    }
+
+    private static final DateTimeFormatter SALIDA =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private static String obtenerFecha(Cell cell, DataFormatter formatter) {
+
+        if (cell == null) {
+            return "";
+        }
+
+        // Fecha real de Excel
+        if (cell.getCellType() == CellType.NUMERIC &&
+                DateUtil.isCellDateFormatted(cell)) {
+
+            return cell.getLocalDateTimeCellValue()
+                    .toLocalDate()
+                    .format(SALIDA);
+        }
+
+        // Texto
+        String valor = formatter.formatCellValue(cell).trim();
+
+        if (valor.isEmpty()) {
+            return "";
+        }
+
+        // dd/MM/yyyy o d/M/yyyy
+        try {
+            return LocalDate.parse(
+                    valor,
+                    DateTimeFormatter.ofPattern("d/M/yyyy")
+            ).format(SALIDA);
+        } catch (Exception ignored) {
+        }
+
+        // M/d/yy (ej: 8/19/26)
+        try {
+            return LocalDate.parse(
+                    valor,
+                    DateTimeFormatter.ofPattern("M/d/yy")
+            ).format(SALIDA);
+        } catch (Exception ignored) {
+        }
+
+        // dd-MMM-yyyy (ej: 19-ago.-2026)
+        try {
+            Locale es = new Locale("es", "CL");
+
+            return LocalDate.parse(
+                    valor.replace(".", ""),
+                    DateTimeFormatter.ofPattern("d-MMM-yyyy", es)
+            ).format(SALIDA);
+        } catch (Exception ignored) {
+        }
+
+        throw new IllegalArgumentException(
+                "Formato de fecha no soportado: " + valor
+        );
     }
 
     public static List<ExcelCorreos> obtenerExcelCorreosCsv(InputStream inputStream) throws Exception {
@@ -245,23 +322,26 @@ public class ObtenerExcel {
         for (Row row : sheet) {
 
             if (row.getRowNum() == 0) continue; // saltar header
-
+            int i=0;
             excelNotificaciones.add(new
-                    ExcelNotificacion(formatter.formatCellValue(row.getCell(0)),
-                    formatter.formatCellValue(row.getCell(1)),
-                    formatter.formatCellValue(row.getCell(2)),
-                    formatter.formatCellValue(row.getCell(3)),
-                    formatter.formatCellValue(row.getCell(4)),
-                    formatter.formatCellValue(row.getCell(5)),
-                    formatter.formatCellValue(row.getCell(6)),
-                    formatter.formatCellValue(row.getCell(7)),
-                    formatter.formatCellValue(row.getCell(8)),
-                    formatter.formatCellValue(row.getCell(9)),
-                    formatter.formatCellValue(row.getCell(10)),
-                    formatter.formatCellValue(row.getCell(11)),
-                    formatter.formatCellValue(row.getCell(12)),
-                    formatter.formatCellValue(row.getCell(13)),
-                    formatter.formatCellValue(row.getCell(14))
+                    ExcelNotificacion(
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(0)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(1)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(2)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(3)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(4)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(5)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(6)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(7)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(8)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(9)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(10)), //F.Infraccion
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(11)), //
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(12)), //F.Citación
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(13)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(14)),
+                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(15)), //F.Vencimiento
+                        formatter.formatCellValue(row.getCell(i)) //row.getCell(16))
             ));
         }
         /***Cerrar EXCEL*/

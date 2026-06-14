@@ -16,24 +16,24 @@ import java.util.List;
 public class EjecutarMerge extends EjecutarUpload implements Serializable {
 
 
-   /***private String tipo;
-    private String unidad;
-    private String fechaCreacionUpload;
-    private String pathCarpeta;
-    private String usuarioUpload;
+    /***private String tipo;
+     private String unidad;
+     private String fechaCreacionUpload;
+     private String pathCarpeta;
+     private String usuarioUpload;
 
-    private String observacion;
+     private String observacion;
 
-    private String valor;
+     private String valor;
 
-    private String baseNombre;
-    private String pathArchivoUpload;
-    private String nombreArchivoUpload;
-    private String pathArchivoBackup;
-    private String pathArchivoNormalizado;
-    private String totalFilasGeneradasCsv;
+     private String baseNombre;
+     private String pathArchivoUpload;
+     private String nombreArchivoUpload;
+     private String pathArchivoBackup;
+     private String pathArchivoNormalizado;
+     private String totalFilasGeneradasCsv;
 
-    private MultipartFile file;***/
+     private MultipartFile file;***/
     private String rutaExcelUnion;
     private String pathCsvCorreos;
 
@@ -54,13 +54,13 @@ public class EjecutarMerge extends EjecutarUpload implements Serializable {
     private long correlativoHistorico;
 
     /***private String totalCartas; //Total filas en Merge
-    private String totalIndividuales; //Total filas en Merge
-    private String totalMasivas; //Total filas en Merge
-    private String totalErroneas; //Total filas en Merge
-    //-
-    private String totalUTM;
-    private String totalRuts;
-    private String totalPatentesUnicas;***/
+     private String totalIndividuales; //Total filas en Merge
+     private String totalMasivas; //Total filas en Merge
+     private String totalErroneas; //Total filas en Merge
+     //-
+     private String totalUTM;
+     private String totalRuts;
+     private String totalPatentesUnicas;***/
     private MultipartFile fileCorreosCsv;
     private List<ExcelCobranzaMerge> listaExcelCobranzaMerge;
     //private List<byte[]> listaPdfs;
