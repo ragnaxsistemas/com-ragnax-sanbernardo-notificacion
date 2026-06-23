@@ -24,16 +24,16 @@ public class PlantillaCobranzas {
         DateTimeFormatter entradaFormat = DateTimeFormatter.ofPattern("M/d/yy");
 
         // Convertimos el String a un objeto LocalDate
-        LocalDate lFechaVence = LocalDate.parse(excelCobranzaMerges.getVence(), entradaFormat);
-        LocalDate lFechaCitacion = LocalDate.parse(excelCobranzaMerges.getFechaCitacion(), entradaFormat);
-        LocalDate lFechaInfraccion = LocalDate.parse(excelCobranzaMerges.getFechaInfraccion(), entradaFormat);
+        //LocalDate lFechaVence = LocalDate.parse(excelCobranzaMerges.getVence(), entradaFormat);
+        //LocalDate lFechaCitacion = LocalDate.parse(excelCobranzaMerges.getFechaCitacion(), entradaFormat);
+        //LocalDate lFechaInfraccion = LocalDate.parse(excelCobranzaMerges.getFechaInfraccion(), entradaFormat);
         // Definimos el formato de salida deseado
         DateTimeFormatter salidaFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         // Resultado
-        String fechaCitacion = lFechaCitacion.format(salidaFormat);
-        String fechaVence = lFechaVence.format(salidaFormat);
-        String fechaInfraccion = lFechaInfraccion.format(salidaFormat);
+        String fechaCitacion = excelCobranzaMerges.getFechaCitacion();
+        String fechaVence = excelCobranzaMerges.getVence();
+        String fechaInfraccion = excelCobranzaMerges.getFechaInfraccion();
 
         //Escudo
         String imgTag1 = "<img src='data:image/png;base64," + cartaHtmlIndividual.getListImagesBase64().get(0) + "' style='width: 60px; height: auto;'/>";
@@ -114,17 +114,17 @@ public class PlantillaCobranzas {
         DateTimeFormatter entradaFormat = DateTimeFormatter.ofPattern("M/d/yy");
 
         // Convertimos el String a un objeto LocalDate
-        LocalDate lFechaCitacion = LocalDate.parse(excelCobranza.getFechaCitacion(), entradaFormat);
-        LocalDate lFechaVence = null;
-        LocalDate lFechaInfraccion = null;
+       // LocalDate lFechaCitacion = excelCobranza.getFechaCitacion();
+        //LocalDate lFechaVence = null;
+        //LocalDate lFechaInfraccion = null;
 
         // Definimos el formato de salida deseado
         DateTimeFormatter salidaFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         // Resultado
-        String fechaCitacion = lFechaCitacion.format(salidaFormat);
-        String fechaVence = null;
-        String fechaInfraccion = null;
+        String fechaCitacion = excelCobranza.getFechaCitacion();
+        //String fechaVence = null;
+        //String fechaInfraccion = null;
 
         //Escudo
         String imgTag1 = "<img src='data:image/png;base64," + cartaHtmlMasiva.getListImagesBase64().get(0) + "' style='width: 60px; height: auto;'/>";
@@ -178,17 +178,19 @@ public class PlantillaCobranzas {
         String numFormateado = "";
         String trHml = "";
         for(int i = 0; i< listaExcelCobranza.size(); i++){
-            lFechaInfraccion = LocalDate.parse(listaExcelCobranza.get(i).getFechaInfraccion(), entradaFormat);
-            lFechaVence = LocalDate.parse(listaExcelCobranza.get(i).getVence(), entradaFormat);
+
+            String fechaInfraccion = listaExcelCobranza.get(i).getFechaInfraccion();
+            String fechaVence = listaExcelCobranza.get(i).getVence();
+
 
             numFormateado = String.format("%,d", Integer.parseInt(listaExcelCobranza.get(i).getValorMulta())).replace(",",".");
             trHml = trHml+"<tr>"+
                     "<td>"+ listaExcelCobranza.get(i).getFolio()+ "</td>"+
-                    "<td>"+ lFechaInfraccion+  "</td>"+
+                    "<td>"+ fechaInfraccion+  "</td>"+
                     "<td>"+ listaExcelCobranza.get(i).getHoraInfraccion()+"</td>"+
                     "<td>" +listaExcelCobranza.get(i).getRolMop()+ "</td>"+
                     "<td class=\"lugar-infr\">"+listaExcelCobranza.get(i).getLugarMulta()+"</td>"+
-                    "<td>"+ lFechaVence+  "</td>"+
+                    "<td>"+ fechaVence+  "</td>"+
                     "<td>"+ numFormateado + "</td>"+
                     "</tr>";
         }

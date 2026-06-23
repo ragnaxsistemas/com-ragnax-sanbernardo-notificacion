@@ -1,13 +1,15 @@
 package com.ragnax.sanbernardo.notificacion.application.service.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
-
+@SuperBuilder(toBuilder = true)
 public class ExcelCobranza implements Serializable {
 
     private String cert1;

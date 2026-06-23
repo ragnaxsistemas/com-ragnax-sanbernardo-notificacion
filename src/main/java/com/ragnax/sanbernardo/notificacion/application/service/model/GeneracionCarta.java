@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -22,5 +21,8 @@ public class GeneracionCarta implements Serializable {
 
     private List<byte[]> listaPdfs;
     private List<ExcelCobranzaImpresion> listaExcelCobranzaImpresion;
+    private List<ExcelNotificacionImpresion> listaExcelNotificacionImpresion;
 
+    private List<ExcelCobranzaBD> listaExcelCobranzaBD;
+    private List<ExcelNotificacionBD> listaExcelNotificacionBD;
 }

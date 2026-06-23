@@ -223,7 +223,7 @@ public class EListarController {
     public ResponseEntity<?> downloadManualUsuario(HttpServletRequest request) throws IOException {
         log.info("********** downloadManualUsuario **********");
 
-        String rootPathStr = apiProperties.getArchivoCreacionCarpeta(); // /var/www/sb_ope_001a/public_sftp/ o la de tu Mac
+        String rootPathStr = apiProperties.getArchivoCreacionCarpeta(); // /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/ o la de tu Mac
         Path filePath = Paths.get(rootPathStr, "documentacion", "manual_usuario.pdf");
 
         log.info("Buscando manual en: {}", filePath.toString());

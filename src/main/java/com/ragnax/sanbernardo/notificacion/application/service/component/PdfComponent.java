@@ -213,6 +213,7 @@ public class PdfComponent {
         return out.toByteArray();
     }
 
+    //Notificacion
     public byte[] generarPdffromHtmlCodeEanV2(String html, String textCode128C) throws Exception {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -315,7 +316,8 @@ public class PdfComponent {
         try (OutputStream os = Files.newOutputStream(archivo)) {
             os.write(pdfBytes);
         }
-        return String.valueOf(archivo.getParent()).concat("/").concat(String.valueOf(archivo.getFileName()));
+        return String.valueOf(archivo.getParent()).concat("/").
+                concat(String.valueOf(archivo.getFileName()));
     }
 
     public void unirPdfs(String dirNombreFinalConsolidadPdf, List<byte[]> listaPdfs) throws Exception {
@@ -334,7 +336,7 @@ public class PdfComponent {
         }
     }
 
-    public void unirPdfsV2(String nombreFinalConsolidadPdf, List<String> rutasPdfs) throws Exception {
+    /***public void unirPdfsV2(String nombreFinalConsolidadPdf, List<String> rutasPdfs) throws Exception {
 
         log.info("unirPdfs procesados: {} nombre: {}", rutasPdfs.size(), nombreFinalConsolidadPdf);
 
@@ -348,7 +350,7 @@ public class PdfComponent {
         try (OutputStream os = new FileOutputStream(archivoFinal)) {
             mergePdfsDesdeArchivos(rutasPdfs, os);
         }
-    }
+    }***/
 
     public void mergePdfs(List<byte[]> pdfs, OutputStream outputStream) throws Exception {
         // 1. Creamos el documento de destino vinculado al OutputStream
@@ -372,7 +374,7 @@ public class PdfComponent {
         pdfDest.close();
     }
 
-    public void mergePdfsDesdeArchivos(List<String> rutasPdfs, OutputStream outputStream) throws Exception {
+    /***public void mergePdfsDesdeArchivos(List<String> rutasPdfs, OutputStream outputStream) throws Exception {
 
         PdfDocument pdfFinal = new PdfDocument(new PdfWriter(outputStream));
         PdfMerger merger = new PdfMerger(pdfFinal);
@@ -396,5 +398,5 @@ public class PdfComponent {
         }
 
         pdfFinal.close();
-    }
+    }***/
 }

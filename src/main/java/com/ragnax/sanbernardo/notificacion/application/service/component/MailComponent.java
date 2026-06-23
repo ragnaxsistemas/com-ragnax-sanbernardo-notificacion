@@ -15,9 +15,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -35,7 +36,7 @@ public class MailComponent {
     @Autowired
     private ApiProperties apiProperties;
 
-    public  void enviarCorreoResend(String observacion, String tipo,  String unidad, int largoCsv, byte[] archivoAdjunto, String nombreArchivo) {
+    public  void enviarCorreoNormalizacion(String observacion, String tipo, String unidad, int largoCsv, byte[] archivoAdjunto, String nombreArchivo) {
         log.info("observacion {} - tipo {} - unidad {} - nombreArchivo {}", observacion, tipo, unidad, nombreArchivo);
         try {
             Unidad setAdministracion =  Unidad.builder().idUnidad(1).build();
@@ -55,14 +56,6 @@ public class MailComponent {
                     .toArray(String[]::new);
 
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-            // Si aún no has validado tu dominio, usa el de prueba de Resend:
-            /***helper.setFrom(apiProperties.getMailUsername(), "Generacion Cartas Ilustre Municipalidad San bernardo");
-           // helper.setCc(new String[] {"julio.i.cornejo.g@gmail.com"} );
-            helper.setTo (apiProperties.getMailDestinatarioOficial());
-            helper.setCc(mailAdm);
-            helper.setBcc(apiProperties.getMailUsername());
-            helper.setSubject(String.format("Solicitud normalizacion %s Correos de Chile - I. Municipalidad de San Bernardo", observacion));***/
 
             String subject = String.format("Solicitud normalizacion %s Correos de Chile - I. Municipalidad de San Bernardo", observacion);
 
@@ -104,14 +97,15 @@ public class MailComponent {
     }
 
 
-    public  void enviarCorreoResendCargaMerge(String observacion, String tipo,  String unidad, int largoCsv, String nombreArchivo) {
-        Unidad setAdministracion =  Unidad.builder().idUnidad(1).build();
-
-
+    public  void enviarCorreoProcesamiento(String observacion, String tipo, String unidad, int largoCsv, String nombreArchivo) {
+        log.info("observacion {} - tipo {} - unidad {} - nombreArchivo {}", observacion, tipo, unidad, nombreArchivo);
         try {
+            Unidad setAdministracion =  Unidad.builder().idUnidad(1).build();
+
             MimeMessage message = emailSender.createMimeMessage();
 
             Optional<Unidad> optUnidad = unidadRepository.findByCodigoUnidad("imsb_".concat(unidad));
+
             List<Usuarios> lista = usuariosRepository.findByIdUnidad(optUnidad.get());
             String[] mailUnidad = lista.stream()
                     .map(Usuarios::getEmailPerfil)
@@ -121,34 +115,39 @@ public class MailComponent {
             String[] mailAdm = listaAdministracionCC.stream()
                     .map(Usuarios::getEmailPerfil)
                     .toArray(String[]::new);
+
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            // Si aún no has validado tu dominio, usa el de prueba de Resend:
+            String subject = String.format("Generacion Cartas de %s Correos de Chile - I. Municipalidad de San Bernardo", observacion);
+
+
             helper.setFrom(apiProperties.getMailUsername(), "Generacion Cartas Ilustre Municipalidad San bernardo");
             // helper.setCc(new String[] {"julio.i.cornejo.g@gmail.com"} );
-            helper.setTo (mailUnidad);
-            helper.setCc(mailAdm);
+            helper.setTo (mailUnidad); //usuario Oficiales //mailUnidad
+            helper.setCc(mailAdm); //usuario Administracion //mailAdm
+
             helper.setBcc(apiProperties.getMailUsername());
-            helper.setSubject(String.format("Solicitud proceso %s IMSB - I. Municipalidad de San Bernardo", observacion));
+            helper.setSubject(subject);
 
             // Construcción del Cuerpo
             String cuerpo = String.format(
-                    "Estimada Unidad de %s,\n\n" +
-                            "Buen día,\n" +
-                            "se ha procesado la %s del proceso correspondiente al %s de la I. Municipalidad de San Bernardo.\n\n" +
-                            "Archivo procesado llamado: %s.\n\n",
-                            unidad,
-                            tipo,
-                            observacion,
-                            nombreArchivo);
+                    "Estimados,\n\n" +
+                            "Buen día, se han procesado las cartas  correspondiente a %,d registros del %s de la I. Municipalidad de San Bernardo.\n\n" +
+                            "La presentes cartas a una %s realizada por la unidad %s.\n\n" +
+                            "Quedamos atentos a sus comentarios, saludos cordiales y gracias de antemano.\n\n" +
+                            "Julio Cornejo\n" +
+                            "Cel. 993003452",
+                    largoCsv,
+                    observacion,
+                    tipo,
+                    unidad
+            );
 
             helper.setText(cuerpo);
 
-            // Adjuntar el archivo
-            //helper.addAttachment(nombreArchivo, new ByteArrayResource(archivoAdjunto));// 'true' para HTML (como tus plantillas)
-
             emailSender.send(message);
-            log.info("Correo enviado con éxito vía Resend");
+            log.info("subject {} - cuerpo {} - FROM {} - TO {} - CC {} - BCC {} ***", subject, cuerpo,apiProperties.getMailUsername(), apiProperties.getMailDestinatarioOficial(), mailUnidad, apiProperties.getMailUsername());
+            log.info("Correo enviado con éxito");
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -156,45 +155,67 @@ public class MailComponent {
         }
     }
 
-    public  void enviarCorreoHabilitarImprenta(String observacion, String tipo,  String unidad, String nombreArchivo) {
-        Unidad setAdministracion =  Unidad.builder().idUnidad(1).build();
-
-        MimeMessage message = emailSender.createMimeMessage();
+    public  void enviarCorreoImprenta(String observacion, String tipo, String unidad, int largoCsv, String nombreArchivo) {
+        log.info("observacion {} - tipo {} - unidad {} - nombreArchivo {}", observacion, tipo, unidad, nombreArchivo);
         try {
-            Optional<Unidad> optUnidad = unidadRepository.findByCodigoUnidad("imsb_".concat(unidad));
-            List<Usuarios> lista = usuariosRepository.findByIdUnidad(optUnidad.get());
-            String[] mailUnidad = lista.stream()
+            Unidad setImprenta =  Unidad.builder().idUnidad(1).build();
+
+            List<Usuarios> listaImprenta = usuariosRepository.findByIdUnidad(setImprenta);
+            String[] mailImprenta = listaImprenta.stream()
                     .map(Usuarios::getEmailPerfil)
                     .toArray(String[]::new);
+
+            Optional<Unidad> optUnidad = unidadRepository.findByCodigoUnidad("imsb_".concat(unidad));
+
+            List<Usuarios> lista = usuariosRepository.findByIdUnidad(optUnidad.get());
+
+            String[] mailUnidadCC = lista.stream()
+                    .map(Usuarios::getEmailPerfil)
+                    .toArray(String[]::new);
+
+            Unidad setAdministracion =  Unidad.builder().idUnidad(1).build();
 
             List<Usuarios> listaAdministracionCC = usuariosRepository.findByIdUnidad(setAdministracion);
-            String[] mailAdm = listaAdministracionCC.stream()
+            String[] mailAdmCC = listaAdministracionCC.stream()
                     .map(Usuarios::getEmailPerfil)
                     .toArray(String[]::new);
+
+            String[] mailsCombinados = Stream.concat(Arrays.stream(mailUnidadCC), Arrays.stream(mailAdmCC))
+                    .toArray(String[]::new);
+
+            MimeMessage message = emailSender.createMimeMessage();
+
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            // Si aún no has validado tu dominio, usa el de prueba de Resend:
+            String subject = String.format("Generacion Cartas de %s Correos de Chile - I. Municipalidad de San Bernardo", observacion);
+
             helper.setFrom(apiProperties.getMailUsername(), "Generacion Cartas Ilustre Municipalidad San bernardo");
             // helper.setCc(new String[] {"julio.i.cornejo.g@gmail.com"} );
-            helper.setTo (mailUnidad);
-            helper.setCc(mailAdm);
+            helper.setTo ("julio.i.cornejo.g@gmail.com"); //mailImprenta
+            helper.setCc("julio.i.cornejo.g@gmail.com"); //mailsCombinados
+            //log.info("mailUnidad {}", mailUnidad);
             helper.setBcc(apiProperties.getMailUsername());
-            helper.setSubject(String.format("Solicitud proceso %s IMSB - I. Municipalidad de San Bernardo", observacion));
+            helper.setSubject(subject);
 
             // Construcción del Cuerpo
             String cuerpo = String.format(
-                    "Estimada Unidad de Imprenta,\n\n" +
-                            "Buen día,\n" +
-                            "se ha procesado la %s un archivo de proceso correspondiente al %s de la I. Municipalidad de San Bernardo.\n\n" +
-                            "el archivo esta disponible para su descarga: %s.\n\n",
-                    tipo,
+                    "Estimados,\n\n" +
+                            "Buen día, se han procesado las cartas  correspondiente a %,d registros del %s de la I. Municipalidad de San Bernardo.\n\n" +
+                            "La presentes cartas a una %s realizada por la unidad %s.\n\n" +
+                            "Quedamos atentos a sus comentarios, saludos cordiales y gracias de antemano.\n\n" +
+                            "Julio Cornejo\n" +
+                            "Cel. 993003452",
+                    largoCsv,
                     observacion,
-                    nombreArchivo);
+                    tipo,
+                    unidad
+            );
 
             helper.setText(cuerpo);
 
             emailSender.send(message);
-            log.info("Correo enviado con éxito vía Resend");
+            log.info("subject {} - cuerpo {} - FROM {} - TO {} - CC {} - BCC {} ***", subject, cuerpo,apiProperties.getMailUsername(), mailImprenta, mailsCombinados, apiProperties.getMailUsername());
+            log.info("Correo enviado con éxito");
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

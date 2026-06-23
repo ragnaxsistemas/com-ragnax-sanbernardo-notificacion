@@ -203,6 +203,7 @@ public class CrearJsonExcel {
     public static void crearJson6Carta(EjecutarCartas ejecutarCartas) {
         ejecutarCartas.setFile(null);
         ejecutarCartas.setListaExcelCobranzaMerge(null);
+        ejecutarCartas.setListaExcelNotificacionMerge(null);
         ejecutarCartas.setFileCorreosCsv(null);
         //ejecutarCartas.setListaPdfs(null);
         // 1. Validar que el objeto y el nombre no sean nulos

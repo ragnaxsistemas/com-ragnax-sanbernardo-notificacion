@@ -1,8 +1,10 @@
 package com.ragnax.sanbernardo.notificacion.application.service.component;
 
 import com.ragnax.sanbernardo.notificacion.application.service.DProcesarCartaCobranzaService;
+import com.ragnax.sanbernardo.notificacion.application.service.DProcesarCartaNotificacionService;
 import com.ragnax.sanbernardo.notificacion.application.service.model.EjecutarMerge;
 import com.ragnax.sanbernardo.notificacion.application.service.model.ExcelCobranzaMerge;
+import com.ragnax.sanbernardo.notificacion.application.service.model.ExcelNotificacionMerge;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.CrearJsonExcel;
 import com.ragnax.sanbernardo.notificacion.application.service.utilidades.ObtenerExcel;
 import com.ragnax.sanbernardo.notificacion.infraestructura.configuration.ApiProperties;
@@ -17,9 +19,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -33,12 +33,15 @@ public class MergeScheduler {
     private DProcesarCartaCobranzaService procesarCartaCobranzaService;
 
     @Autowired
+    private DProcesarCartaNotificacionService procesarCartaNotificacionService;
+
+    @Autowired
     private ApiProperties apiProperties;
 
     // Ejecuta a las 12:00, 03:00 y 05:00 AM
     @Scheduled(cron = "0 0 0,3,5 * * *")
     // Ejecuta exactamente a las 11:34 AM
-    //@Scheduled(cron = "0 24 9 * * *")
+    //@Scheduled(cron = "30 30 11 * * *")
     public void procesarPendientesCadaHora() throws Exception {
         log.info("⏰ Iniciando revisión horaria de procesos pendientes...");
 
@@ -56,8 +59,6 @@ public class MergeScheduler {
 
             EjecutarMerge ejecutarMerge = CrearJsonExcel.getEjecutarMergeFromJson(epc.getPathArchivoMerge());
 
-            log.info("EjecutarMerge : {}", ejecutarMerge);
-
             procesar(ejecutarMerge, epc);
         }
         log.info(" FIN mergeScheduler");
@@ -67,40 +68,54 @@ public class MergeScheduler {
 
     private void procesar(EjecutarMerge ejecutarMerge, EjecutarProcesoCarta ejecutarProcesoCarta) throws Exception {
 
-        //por el tipo realizar llamada a procesar
-        if (ejecutarMerge.getTipo().equalsIgnoreCase("COBRANZA")) {
+        String tipo = ejecutarMerge.getTipo();
+        File archivoExcel = new File(ejecutarMerge.getPathArchivoMerge());
 
-            File archivoExcel = new File(ejecutarMerge.getPathArchivoMerge());
-
-            List<ExcelCobranzaMerge> excelCobranzaNormalizado = new ArrayList<>();
-
-            if (archivoExcel.exists()) {
-                try (InputStream excelInputStream = new FileInputStream(archivoExcel)) {
-
-                    log.info("Abriendo Excel: " + archivoExcel.getAbsolutePath());
-
-                    excelCobranzaNormalizado =
-                            ObtenerExcel.obtenerExcelCobranzaMerge(excelInputStream, apiProperties.getArchivoExcelNombreHojaMergeCobranza());
-
-                    ejecutarMerge.setListaExcelCobranzaMerge(excelCobranzaNormalizado);
-
-                    procesarCartaCobranzaService.processArchivoCobranza(ejecutarMerge);
-
-                    ejecutarProcesoCarta.setEjecutado(true);
-
-                    log.info("Ejecucion de Proceso carta: {} - {}", ejecutarProcesoCarta.getCodEjecutarProcesoCarta(), ejecutarProcesoCarta.getPathArchivoMerge());
-
-                    ejecutarProcesoCartaRepository.
-                            save(ejecutarProcesoCarta);
-                    //Salvar el roceso y guardar en processArchivoCobranza
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                throw new Exception("No se encontró el archivo Excel en: " + archivoExcel.getAbsolutePath());
-            }
-            log.info(" resultadoValidacion {}", excelCobranzaNormalizado.size());
+        // 1. Cláusula de guarda: Validamos primero si el archivo NO existe para salir de inmediato
+        if (!archivoExcel.exists()) {
+            throw new Exception("No se encontró el archivo Excel en: " + archivoExcel.getAbsolutePath());
         }
-        log.info(" FIN procesar");
+
+        int procesados = 0;
+        String nombreHoja = apiProperties.getArchivoExcelNombreHojaMergeCobranza(); //HojaProcesar
+
+        try (InputStream excelInputStream = new FileInputStream(archivoExcel)) {
+            log.info("Abriendo Excel: {}", archivoExcel.getAbsolutePath());
+
+            if ("COBRANZA".equalsIgnoreCase(tipo)) {
+                List<ExcelCobranzaMerge> excelCobranzasMerge =
+                        ObtenerExcel.obtenerExcelCobranzaMerge(excelInputStream, nombreHoja);
+
+                ejecutarMerge.setListaExcelCobranzaMerge(excelCobranzasMerge);
+                procesarCartaCobranzaService.processArchivoCobranza(ejecutarMerge);
+
+                procesados = excelCobranzasMerge.size();
+
+            } else if ("NOTIFICACION".equalsIgnoreCase(tipo)) {
+                List<ExcelNotificacionMerge> excelNotificacionesMerge =
+                        ObtenerExcel.obtenerExcelNotificacionMerge(excelInputStream, nombreHoja);
+
+                ejecutarMerge.setListaExcelNotificacionMerge(excelNotificacionesMerge);
+                procesarCartaNotificacionService.processArchivoNotificacion(ejecutarMerge);
+
+                procesados = excelNotificacionesMerge.size();
+            }
+
+            // 3. Acciones comunes post-procesamiento
+            ejecutarProcesoCarta.setEjecutado(true);
+
+            log.info("Ejecucion de Proceso carta: {} - {}",
+                    ejecutarProcesoCarta.getCodEjecutarProcesoCarta(), ejecutarProcesoCarta.getPathArchivoMerge());
+
+            // Guardar el estado del proceso en la base de datos
+            ejecutarProcesoCartaRepository.save(ejecutarProcesoCarta);
+
+            log.info("Resultado procesamiento de registros: {}", procesados);
+
+        } catch (Exception e) {
+            log.error("❌ Error interno al procesar el archivo Excel del tipo {}: {}", tipo, e.getMessage(), e);
+            throw new RuntimeException("Error en el procesamiento del archivo: " + e.getMessage(), e);
+        }
     }
+
 }

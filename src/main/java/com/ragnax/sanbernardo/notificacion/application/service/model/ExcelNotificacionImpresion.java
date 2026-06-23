@@ -1,7 +1,6 @@
 package com.ragnax.sanbernardo.notificacion.application.service.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
-public class ExcelCobranzaImpresion extends ExcelCobranzaMerge implements Serializable {
+public class ExcelNotificacionImpresion extends ExcelNotificacionMerge implements Serializable {
 
     private String correlativoHistorico;
     private String procCorrelativoHistorico;

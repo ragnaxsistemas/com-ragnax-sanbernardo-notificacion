@@ -1,12 +1,16 @@
 package com.ragnax.sanbernardo.notificacion.application.service.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder(toBuilder = true)
 public class ExcelNotificacionToNormalize extends ExcelNotificacion implements Serializable {
 
     private String clientId;

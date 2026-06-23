@@ -116,14 +116,17 @@ public class ApiProperties {
     @Value("${archivo.creacion.adjuntos.subCarpetaCobranza}")
     private String archivoCreacionAdjuntoSubCarpetaCobranza;
 
-    @Value("${archivo.creacion.adjuntos.subCarpetaCobranzaDocumento}")
-    private String archivoCreacionAdjuntoSubCarpetaCobranzaDocumento;
+    @Value("${archivo.creacion.adjuntos.subCarpetaNotificacion}")
+    private String archivoCreacionAdjuntoSubCarpetaNotificacion;
 
-    @Value("${archivo.creacion.adjuntos.subCarpetaCobranzaConsolidado}")
-    private String archivoCreacionAdjuntoSubCarpetaCobranzaConsolidado;
+    @Value("${archivo.creacion.adjuntos.subCarpetaDocumento}")
+    private String archivoCreacionAdjuntoSubCarpetaDocumento;
 
-    @Value("${archivo.creacion.adjuntos.subCarpetaCobranzaReporte}")
-    private String archivoCreacionAdjuntoSubCarpetaCobranzaReporte;
+    @Value("${archivo.creacion.adjuntos.subCarpetaConsolidado}")
+    private String archivoCreacionAdjuntoSubCarpetaConsolidado;
+
+    @Value("${archivo.creacion.adjuntos.subCarpetaReporte}")
+    private String archivoCreacionAdjuntoSubCarpetaReporte;
 
     @Value("${archivo.creacion.adjuntos.nombreArchivoConsolidado}")
     private String archivoCreacionAdjuntoNombreArchivoConsolidado;

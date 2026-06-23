@@ -36,11 +36,13 @@ public class ExcelCorreos implements Serializable {
     @CsvBindByName(column = "codigo_postal")
     private String codigo_postal;
     @CsvBindByName(column = "id_sector")
-    private String id_sector;
+    private String idSector;
     @CsvBindByName(column = "id_cuartel")
-    private String id_cuartel;
+    private String idCuartel;
     @CsvBindByName(column = "id_cliente")
-    private String id_cliente;
+    private String idCliente;
     @CsvBindByName(column = "servicio")
     private String servicio;
+    @CsvBindByName(column = "destino_clasificacion")
+    private String destinoClasificacion;
 }

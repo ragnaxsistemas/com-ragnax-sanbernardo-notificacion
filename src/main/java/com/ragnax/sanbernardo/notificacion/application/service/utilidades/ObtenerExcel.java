@@ -36,39 +36,41 @@ public class ObtenerExcel {
 
             if (row.getRowNum() == 0) continue; // saltar header
 
+            int i=0;
+
             excelCobranzas.add(new
-                    ExcelCobranza(formatter.formatCellValue(row.getCell(0)),
-                    formatter.formatCellValue(row.getCell(1)),
+                    ExcelCobranza(formatter.formatCellValue(row.getCell(i)),
+                    formatter.formatCellValue(row.getCell(++i)),
 
-                    obtenerFecha(row.getCell(2), formatter),
-                    obtenerFecha(row.getCell(3), formatter),
+                    obtenerFecha(row.getCell(++i), formatter),
+                    obtenerFecha(row.getCell(++i), formatter),
 
-                    formatter.formatCellValue(row.getCell(4)),
-                    formatter.formatCellValue(row.getCell(5)),
-                    formatter.formatCellValue(row.getCell(6)),
-                    formatter.formatCellValue(row.getCell(7)),
-                    formatter.formatCellValue(row.getCell(8)),
-                    formatter.formatCellValue(row.getCell(9)),
-                    formatter.formatCellValue(row.getCell(10)),
-                    formatter.formatCellValue(row.getCell(11)),
-                    formatter.formatCellValue(row.getCell(12)),
-                    formatter.formatCellValue(row.getCell(13)),
-                    formatter.formatCellValue(row.getCell(14)),
-                    formatter.formatCellValue(row.getCell(15)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
 
-                    obtenerFecha(row.getCell(16), formatter),
+                    obtenerFecha(row.getCell(++i), formatter),
 
-                    formatter.formatCellValue(row.getCell(17)),
-                    formatter.formatCellValue(row.getCell(18)),
-                    formatter.formatCellValue(row.getCell(19)),
-                    formatter.formatCellValue(row.getCell(20)),
-                    formatter.formatCellValue(row.getCell(21)),
-                    formatter.formatCellValue(row.getCell(22)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
 
-                    obtenerFecha(row.getCell(23), formatter),  //fecha Citacion
+                    obtenerFecha(row.getCell(++i), formatter),  //fecha Citacion
 
-                    formatter.formatCellValue(row.getCell(24)),
-                    formatter.formatCellValue(row.getCell(25))
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i))
             ));
         }
         /***Cerrar EXCEL*/
@@ -182,28 +184,6 @@ public class ObtenerExcel {
         }
     }
 
-    /***public static List<ExcelCobranzaCorreos> obtenerExcelCorreosCsv(InputStream inputStream) throws Exception {
-     List<ExcelCobranzaCorreos> beans = null;
-     // Usar el Encoding correcto es vital para que los nombres de cabecera hagan match
-     try (Reader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-
-     beans = new CsvToBeanBuilder<ExcelCobranzaCorreos>(reader)
-     .withType(ExcelCobranzaCorreos.class)
-     .withSeparator(';') // <--- CAMBIA ESTO según tu archivo (',' o ';')
-     .withIgnoreLeadingWhiteSpace(true)
-     .withVerifyReader(false) // 👈 importante
-     .withThrowExceptions(false) // 👈 evita que se corte
-     .withExceptionHandler(exception -> {
-     System.err.println("Error en línea " + exception.getLineNumber() + ""+ exception.getMessage());
-     return null;
-     })
-     .build()
-     .parse();
-
-     // Filtrar nulos si el ExceptionHandler devolvió alguno
-     return beans.stream().filter(Objects::nonNull).collect(Collectors.toList());
-     }
-     }***/
 
     public static List<ExcelCobranzaToNormalize> obtenerExcelCobranzaNormalizado(InputStream inputStream, String hoja) throws Exception {
         Workbook workbook = new XSSFWorkbook(inputStream);
@@ -218,36 +198,37 @@ public class ObtenerExcel {
 
             if (row.getRowNum() == 0) continue; // saltar header
 
+            int i=0;
 
             excelCobranzasToNormalize.add(new
-                    ExcelCobranzaToNormalize(formatter.formatCellValue(row.getCell(0)),
-                    formatter.formatCellValue(row.getCell(1)),
-                    formatter.formatCellValue(row.getCell(2)),
-                    formatter.formatCellValue(row.getCell(3)),
-                    formatter.formatCellValue(row.getCell(4)),
-                    formatter.formatCellValue(row.getCell(5)),
-                    formatter.formatCellValue(row.getCell(6)),
-                    formatter.formatCellValue(row.getCell(7)),
-                    formatter.formatCellValue(row.getCell(8)),
-                    formatter.formatCellValue(row.getCell(9)),
-                    formatter.formatCellValue(row.getCell(10)),
-                    formatter.formatCellValue(row.getCell(11)),
-                    formatter.formatCellValue(row.getCell(12)),
-                    formatter.formatCellValue(row.getCell(13)),
-                    formatter.formatCellValue(row.getCell(14)),
-                    formatter.formatCellValue(row.getCell(15)),
-                    formatter.formatCellValue(row.getCell(16)),
-                    formatter.formatCellValue(row.getCell(17)),
-                    formatter.formatCellValue(row.getCell(18)),
-                    formatter.formatCellValue(row.getCell(19)),
-                    formatter.formatCellValue(row.getCell(20)),
-                    formatter.formatCellValue(row.getCell(21)),
-                    formatter.formatCellValue(row.getCell(22)),
-                    formatter.formatCellValue(row.getCell(23)),
-                    formatter.formatCellValue(row.getCell(24)),
-                    formatter.formatCellValue(row.getCell(25)),
-                    formatter.formatCellValue(row.getCell(26)),
-                    formatter.formatCellValue(row.getCell(27))
+                    ExcelCobranzaToNormalize(formatter.formatCellValue(row.getCell(i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i))
             ));
         }
         /***Cerrar EXCEL*/
@@ -263,47 +244,54 @@ public class ObtenerExcel {
 
         DataFormatter formatter = new DataFormatter();
 
-        List<ExcelCobranzaMerge> ExcelCobranzaMerges = new ArrayList<>();
+        List<ExcelCobranzaMerge> excelCobranzaMerges = new ArrayList<>();
 
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue; // saltar header
-
+            int i=0;
             // Creamos el objeto pasando los 29 parámetros que pide tu constructor
-            ExcelCobranzaMerges.add(new ExcelCobranzaMerge(
-                    getVal(row, 0, formatter),  // cert1
-                    getVal(row, 1, formatter),  // cert2
-                    getVal(row, 2, formatter),  // fechaCarta
-                    getVal(row, 3, formatter),  // vence
-                    getVal(row, 4, formatter),  // folio
-                    getVal(row, 5, formatter),  // apellidoPaterno
-                    getVal(row, 6, formatter),  // apellidoMaterno
-                    getVal(row, 7, formatter),  // nombres
-                    getVal(row, 8, formatter),  // rut
-                    getVal(row, 9, formatter),  // dv
-                    getVal(row, 10, formatter), // direccion
-                    getVal(row, 11, formatter), // comuna
-                    getVal(row, 12, formatter), // placaPatente
-                    getVal(row, 13, formatter), // dg
-                    getVal(row, 14, formatter), // tipoVehiculo
-                    getVal(row, 15, formatter), // rolMop
-                    getVal(row, 16, formatter), // fechaInfraccion
-                    getVal(row, 17, formatter), // horaInfraccion
-                    getVal(row, 18, formatter), // convenio1
-                    getVal(row, 19, formatter), // convenio2
-                    getVal(row, 20, formatter), // codigoBarra
-                    getVal(row, 21, formatter), // valorMulta
-                    getVal(row, 22, formatter), // lugarMulta
-                    getVal(row, 23, formatter), // fechaCitacion
-                    getVal(row, 24, formatter), // juzgado
-                    getVal(row, 25, formatter), // piso
-                    getVal(row, 26, formatter), // clientId
-                    getVal(row, 27, formatter), // codigoSeguimiento toNormalize
-                    getVal(row, 27, formatter)        // codigoSeguimiento (inicialmente vacío)
+            excelCobranzaMerges.add(new ExcelCobranzaMerge(
+                    getVal(row, i, formatter),  // cert1
+                    getVal(row, ++i, formatter),  // cert2
+                    getVal(row, ++i, formatter),  // fechaCarta
+                    getVal(row, ++i, formatter),  // vence
+                    getVal(row, ++i, formatter),  // folio
+                    getVal(row, ++i, formatter),  // apellidoPaterno
+                    getVal(row, ++i, formatter),  // apellidoMaterno
+                    getVal(row, ++i, formatter),  // nombres
+                    getVal(row, ++i, formatter),  // rut
+                    getVal(row, ++i, formatter),  // dv
+                    getVal(row, ++i, formatter), // direccion
+                    getVal(row, ++i, formatter), // comuna
+                    getVal(row, ++i, formatter), // placaPatente
+                    getVal(row, ++i, formatter), // dg
+                    getVal(row, ++i, formatter), // tipoVehiculo
+                    getVal(row, ++i, formatter), // rolMop
+                    getVal(row, ++i, formatter), // fechaInfraccion
+                    getVal(row, ++i, formatter), // horaInfraccion
+                    getVal(row, ++i, formatter), // convenio1
+                    getVal(row, ++i, formatter), // convenio2
+                    getVal(row, ++i, formatter), // codigoBarra
+                    getVal(row, ++i, formatter), // valorMulta
+                    getVal(row, ++i, formatter), // lugarMulta
+                    getVal(row, ++i, formatter), // fechaCitacion
+                    getVal(row, ++i, formatter), // juzgado
+                    getVal(row, ++i, formatter), // piso
+                    getVal(row, ++i, formatter), // clientId
+                    "",  //toNormalize
+                    getVal(row, ++i, formatter),// codigoSeguimiento
+                    getVal(row, ++i, formatter),        // codigoSeguimiento (inicialmente vacío)
+                    getVal(row, ++i, formatter), //idSector
+                    getVal(row, ++i, formatter), //idCuartel
+                    getVal(row, ++i, formatter), //servicio
+                    getVal(row, ++i, formatter)  //destino_clasificacion
+                    //codigo_postal;id_sector;id_cuartel;id_cliente;servicio;orden_de_impresion;destino_clasificacion
+
             ));
         }
         workbook.close();
 
-        return ExcelCobranzaMerges;
+        return excelCobranzaMerges;
     }
 
     private static String getVal(Row row, int index, DataFormatter formatter) {
@@ -325,28 +313,118 @@ public class ObtenerExcel {
             int i=0;
             excelNotificaciones.add(new
                     ExcelNotificacion(
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(0)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(1)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(2)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(3)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(4)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(5)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(6)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(7)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(8)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(9)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(10)), //F.Infraccion
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(11)), //
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(12)), //F.Citación
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(13)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(14)),
-                        formatter.formatCellValue(row.getCell(i++)), //row.getCell(15)), //F.Vencimiento
-                        formatter.formatCellValue(row.getCell(i)) //row.getCell(16))
+                        formatter.formatCellValue(row.getCell(i)), //row.getCell(0)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(1)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(2)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(3)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(4)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(5)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(6)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(7)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(8)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(9)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(10)), //F.Infraccion
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(11)), //
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(12)), //F.Citación
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(13)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(14)),
+                        formatter.formatCellValue(row.getCell(++i)), //row.getCell(15)), //F.Vencimiento
+                        formatter.formatCellValue(row.getCell(++i)) //row.getCell(16))
             ));
         }
         /***Cerrar EXCEL*/
         workbook.close();
 
         return excelNotificaciones;
+    }
+
+    public static List<ExcelNotificacionToNormalize> obtenerExcelNotificacionNormalizado(InputStream inputStream, String hoja) throws Exception {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+
+        Sheet sheet = workbook.getSheet(hoja);
+        //Sheet sheet = workbook.getSheet(apiProperties.getArchivoExcelNombreHojaCobranza()); // nombre de la hoja
+
+        DataFormatter formatter = new DataFormatter();
+
+        List<ExcelNotificacionToNormalize> excelNotificacionesToNormalize = new ArrayList<>();
+        for (Row row : sheet) {
+
+            if (row.getRowNum() == 0) continue; // saltar header
+
+            int i=0;
+            excelNotificacionesToNormalize.add(new
+                    ExcelNotificacionToNormalize(
+                    formatter.formatCellValue(row.getCell(i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i)),
+                    formatter.formatCellValue(row.getCell(++i))));
+        }
+        /***Cerrar EXCEL*/
+        workbook.close();
+
+        return excelNotificacionesToNormalize;
+    }
+
+    public static List<ExcelNotificacionMerge> obtenerExcelNotificacionMerge(InputStream inputStream, String hoja) throws Exception {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+
+        Sheet sheet = workbook.getSheet(hoja);
+
+        DataFormatter formatter = new DataFormatter();
+
+        List<ExcelNotificacionMerge> excelNotificacionesMerge = new ArrayList<>();
+
+        for (Row row : sheet) {
+            if (row.getRowNum() == 0) continue; // saltar header
+
+            int i=0;
+
+            // Creamos el objeto pasando los 29 parámetros que pide tu constructor
+            excelNotificacionesMerge.add(new ExcelNotificacionMerge(
+                    getVal(row, i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    "",
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter),
+                    getVal(row, ++i, formatter), //idSector
+                    getVal(row, ++i, formatter), //idCuartel
+                    getVal(row, ++i, formatter), //servicio
+                    getVal(row, ++i, formatter)
+            ));
+        }
+        workbook.close();
+
+        return excelNotificacionesMerge;
     }
 }

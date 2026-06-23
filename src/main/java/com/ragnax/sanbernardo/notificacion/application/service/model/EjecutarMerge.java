@@ -63,6 +63,7 @@ public class EjecutarMerge extends EjecutarUpload implements Serializable {
      private String totalPatentesUnicas;***/
     private MultipartFile fileCorreosCsv;
     private List<ExcelCobranzaMerge> listaExcelCobranzaMerge;
+    private List<ExcelNotificacionMerge> listaExcelNotificacionMerge;
     //private List<byte[]> listaPdfs;
 
 }

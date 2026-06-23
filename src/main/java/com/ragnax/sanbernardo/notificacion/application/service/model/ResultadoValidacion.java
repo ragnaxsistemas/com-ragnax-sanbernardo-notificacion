@@ -17,6 +17,5 @@ public class ResultadoValidacion {
         this.coincidentes = coincidentes;
         this.noCoincidentes = noCoincidentes;
     }
-    public List<ExcelCorreos> getCoincidentes() { return coincidentes; }
-    public int getNoCoincidentes() { return noCoincidentes; }
+
 }

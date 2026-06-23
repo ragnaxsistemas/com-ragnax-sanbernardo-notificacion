@@ -116,11 +116,11 @@ public class AFileStorageComponent {
         Path path = getBaseDir().resolve(resolvedSubPath).normalize();
 
         // --- LOGS DE DEPURACIÓN ACTUALIZADOS ---
-        log.info("--- Path Resolution (Posicional) ---");
+        /***log.info("--- Path Resolution (Posicional) ---");
         log.info("Entrada Original : " + subPath);
         log.info("Ruta Traducida   : " + resolvedSubPath);
         log.info("Path Absoluto    : " + path.toAbsolutePath());
-        log.info("------------------------------------------");
+        log.info("------------------------------------------");***/
 
         // 6. Seguridad
         if (!path.startsWith(getBaseDir())) {
@@ -189,6 +189,25 @@ public class AFileStorageComponent {
 
         List<Path> paginaPaths = todosLosFiltrados.subList(desde, hasta);
 
+        // --- SOLUCIÓN AL ERROR: Contenedor final para usar dentro de la Lambda ---
+        final Map<String, Object> cacheConsolidado = new HashMap<>();
+        cacheConsolidado.put("activar", false);
+        cacheConsolidado.put("descargas", null);
+
+        Path jsonEnDirectorioActual = path.resolve("consolidado.json");
+        if (path.getFileName().toString().equals("CARTAS_CONSOLIDADAS") && Files.exists(jsonEnDirectorioActual)) {
+            try {
+                EjecutarConsolidado ejecutar = CrearJsonExcel.getEjecutarConsolidadoFromJson(jsonEnDirectorioActual.toString());
+                if (ejecutar != null) {
+                    // Guardamos en el mapa contenedor (que al ser 'final' es permitido en la lambda)
+                    cacheConsolidado.put("activar", ejecutar.getActivarConsolidadoImprenta());
+                    cacheConsolidado.put("descargas", ejecutar.getDescargasImprenta());
+                }
+            } catch (Exception e) {
+                log.error("Error leyendo consolidado.json en el directorio actual", e);
+            }
+        }
+
         List<Map<String, Object>> detalle = paginaPaths.stream().map(p -> {
             Map<String, Object> info = new HashMap<>();
             String nombre = p.getFileName().toString();
@@ -205,37 +224,37 @@ public class AFileStorageComponent {
                 info.put("fechaCreacion", "---");
             }
 
-            // --- NUEVA LÓGICA: Obtener activarConsolidadoImprenta ---
             // --- LÓGICA CORREGIDA: Obtener activarConsolidadoImprenta ---
             boolean consolidadoImprenta = false;
             List<DescargasImprenta> descargasImprenta = null;
 
             if (esDirectorio) {
-                // Solo buscamos el JSON si la carpeta actual es "CARTAS_CONSOLIDADAS"
+                // CASO A: Estamos un nivel arriba y el ítem es la carpeta "CARTAS_CONSOLIDADAS"
                 if (nombre.equals("CARTAS_CONSOLIDADAS")) {
-                    Path rutaReporteJson = p.resolve("consolidado.json"); // Busca directamente adentro
-
+                    Path rutaReporteJson = p.resolve("consolidado.json");
                     if (Files.exists(rutaReporteJson)) {
                         try {
                             EjecutarConsolidado ejecutarConsolidado = CrearJsonExcel.getEjecutarConsolidadoFromJson(rutaReporteJson.toString());
                             if (ejecutarConsolidado != null) {
                                 consolidadoImprenta = ejecutarConsolidado.getActivarConsolidadoImprenta();
-                                if (consolidadoImprenta) {
-                                    descargasImprenta = ejecutarConsolidado.getDescargasImprenta();
-                                    info.put("descargasImprenta", descargasImprenta);
-                                }
+                                descargasImprenta = ejecutarConsolidado.getDescargasImprenta();
                             }
                         } catch (Exception e) {
-                            log.error("Error leyendo consolidado.json en: " + nombre, e);
+                            log.error("Error leyendo consolidado.json en la carpeta: " + nombre, e);
                         }
                     }
-                } else {
-                    // Para cualquier otra carpeta (como la raíz CD-816...),
-                    // no buscamos el JSON hacia adentro para que no aparezca en el nivel superior.
-                    log.debug("Carpeta {} no es CARTAS_CONSOLIDADAS, saltando búsqueda de JSON", nombre);
                 }
+            } else {
+                // CASO B: Ya estamos ADENTRO de "CARTAS_CONSOLIDADAS" (Tu URL actual)
+                // Extraemos de manera segura del mapa final externo sin violar las reglas de la Lambda
+                consolidadoImprenta = (boolean) cacheConsolidado.get("activar");
+                descargasImprenta = (List<DescargasImprenta>) cacheConsolidado.get("descargas");
             }
+
             info.put("activarConsolidadoImprenta", consolidadoImprenta);
+            if (consolidadoImprenta && descargasImprenta != null) {
+                info.put("descargasImprenta", descargasImprenta);
+            }
 
             // Lógica de metadatos para Excel
             if (!esDirectorio && nombre.endsWith(".xlsx")) {
@@ -274,6 +293,10 @@ public class AFileStorageComponent {
                     consolidadoImprenta = ejecutarConsolidado.getActivarConsolidadoImprenta();
                     ejecutarConsolidado.setActivarConsolidadoImprenta(true);
                     CrearJsonExcel.crearJson5Consolidado(ejecutarConsolidado);
+
+                    //enviarCorreoImprenta(String observacion, String tipo, String unidad, int largoCsv, String nombreArchivo)
+
+                    //enviarCorreoImprenta(ejecutarConsolidado.getTipo(), ejecutarConsolidado.getUnidad(), ejecutarConsolidado largoCsv, ejecutarConsolidado.getPathArchivoConsolidado() nombreArchivo)
                 }
             } catch (Exception e) {
                 // Log silencioso para no romper el listado si un JSON está mal formado

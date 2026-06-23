@@ -92,11 +92,19 @@
         p { margin: 6px 0; line-height: 1.2; }
 
         .signature-container {
-            text-align: right;
-            margin: 1px 0;
+            display: block;
+            width: 100%;
+            margin: 10px 0;
             page-break-inside: avoid;
+
+            /* MODIFICA ESTE VALOR: A mayor número, más a la derecha irá la firma */
+            padding-left: 350px;
         }
 
+        .signature-container img {
+            display: block;
+            margin: 0; /* Limpiamos cualquier margen residual */
+        }
         /* Sección Final: Formas de Pago */
         .payment-section {
             margin-top: 10px;
@@ -112,6 +120,14 @@
         }
         .payment-item { margin-bottom: 4px; text-align: justify; line-height: 1.1; }
 
+        .center-folio {
+            display: flex;
+            justify-content: center; /* Corregido: Centrado perfecto */
+            width: 100%;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
         @media print {
             body { background: none; padding: 0; }
             .carta-container { border: 1px solid #000; width: 100%; }
@@ -121,7 +137,9 @@
 <body>
 
 <div class="carta-container">
-
+    <div class="center-folio">
+        <span class="label-fixed">Corr: {{FOLIO_IMPRESION}}</span>
+    </div>
     <div class="header">
         <h1>NOTIFICACIÓN DE SENTENCIA</h1>
         <p><strong>{{JUZGADO}}</strong><br>

@@ -155,20 +155,14 @@ archivo:
     logo: logos/LogoEsquinaSuperiorIzquierda.png
 
   creacion:
-#    carpeta: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/
-#    respaldo: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/2_backup/
-#    respaldoNormalizado: /Users/mac/Workspaces/WorkspaceSanBernardo/com-ragnax-sanbernardo-notificacion/src/main/resources/public_sftp/5_procesado/
     adjuntos:
       subCarpetaNormalizado: 3_normalizado/
       subCarpetaMerge: 4_merge/
 
       subCarpetaCobranza: 6_cobranza/
-      subCarpetaCobranzaDocumento: CARTAS/
-      subCarpetaCobranzaConsolidado: CARTAS_CONSOLIDADAS/
-      subCarpetaCobranzaReporte: REPORTES/
       subCarpetaNotificacion: 7_notificacion/
-      subCarpetaNotificacionDocumento: CARTAS/
-      subCarpetaNotificacionConsolidado: CARTAS_CONSOLIDADAS
-      subCarpetaNotificacionReporte: REPORTES/
+      subCarpetaDocumento: CARTAS/
+      subCarpetaConsolidado: CARTAS_CONSOLIDADAS/
+      subCarpetaReporte: REPORTES/
       nombreArchivoConsolidado: consolidado.pdf
       nombreArchivoReporte: reporte.pdf

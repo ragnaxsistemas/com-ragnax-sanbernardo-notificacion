@@ -111,7 +111,7 @@ public class BUploadToDesnormalizadoService {
                     ejecutarUpload
                     );
 
-            mailComponent.enviarCorreoResend(
+            mailComponent.enviarCorreoNormalizacion(
                     ejecutarUpload.getObservacion(),
                     ejecutarUpload.getTipo(),
                     ejecutarUpload.getUnidad(),
@@ -179,7 +179,7 @@ public class BUploadToDesnormalizadoService {
                     ejecutarUpload
             );
 
-            mailComponent.enviarCorreoResend(
+            mailComponent.enviarCorreoNormalizacion(
                     ejecutarUpload.getObservacion(),
                     ejecutarUpload.getTipo(),
                     ejecutarUpload.getUnidad(),
