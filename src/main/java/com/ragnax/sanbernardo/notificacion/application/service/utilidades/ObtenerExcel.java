@@ -19,7 +19,6 @@ public class ObtenerExcel {
         Workbook workbook = new XSSFWorkbook(inputStream);
 
         Sheet sheet = workbook.getSheet(hoja);
-        //Sheet sheet = workbook.getSheet(apiProperties.getArchivoExcelNombreHojaCobranza()); // nombre de la hoja
 
         DataFormatter formatter = new DataFormatter();
 

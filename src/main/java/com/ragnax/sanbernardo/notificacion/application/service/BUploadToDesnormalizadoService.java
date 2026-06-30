@@ -121,6 +121,9 @@ public class BUploadToDesnormalizadoService {
 
         }catch(Exception e){
             log.error("Exception error", e);
+            mailComponent.enviarCorreoErrorNormalizacion(ejecutarUpload.getObservacion(),
+                     ejecutarUpload.getTipo(), ejecutarUpload.getUnidad(), ejecutarUpload.getNombreArchivoUpload());
+
         }
         return ejecutarUpload;
     }
@@ -189,6 +192,8 @@ public class BUploadToDesnormalizadoService {
 
         }catch(Exception e){
             log.error("Exception error", e);
+            mailComponent.enviarCorreoErrorNormalizacion(ejecutarUpload.getObservacion(),
+                    ejecutarUpload.getTipo(), ejecutarUpload.getUnidad(), ejecutarUpload.getNombreArchivoUpload());
         }
         return ejecutarUpload;
     }
